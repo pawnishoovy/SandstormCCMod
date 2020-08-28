@@ -51,6 +51,10 @@ function Create(self)
 	self.angVel = 0
 	self.lastRotAngle = self.RotAngle
 	
+	self.smokeTimer = Timer();
+	self.smokeDelayTimer = Timer();
+	self.canSmoke = false
+	
 	self.reloadTimer = Timer();
 	
 	self.magOutPrepareDelay = 500;
@@ -88,7 +92,7 @@ function Update(self)
 		self.parent = nil;
 	end
 	
-	-- Balance
+	-- Smoothing
 	local min_value = -math.pi;
 	local max_value = math.pi;
 	local value = self.RotAngle - self.lastRotAngle
@@ -105,7 +109,6 @@ function Update(self)
 	end
 	
 	self.lastRotAngle = self.RotAngle
-	
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "Angular Velocity = "..self.angVel, true, 0);
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle),  13);
@@ -114,6 +117,45 @@ function Update(self)
 	if self:IsReloading() then
 		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
+		end
+		
+		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
+			local color = (self.reloadPhase == 0 and 105 or 120)
+			local offset = Vector(0, 36)
+			local position = self.parent.AboveHUDPos + offset
+			
+			local mini = 0
+			local maxi = 4
+			
+			local lastVecA = Vector(0, 0)
+			local lastVecB = Vector(0, 0)
+			
+			local bend = math.rad(9)
+			local step = 2.5
+			local width = 2
+			
+			position = position + Vector(0, step * maxi * -0.5)
+			for i = mini, maxi do
+				
+				local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				
+				-- Jitter fix
+				vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
+				vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
+				position = Vector(math.floor(position.X), math.floor(position.Y))
+				
+				if i ~= mini then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
+					PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
+				end
+				if i == mini or i == maxi then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
+				end
+				
+				lastVecA = Vector(vecA.X, vecA.Y)
+				lastVecB = Vector(vecB.X, vecB.Y)
+			end
 		end
 	
 		self.Frame = 0;
@@ -273,7 +315,11 @@ function Update(self)
 	end
 	
 	if self.FiredFrame then	
+		self.canSmoke = true
+		self.smokeTimer:Reset()
+		
 		self.horizontalAnim = self.horizontalAnim + 0.2
+		self.angVel = self.angVel + RangeRand(0,1) * 3
 		self.Frame = 4;
 		
 		if self.Magazine then
@@ -389,7 +435,7 @@ function Update(self)
 		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
 		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
 		
-		self.rotationTarget = self.rotationTarget - (self.angVel * 10)
+		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		
@@ -404,5 +450,37 @@ function Update(self)
 		
 		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+	end
+	
+	if self.canSmoke and not self.smokeTimer:IsPastSimMS(1500) then
+		--[[
+		local poof = CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+		poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
+		poof.Lifetime = poof.Lifetime * RangeRand(0.2, 1.3) * 0.9;
+		poof.Vel = self.Vel * 0.1
+		poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+		MovableMan:AddParticle(poof);
+		]]
+		if self.smokeDelayTimer:IsPastSimMS(120) then
+			
+			local poof = math.random(1,2) < 2 and CreateMOSParticle("Tiny Smoke Ball 1") or CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+			poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
+			poof.Lifetime = poof.Lifetime * RangeRand(0.3, 1.3) * 0.9;
+			poof.Vel = self.Vel * 0.1
+			poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+			MovableMan:AddParticle(poof);
+			self.smokeDelayTimer:Reset()
+			
+			--[[
+			for i = 0, 2 do
+				local poof = i == 0 and CreateMOSParticle("Tiny Smoke Ball 1") or CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+				poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
+				poof.Lifetime = poof.Lifetime * RangeRand(0.7, 1.7) * 0.9;
+				--poof.Vel = Vector(RangeRand(-1,1), RangeRand(-1,1)) * 0.5
+				poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+				MovableMan:AddParticle(poof);
+				self.smokeDelayTimer:Reset()
+			end]]
+		end
 	end
 end

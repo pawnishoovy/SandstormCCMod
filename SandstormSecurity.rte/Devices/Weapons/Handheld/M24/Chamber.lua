@@ -55,6 +55,10 @@ function Create(self)
 	self.reloadPhase = 0;
 	self.ReloadTime = 19999;
 	
+	self.smokeTimer = Timer();
+	self.smokeDelayTimer = Timer();
+	self.canSmoke = false
+	
 	-- Strap
 	self.beltStartPoint = Vector(-9,3)
 	self.beltEndPoint = Vector(11,0)
@@ -115,7 +119,7 @@ function Update(self)
 			
 			if self:IsReloading() then
 				-- Fancy Reload Progress GUI
-				if not self.parent:GetController():IsState(Controller.WEAPON_FIRE) and self.parent:IsPlayerControlled() then
+				if not (not self.reloadCycle and self.parent:GetController():IsState(Controller.WEAPON_FIRE)) and self.parent:IsPlayerControlled() then
 					for i = 1, self.ammoCount do
 						local color = 120
 						local spacing = 4
@@ -357,13 +361,17 @@ function Update(self)
 		self.afterSoundPlayed = false;
 		self.ReloadTime = 19999;
 	end
-
+	
+	--print(self.ammoCount)
+	
 	if self:DoneReloading() then
 		self.Magazine.RoundCount = self.ammoCount;
 		self.Reloading = false;
 	end
 	
 	if self.FiredFrame then	
+		self.canSmoke = true
+		self.smokeTimer:Reset()
 		
 		self.reloadTimer:Reset();
 		self.reChamber = true;
@@ -457,6 +465,38 @@ function Update(self)
 		
 		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+	end
+	
+	if self.canSmoke and not self.smokeTimer:IsPastSimMS(2000) then
+		--[[
+		local poof = CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+		poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
+		poof.Lifetime = poof.Lifetime * RangeRand(0.2, 1.3) * 0.9;
+		poof.Vel = self.Vel * 0.1
+		poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+		MovableMan:AddParticle(poof);
+		]]
+		if self.smokeDelayTimer:IsPastSimMS(120) then
+			
+			local poof = math.random(1,2) < 2 and CreateMOSParticle("Tiny Smoke Ball 1") or CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+			poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
+			poof.Lifetime = poof.Lifetime * RangeRand(0.3, 1.3) * 0.9;
+			poof.Vel = self.Vel * 0.1
+			poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+			MovableMan:AddParticle(poof);
+			self.smokeDelayTimer:Reset()
+			
+			--[[
+			for i = 0, 2 do
+				local poof = i == 0 and CreateMOSParticle("Tiny Smoke Ball 1") or CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
+				poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
+				poof.Lifetime = poof.Lifetime * RangeRand(0.7, 1.7) * 0.9;
+				--poof.Vel = Vector(RangeRand(-1,1), RangeRand(-1,1)) * 0.5
+				poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
+				MovableMan:AddParticle(poof);
+				self.smokeDelayTimer:Reset()
+			end]]
+		end
 	end
 	
 	-- Strap

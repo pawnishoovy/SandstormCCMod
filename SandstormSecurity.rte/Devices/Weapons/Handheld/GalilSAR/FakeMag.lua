@@ -1,8 +1,6 @@
 function Create(self)
 	self.Frame = 0;
 	self.parent = nil;
-	self.flickerAvoid = false;
-	self.negNum = 0;
 end
 
 function Update(self)

@@ -674,7 +674,7 @@ function Create(self)
 	-- RANDOM ARMOR AND UNIFORM
 	local legsSkin = 0
 	local armsSkin = 0
-	local camo = math.random(1,4) >= 2
+	local camo = math.random(1,3) >= 2
 	if camo then
 		local rn = math.random(0, 4)
 		self.Frame = rn
