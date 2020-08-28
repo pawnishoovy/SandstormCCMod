@@ -130,7 +130,7 @@ function Update(self)
 			MovableMan:AddParticle(casing);
 			
 			if self.parent then
-				bullet.Team = actor.Team;
+				bullet.Team = self.parent.Team;
 				bullet.IgnoresTeamHits = true;
 			end
 			MovableMan:AddParticle(bullet);
