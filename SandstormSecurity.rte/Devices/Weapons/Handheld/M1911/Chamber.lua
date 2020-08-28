@@ -1,9 +1,6 @@
 function Create(self)
 
-	local actor = MovableMan:GetMOFromID(self.RootID);
-	if actor and IsAHuman(actor) then
-		self.parent = ToAHuman(actor);
-	end
+	self.parentSet = false;
 	
 	self.lastAge = self.Age
 	
@@ -40,11 +37,15 @@ end
 function Update(self)
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 	
-	local actor = MovableMan:GetMOFromID(self.RootID);
-	if actor and IsAHuman(actor) then
-		self.parent = ToAHuman(actor);
-	else
+	if self.ID == self.RootID then
 		self.parent = nil;
+		self.parentSet = false;
+	elseif self.parentSet == false then
+		local actor = MovableMan:GetMOFromID(self.RootID);
+		if actor and IsAHuman(actor) then
+			self.parent = ToAHuman(actor);
+			self.parentSet = true;
+		end
 	end
 	
 	-- Check if switched weapons/hide in the inventory, etc.

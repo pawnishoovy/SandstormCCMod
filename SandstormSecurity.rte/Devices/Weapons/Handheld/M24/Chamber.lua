@@ -1,4 +1,7 @@
 function Create(self)
+
+	self.parentSet = false;
+
 	-- Sounds --
 	self.addSounds = {["Loop"] = nil};
 	self.addSounds.Loop = {["Variations"] = 4,
@@ -75,11 +78,15 @@ end
 
 function Update(self)
 
-	local actor = MovableMan:GetMOFromID(self.RootID);
-	if actor and IsAHuman(actor) then
-		self.parent = ToAHuman(actor);
-	else
+	if self.ID == self.RootID then
 		self.parent = nil;
+		self.parentSet = false;
+	elseif self.parentSet == false then
+		local actor = MovableMan:GetMOFromID(self.RootID);
+		if actor and IsAHuman(actor) then
+			self.parent = ToAHuman(actor);
+			self.parentSet = true;
+		end
 	end
 	
 	if self.reChamber then
