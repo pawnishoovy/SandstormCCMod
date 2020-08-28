@@ -52,9 +52,9 @@ function Update(self)
 	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
 		if self.delayedFire then
 			self.delayedFire = false
-			--if self.Magazine then
-			--	self.Magazine.RoundCount = self.Magazine.RoundCount + 1
-			--end
+			if self.Magazine then
+				self.Magazine.RoundCount = self.Magazine.RoundCount + 1
+			end
 		end
 	end
 	self.lastAge = self.Age + 0
@@ -91,9 +91,6 @@ function Update(self)
 	if self.FiredFrame then
 		self.delayedFire = true
 		self.delayedFireTimer:Reset()
-		if self.Magazine then
-			self.Magazine.RoundCount = self.Magazine.RoundCount + 1
-		end
 	end
 	
 	if self.delayedFire then
@@ -122,24 +119,20 @@ function Update(self)
 			bullet:SetNumberValue("WoundDamageMultiplier", 2.0)
 			bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
 			bullet:SetNumberValue("NoSmoke", 1)
+			if self.parent then
+				bullet.Team = self.parent.Team;
+				bullet.IgnoresTeamHits = true;
+			end
 			
 			local casing
 			casing = CreateMOSParticle("Casing");
 			casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
 			casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
 			MovableMan:AddParticle(casing);
-			
-			if self.parent then
-				bullet.Team = self.parent.Team;
-				bullet.IgnoresTeamHits = true;
-			end
 			MovableMan:AddParticle(bullet);
 			
 			self.delayedFire = false
 			
-			if self.Magazine then
-				self.Magazine.RoundCount = self.Magazine.RoundCount - 1
-			end
 			self.canShoot = false
 		end
 	end
@@ -150,8 +143,12 @@ function Update(self)
 	else
 		-- SLIDE animation when firing
 		-- don't ask, math magic
-		local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
-		self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
+		if self.Magazine and self.Magazine.RoundCount < 1 or not self.Magazine then
+			self.Frame = self.delayedFire and 0 or 2
+		else
+			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
+			self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
+		end
 	end
 	-- PAWNIS RELOAD ANIMATION HERE
 	

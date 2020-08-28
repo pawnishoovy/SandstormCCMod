@@ -175,6 +175,7 @@ function Update(self)
 						self.smoke = math.random(1,2) < 2
 						if self.Vel.Magnitude < 10 then
 							self.ToDelete = true
+							canDamage = true
 						else
 							canDamage = true
 							if diff.Magnitude < 1.7 and ((self.smoke and math.random(1,4) <= 2) or self.alwaysTracer) then

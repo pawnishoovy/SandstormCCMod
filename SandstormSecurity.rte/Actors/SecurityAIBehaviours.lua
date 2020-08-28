@@ -131,15 +131,27 @@ function SecurityAIBehaviours.handleDeadAirAndFalling(self)
 end
 
 function SecurityAIBehaviours.handleLiveAirAndFalling(self)
+	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "vel = ".. math.floor(self.Vel.Y), true, 0);
+	-- Lose balance while falling
+	if self.Vel.Y > 15.5 and self.Status == 0 then
+		self.Status = 1
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
+		SecurityAIBehaviours.createEmotion(self, 4, 4, 1000);
+		--HitWhatTerrMaterial
+	end
 
 	if (self.TravelImpulse.Magnitude > self.ImpulseDamageThreshold) then
 		SecurityAIBehaviours.createSoundEffect(self, self.miscSounds.Impact, self.miscSoundVariations.Impact);
+		local damage = (self.TravelImpulse.Magnitude - self.ImpulseDamageThreshold) / 50
+		--print(damage)
+		self.Health = self.Health - damage
+		SecurityAIBehaviours.createEmotion(self, 4, 4, 1000);
 	end
 	
 	if (self.wasInAir and self.Vel.Y < 10) then
 		self.altitude = SceneMan:FindAltitude(self.Pos, 100, 3);
 		if self.altitude < 25 then
-			-- self.wasInAir = false;
+			--self.wasInAir = false;
 			if self.Status == 0 then
 				-- SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
 				-- if self.footPixel ~= 0 then
@@ -429,6 +441,11 @@ function SecurityAIBehaviours.handleMovement(self)
 		end
 	end
 	
+	-- Experimental camera
+	--local camDif = SceneMan:ShortestDistance((self.Pos), (self.Head.Pos + self.Head.Vel * rte.PxTravelledPerFrame),SceneMan.SceneWrapsX)
+	--camDif = Vector(camDif.X, camDif.Y * 2.0) + Vector(0,5)
+	--self.ViewPoint = self.ViewPoint + camDif
+	
 	self.wasCrouching = crouching;
 	self.wasMoving = moving;
 end
@@ -446,6 +463,7 @@ function SecurityAIBehaviours.handleHealth(self)
 		
 		if wasHeavilyInjured then
 			self.Suppression = self.Suppression + 100;
+			self.Status = 1
 		elseif wasInjured then
 			self.Suppression = self.Suppression + 50;
 		elseif wasLightlyInjured then
@@ -579,7 +597,7 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 end
 
 function SecurityAIBehaviours.handleHeadFrames(self)
-
+	if not self.Head then return end
 	if self.Emotion and self.emotionApplied ~= true and self.Head then
 		self.Head.Frame = self.baseHeadFrame + self.Emotion;
 		self.emotionApplied = true;
@@ -589,10 +607,8 @@ function SecurityAIBehaviours.handleHeadFrames(self)
 	if self.emotionDuration > 0 and self.emotionTimer:IsPastSimMS(self.emotionDuration) then
 		self.Head.Frame = self.Suppressed and (self.baseHeadFrame + 2) or self.baseHeadFrame;
 	elseif (self.emotionDuration == 0) and ((not self.voiceSound or not self.voiceSound:IsBeingPlayed())) then
-		if self.Head then
-			-- if suppressed base emotion is angry
-			self.Head.Frame = self.Suppressed and (self.baseHeadFrame + 2) or self.baseHeadFrame;
-		end
+		-- if suppressed base emotion is angry
+		self.Head.Frame = self.Suppressed and (self.baseHeadFrame + 2) or self.baseHeadFrame;
 	end
 
 end
@@ -724,6 +740,7 @@ end
 function SecurityAIBehaviours.handleDying(self)
 
 	self:GetController().Disabled = true;
+	self.HUDVisible = false
 	if self.allowedToDie == false then
 		self.Health = 1;
 		self.Status = 3;
@@ -746,6 +763,11 @@ function SecurityAIBehaviours.handleDying(self)
 			self.allowedToDie = true;
 		end
 		if self.deathSoundPlayed ~= true then
+			-- Addational Velocity
+			self.Vel = self.Vel + Vector(RangeRand(-2, 2), RangeRand(-2.0, 0.5))
+			self.AngularVel = self.AngularVel + RangeRand(4,12) * (math.random(0,1) * 2.0 - 1.0)
+			--self.AngularVel = self.AngularVel + RangeRand(-5,5)
+			
 			self.deathSoundPlayed = true;
 			SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Death, self.voiceSoundVariations.Death, 15, 3)
 			for actor in MovableMan.Actors do
@@ -785,7 +807,7 @@ function SecurityAIBehaviours.handleDying(self)
 			end
 		end
 		if (self.dyingSoundPlayed and self.Vel.Magnitude < 1) then
-			self.Vel = self.Vel + Vector(math.random(-2, 2), math.random(-0.5, 0.5))
+			self.Vel = self.Vel + Vector(RangeRand(-2, 2), RangeRand(-0.5, 0.5)) * TimerMan.DeltaTimeSecs * 62.5
 		end
 		
 		if self.voiceSound:IsBeingPlayed() then
