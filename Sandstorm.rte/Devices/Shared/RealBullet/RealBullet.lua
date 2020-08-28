@@ -43,7 +43,8 @@ function Create(self)
 	--self.soundLoop = math.random(0,100) < 50 and AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop"..math.random(2,4)..".wav", self.Pos, 0, -1, 100, 1, 500, false) or nil
 	local light = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop3.wav"
 	local deep = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop4.wav"
-	self.soundLoop = math.random(0,100) < 70 and AudioMan:PlaySound(math.random(0,100) < 20 and light or deep, self.Pos, 0, -1, 100, 1, 500, false) or nil
+	--self.soundLoop = math.random(0,100) < 70 and AudioMan:PlaySound(math.random(0,100) < 20 and light or deep, self.Pos, 0, -1, 100, 1, 500, false) or nil
+	self.soundLoop = nil -- Pawnis didn't like it >:-(
 	self.soundPitch = RangeRand(0.8,1.2)
 end
 
@@ -67,7 +68,7 @@ function Update(self)
 		
 		-- Tracer Trail
 		
-		if (math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or self.alwaysTracer then
+		if (math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2) then
 			local maxi = travel.Magnitude/ FrameMan.PPM * 1.5
 			for i = 0, maxi do
 				--PrimitiveMan:DrawCirclePrimitive(self.Pos + travel / maxi * i, 2 + i / maxi * 3, 166);
