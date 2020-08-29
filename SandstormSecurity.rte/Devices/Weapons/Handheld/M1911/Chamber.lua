@@ -304,7 +304,7 @@ function Update(self)
 				
 				if self.reloadPhase == 2 then
 					self.horizontalAnim = self.horizontalAnim - 3
-					self.angVel = self.angVel - 30
+					self.angVel = self.angVel - 37
 				end
 			
 				if self.reloadPhase == 0 then
@@ -394,8 +394,8 @@ function Update(self)
 		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
 		
 		local stance = Vector()
-		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
-		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
+		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
+		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
 		
 		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
