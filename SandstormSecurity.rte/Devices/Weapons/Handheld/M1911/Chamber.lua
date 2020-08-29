@@ -2,6 +2,33 @@ function Create(self)
 
 	self.parentSet = false;
 	
+	-- Sounds --
+	self.addSounds = {["Loop"] = nil};
+	self.addSounds.Loop = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/Add"};
+	
+	self.bassSounds = {["Loop"] = nil};
+	self.bassSounds.Loop = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/Bass"};
+	
+	self.mechSounds = {["Loop"] = nil};
+	self.mechSounds.Loop = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/Mech"};
+	
+	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
+	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
+	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
+	self.noiseSounds.Outdoors.End = {["Variations"] = 5,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/NoiseOutdoorsEnd"};
+	self.noiseSounds.Indoors.End = {["Variations"] = 6,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/NoiseIndoorsEnd"};
+	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/NoiseBigIndoorsEnd"};
+	
+	self.reflectionSounds = {["Outdoors"] = nil};
+	self.reflectionSounds.Outdoors = {["Variations"] = 3,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/CompliSoundV2/ReflectionOutdoors"};
+	
 	self.lastAge = self.Age
 	
 	self.delayedFire = false
@@ -27,6 +54,24 @@ function Create(self)
 	self.smokeTimer = Timer();
 	self.smokeDelayTimer = Timer();
 	self.canSmoke = false
+	
+	self.reloadTimer = Timer();
+	
+	self.magOutPrepareDelay = 500;
+	self.magOutAfterDelay = 300;
+	self.magInPrepareDelay = 600;
+	self.magInAfterDelay = 200;
+	self.boltForwardPrepareDelay = 350;
+	self.boltForwardAfterDelay = 400;
+	
+	-- phases:
+	-- 0 magout
+	-- 1 magin
+	-- 2 boltforward
+	
+	self.reloadPhase = 0;
+	
+	self.ReloadTime = 9999;
 	
 	local ms = 1 / (self.RateOfFire / 60) * 1000
 	ms = ms + self.delayedFireTimeMS
@@ -109,7 +154,73 @@ function Update(self)
 			self:AddAttachable(muzzleFlash);
 			
 			-- PAWNIS COMPLISOUND V2 HERE
-			self.addSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/Fire.wav", self.Pos, -1, 0, 130, 1, 450, false);
+			if self.noiseEndSound then
+				if self.noiseEndSound:IsBeingPlayed() then
+					self.noiseEndSound:Stop(-1)
+				end
+			end
+			
+			if self.reflectionSound then
+				if self.reflectionSound:IsBeingPlayed() then
+					self.reflectionSound:Stop(-1)
+				end
+			end
+
+			local outdoorRays = 0;
+			
+			local indoorRays = 0;
+			
+			local bigIndoorRays = 0;
+
+			if self.parent:IsPlayerControlled() then
+				local Vector2 = Vector(0,-700); -- straight up
+				local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
+				local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
+				local Vector2SlightLeft = Vector(0,-700):RadRotate(22.5*(math.pi/180));
+				local Vector2SlightRight = Vector(0,-700):RadRotate(-22.5*(math.pi/180));		
+				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg
+
+				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.rayRight = SceneMan:CastObstacleRay(self.Pos, Vector2Right, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.rayLeft = SceneMan:CastObstacleRay(self.Pos, Vector2Left, Vector3, Vector4, self.RootID, self.Team, 128, 7);			
+				self.raySlightRight = SceneMan:CastObstacleRay(self.Pos, Vector2SlightRight, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.raySlightLeft = SceneMan:CastObstacleRay(self.Pos, Vector2SlightLeft, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				
+				self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
+			else
+				local Vector2 = Vector(0,-700); -- straight up
+				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
+				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				
+				self.rayTable = {self.ray};
+			end
+			
+			for _, rayLength in ipairs(self.rayTable) do
+				if rayLength < 0 then
+					outdoorRays = outdoorRays + 1;
+				elseif rayLength > 170 then
+					bigIndoorRays = bigIndoorRays + 1;
+				else
+					indoorRays = indoorRays + 1;
+				end
+			end
+			
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);			
+			self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			
+			if outdoorRays >= 2 then
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			else -- bigIndoor
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			end
+
+		
+			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			-- PAWNIS COMPLISOUND V2 HERE
 			
 			local bullet = CreateMOSRotating("Bullet M1911");
@@ -139,17 +250,135 @@ function Update(self)
 	
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self:IsReloading() then
+	
+		if self.parent then
+			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
+		end
+
+		if self.reloadPhase == 0 then
+			self.reloadDelay = self.magOutPrepareDelay;
+			self.afterDelay = self.magOutAfterDelay;			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/MagOutPrepare";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/MagOut";
+			
+		elseif self.reloadPhase == 1 then
+			self.reloadDelay = self.magInPrepareDelay;
+			self.afterDelay = self.magInAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/MagInPrepare";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/MagIn";
+			
+		elseif self.reloadPhase == 2 then
+			self.Frame = 2;
+			self.reloadDelay = self.boltForwardPrepareDelay;
+			self.afterDelay = self.boltForwardAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M1911/Sounds/BoltForward";
+			
+		end
 		
+		if self.prepareSoundPlayed ~= true then
+			self.prepareSoundPlayed = true;
+			if self.prepareSoundPath then
+				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			end
+		end
+	
+		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+		
+			if self.reloadPhase == 0 then
+				self:SetNumberValue("MagRemoved", 1);
+			elseif self.reloadPhase == 1 then
+				self:RemoveNumberValue("MagRemoved");
+			elseif self.reloadPhase == 2 then
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 0;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					self.Frame = 1;
+				end
+			end
+			
+			if self.afterSoundPlayed ~= true then
+			
+				if self.reloadPhase == 0 then
+					self.phaseOnStop = 1;
+					local fake
+					fake = CreateMOSRotating("Fake Magazine MOSRotating M1911");
+					fake.Pos = self.Pos + Vector(-3, 3):RadRotate(self.RotAngle);
+					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
+					fake.RotAngle = self.RotAngle;
+					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
+					fake.HFlipped = self.HFlipped;
+					MovableMan:AddParticle(fake);
+					
+				elseif self.reloadPhase == 1 then
+					if self.chamberOnReload then
+						self.phaseOnStop = 2;
+					else
+						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
+						self.reloadPhase = 0;
+						self.phaseOnStop = nil;
+					end
+					self:RemoveNumberValue("MagRemoved");
+					
+				else
+					self.phaseOnStop = nil;
+				end
+			
+				self.afterSoundPlayed = true;
+				if self.afterSoundPath then
+					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+				end
+			end
+			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
+				self.reloadTimer:Reset();
+				self.prepareSoundPlayed = false;
+				self.afterSoundPlayed = false;
+				if self.chamberOnReload and self.reloadPhase == 1 then
+					self.reloadPhase = self.reloadPhase + 1;
+				elseif self.reloadPhase == 1 or self.reloadPhase == 2 then
+					self.ReloadTime = 0;
+					self.reloadPhase = 0;
+				else
+					self.reloadPhase = self.reloadPhase + 1;
+				end
+			end
+		end		
 	else
+		
+		self.reloadTimer:Reset();
+		self.prepareSoundPlayed = false;
+		self.afterSoundPlayed = false;
+		if self.reloadPhase == 3 then
+			self.reloadPhase = 2;
+		end
+		if self.phaseOnStop then
+			self.reloadPhase = self.phaseOnStop;
+			self.phaseOnStop = nil;
+		end
+		self.ReloadTime = 9999;
 		-- SLIDE animation when firing
 		-- don't ask, math magic
 		if self.Magazine and self.Magazine.RoundCount < 1 or not self.Magazine then
+			self.chamberOnReload = true;
 			self.Frame = self.delayedFire and 0 or 2
 		else
 			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
 			self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
 		end
 	end
+	
+	if self:DoneReloading() == true and self.chamberOnReload then
+		self.Magazine.RoundCount = 7
+		self.chamberOnReload = false;
+	elseif self:DoneReloading() then
+		self.Magazine.RoundCount = 8
+		self.chamberOnReload = false;
+	end	
 	-- PAWNIS RELOAD ANIMATION HERE
 	
 	-- Animation
