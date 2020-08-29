@@ -153,7 +153,6 @@ function Update(self)
 			muzzleFlash.Frame = math.random(0, muzzleFlash.FrameCount - 1);
 			self:AddAttachable(muzzleFlash);
 			
-			-- PAWNIS COMPLISOUND V2 HERE
 			if self.noiseEndSound then
 				if self.noiseEndSound:IsBeingPlayed() then
 					self.noiseEndSound:Stop(-1)
@@ -221,7 +220,6 @@ function Update(self)
 
 		
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			-- PAWNIS COMPLISOUND V2 HERE
 			
 			local bullet = CreateMOSRotating("Bullet M1911");
 			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.05,0.05));
@@ -303,18 +301,24 @@ function Update(self)
 			end
 			
 			if self.afterSoundPlayed ~= true then
+				
+				if self.reloadPhase == 2 then
+					self.horizontalAnim = self.horizontalAnim - 3
+					self.angVel = self.angVel - 30
+				end
 			
 				if self.reloadPhase == 0 then
 					self.phaseOnStop = 1;
 					local fake
 					fake = CreateMOSRotating("Fake Magazine MOSRotating M1911");
-					fake.Pos = self.Pos + Vector(-3, 3):RadRotate(self.RotAngle);
+					fake.Pos = self.Pos + Vector(-3 * self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
 					fake.HFlipped = self.HFlipped;
 					MovableMan:AddParticle(fake);
 					
+					self.verticalAnim = self.verticalAnim + 1
 				elseif self.reloadPhase == 1 then
 					if self.chamberOnReload then
 						self.phaseOnStop = 2;
@@ -325,6 +329,9 @@ function Update(self)
 					end
 					self:RemoveNumberValue("MagRemoved");
 					
+					self.horizontalAnim = self.horizontalAnim + 3
+					self.verticalAnim = self.verticalAnim - 1
+					self.angVel = self.angVel + 15
 				else
 					self.phaseOnStop = nil;
 				end
@@ -384,7 +391,7 @@ function Update(self)
 	-- Animation
 	if self.parent then
 		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
-		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 8.0) * 1000) / 1000
+		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
 		
 		local stance = Vector()
 		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
