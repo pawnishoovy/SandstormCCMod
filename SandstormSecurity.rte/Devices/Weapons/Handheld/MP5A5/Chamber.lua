@@ -60,22 +60,25 @@ function Create(self)
 	
 	self.reloadTimer = Timer();
 	
+	self.boltBackPrepareDelay = 600;
+	self.boltBackAfterDelay = 100;
+	self.boltLockPrepareDelay = 150;
+	self.boltLockAfterDelay = 100;
 	self.magOutPrepareDelay = 500;
 	self.magOutAfterDelay = 100;
 	self.magInPrepareDelay = 900;
 	self.magInAfterDelay = 500;
-	self.boltBackPrepareDelay = 600;
-	self.boltBackAfterDelay = 100;
-	self.boltForwardPrepareDelay = 200;
-	self.boltForwardAfterDelay = 400;
+	self.boltSlapPrepareDelay = 400;
+	self.boltSlapAfterDelay = 100;
 	
 	-- phases:
-	-- 0 magout
-	-- 1 magin
-	-- 2 boltback
-	-- 3 boltforward
+	-- 0 boltback
+	-- 1 boltlock
+	-- 2 magout
+	-- 3 magin
+	-- 4 boltslap (boltforward)
 	
-	self.reloadPhase = 0;
+	self.reloadPhase = 2;
 	
 	self.ReloadTime = 9999;
 
@@ -127,7 +130,7 @@ function Update(self)
 		end
 		
 		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
-			local color = (self.reloadPhase == 0 and 105 or 120)
+			local color = (self.reloadPhase == 2 and 105 or 120)
 			local offset = Vector(0, 36)
 			local position = self.parent.AboveHUDPos + offset
 			
@@ -165,19 +168,39 @@ function Update(self)
 			end
 		end
 	
-		self.Frame = 0;
+		
 		if self.reloadPhase == 0 then
+			self.reloadDelay = self.boltBackPrepareDelay;
+			self.afterDelay = self.boltBackAfterDelay;
+			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBackPrepare";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBack";
+			
+			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
+
+		elseif self.reloadPhase == 1 then
+			self.reloadDelay = self.boltLockPrepareDelay;
+			self.afterDelay = self.boltLockAfterDelay;
+			
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltLock";
+			
+			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)				
+		
+		elseif self.reloadPhase == 2 then
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;
 			
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/MagOutPrepare";
+			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/MagOut";
 			
 			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
-		elseif self.reloadPhase == 1 then
+		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.magInPrepareDelay;
 			self.afterDelay = self.magInAfterDelay;
 			
@@ -188,26 +211,16 @@ function Update(self)
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
-		elseif self.reloadPhase == 2 then
-			self.reloadDelay = self.boltBackPrepareDelay;
-			self.afterDelay = self.boltBackAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBackPrepare";
+		elseif self.reloadPhase == 4 then
+			self.reloadDelay = self.boltSlapPrepareDelay;
+			self.afterDelay = self.boltSlapAfterDelay;
+			
+			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBack";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltSlap";
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
-		elseif self.reloadPhase == 3 then
-			self.Frame = 4;
-			self.reloadDelay = self.boltForwardPrepareDelay;
-			self.afterDelay = self.boltForwardAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltForward";
-			self.horizontalAnim = 0.5
-			
-			self.rotationTarget = 7-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 		end
 		
 		if self.prepareSoundPlayed ~= true then
@@ -220,40 +233,29 @@ function Update(self)
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 		
 			if self.reloadPhase == 0 then
-				self:SetNumberValue("MagRemoved", 1);
+				self.Frame = 1;
+				self.phaseOnStop = 0;
 			elseif self.reloadPhase == 1 then
-				self:RemoveNumberValue("MagRemoved");
+				self.Frame = 2;
+				self.phaseOnStop = 2;
 			elseif self.reloadPhase == 2 then
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*3)) then
-					self.Frame = 4;
-					self.rotationTarget = -20
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-					self.Frame = 3;
-					self.rotationTarget = -15
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.Frame = 2;
-					self.rotationTarget = -10
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 1;
-					self.rotationTarget = -5
-				end
+				self.phaseOnStop = nil;
+				self:SetNumberValue("MagRemoved", 1);
 			elseif self.reloadPhase == 3 then
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+				self:RemoveNumberValue("MagRemoved");
+			elseif self.reloadPhase == 4 then
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
 					self.Frame = 0;
-					self.rotationTarget = -5
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
-					self.Frame = 2;
 					self.rotationTarget = -10
 				else
-					self.Frame = 4;
+					self.Frame = 1;
 					self.rotationTarget = -15
 				end
 			end
 			
 			if self.afterSoundPlayed ~= true then
 			
-				if self.reloadPhase == 0 then
-					self.phaseOnStop = 1;
+				if self.reloadPhase == 2 then
 					local fake
 					fake = CreateMOSRotating("Fake Magazine MOSRotating MP5A5");
 					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
@@ -264,19 +266,16 @@ function Update(self)
 					MovableMan:AddParticle(fake);
 					
 					self.verticalAnim = self.verticalAnim + 1
-				elseif self.reloadPhase == 1 then
+				elseif self.reloadPhase == 3 then
 					if self.chamberOnReload then
-						self.phaseOnStop = 2;
+						
 					else
 						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
-						self.reloadPhase = 0;
-						self.phaseOnStop = nil;
+						self.reloadPhase = 2;
 					end
 					self:RemoveNumberValue("MagRemoved");
 					
 					self.verticalAnim = self.verticalAnim - 1
-				else
-					self.phaseOnStop = nil;
 				end
 			
 				self.afterSoundPlayed = true;
@@ -288,11 +287,12 @@ function Update(self)
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 1 then
-					self.reloadPhase = self.reloadPhase + 1;
-				elseif self.reloadPhase == 1 or self.reloadPhase == 3 then
+				if self.chamberOnReload and self.reloadPhase == 4 then
 					self.ReloadTime = 0;
-					self.reloadPhase = 0;
+					self.reloadPhase = 2;
+				elseif (not self.chamberOnReload) and self.reloadPhase == 3 then
+					self.ReloadTime = 0;
+					self.reloadPhase = 2;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
@@ -300,26 +300,21 @@ function Update(self)
 		end
 	else
 		self.rotationTarget = 0
-		
-		self.Frame = 0;
-		self.reloadTimer:Reset();
-		self.prepareSoundPlayed = false;
-		self.afterSoundPlayed = false;
-		if self.reloadPhase == 3 then
-			self.reloadPhase = 2;
-		end
 		if self.phaseOnStop then
 			self.reloadPhase = self.phaseOnStop;
 			self.phaseOnStop = nil;
-		end
+		end		
+		self.reloadTimer:Reset();
+		self.prepareSoundPlayed = false;
+		self.afterSoundPlayed = false;
 		self.ReloadTime = 9999;
 	end
 	
 	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 35
+		self.Magazine.RoundCount = 30;
 		self.chamberOnReload = false;
 	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 36
+		self.Magazine.RoundCount = 31;
 		self.chamberOnReload = false;
 	end
 	
@@ -329,12 +324,13 @@ function Update(self)
 		
 		self.horizontalAnim = self.horizontalAnim + 0.2
 		self.angVel = self.angVel + RangeRand(0,1) * 3
-		self.Frame = 4;
 		
 		if self.Magazine then
-			if self.Magazine.RoundCount > 0 then			
+			if self.Magazine.RoundCount > 0 then	
+				self.reloadPhase = 2;
 			else
 				self.chamberOnReload = true;
+				self.reloadPhase = 0;
 			end
 		end
 		
