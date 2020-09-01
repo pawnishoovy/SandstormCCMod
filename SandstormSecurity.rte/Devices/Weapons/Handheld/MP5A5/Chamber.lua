@@ -9,7 +9,9 @@ function Create(self)
 	self.addSounds.Loop = {["Variations"] = 15,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/CompliSoundV2/Add"};
 	
-	self.bassSounds = {["Loop"] = nil};
+	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.bassSounds.Start = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/CompliSoundV2/BassStart"};
 	self.bassSounds.Loop = {["Variations"] = 15,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/CompliSoundV2/Bass"};
 	
@@ -59,8 +61,8 @@ function Create(self)
 	self.reloadTimer = Timer();
 	
 	self.magOutPrepareDelay = 500;
-	self.magOutAfterDelay = 500;
-	self.magInPrepareDelay = 1200;
+	self.magOutAfterDelay = 100;
+	self.magInPrepareDelay = 900;
 	self.magInAfterDelay = 500;
 	self.boltBackPrepareDelay = 600;
 	self.boltBackAfterDelay = 100;
@@ -178,7 +180,9 @@ function Update(self)
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.magInPrepareDelay;
 			self.afterDelay = self.magInAfterDelay;
-			self.prepareSoundPath = nil;
+			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/MagInPrepare";
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/MagIn";
 			
@@ -188,7 +192,7 @@ function Update(self)
 			self.reloadDelay = self.boltBackPrepareDelay;
 			self.afterDelay = self.boltBackAfterDelay;
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltGrab";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBackPrepare";
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/MP5A5/Sounds/BoltBack";
 			
@@ -398,8 +402,6 @@ function Update(self)
 			end
 		end
 		
-		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		
 		if outdoorRays >= 2 then
 			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.Loop.Path .. math.random(1, self.noiseSounds.Outdoors.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
@@ -417,8 +419,10 @@ function Update(self)
 		if self.firstShot == true then
 			self.firstShot = false;
 			
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Start.Path .. math.random(1, self.bassSounds.Start.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Start.Path .. math.random(1, self.addSounds.Start.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 		else
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 		end
 		
