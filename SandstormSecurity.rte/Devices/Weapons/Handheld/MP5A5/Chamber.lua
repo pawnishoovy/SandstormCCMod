@@ -277,6 +277,12 @@ function Update(self)
 					
 					self.verticalAnim = self.verticalAnim - 1
 				end
+				
+				if self.reloadPhase == 0 then
+					self.horizontalAnim = self.horizontalAnim + 1
+				elseif self.reloadPhase == 4 then
+					self.horizontalAnim = self.horizontalAnim - 1
+				end
 			
 				self.afterSoundPlayed = true;
 				if self.afterSoundPath then
