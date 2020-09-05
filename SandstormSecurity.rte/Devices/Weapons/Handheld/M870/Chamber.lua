@@ -431,6 +431,8 @@ function Update(self)
 						end
 					end
 					
+					self.phaseOnStop = 2;
+					
 				elseif self.reloadPhase == 2 then
 					
 					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
@@ -556,8 +558,9 @@ function Update(self)
 		if self.Reloading then
 			self.resumeReload = true;
 		end
-		if self.reloadPhase == 2 then
-			self.Frame = 5;
+		if self.phaseOnStop then
+			self.reloadPhase = self.phaseOnStop;
+			self.phaseOnStop = nil;
 		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
