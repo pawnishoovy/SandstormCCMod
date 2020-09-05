@@ -41,6 +41,9 @@ function Create(self)
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
 	
+	self.originalJointOffset = Vector(self.JointOffset.X, self.JointOffset.Y)
+	self.originalSupportOffset = Vector(math.abs(self.SupportOffset.X), self.SupportOffset.Y)
+	
 	self.rotation = 0
 	self.rotationTarget = 0
 	self.rotationSpeed = 9
@@ -241,24 +244,19 @@ function Update(self)
 		
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			
-			local bullet = CreateMOSRotating("Bullet M870");
-			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.05,0.05));
-			bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
-			bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
-			bullet:SetNumberValue("WoundDamageMultiplier", 2.0)
-			bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
-			bullet:SetNumberValue("NoSmoke", 1)
-			if self.parent then
-				bullet.Team = self.parent.Team;
-				bullet.IgnoresTeamHits = true;
+			for i = 1, 6 do -- PLACEHOLDER
+				local bullet = CreateMOSRotating("Bullet M870");
+				bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.15,0.15));
+				bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
+				bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
+				bullet:SetNumberValue("WoundDamageMultiplier", 0.7)
+				bullet:SetNumberValue("NoSmoke", 1)
+				if self.parent then
+					bullet.Team = self.parent.Team;
+					bullet.IgnoresTeamHits = true;
+				end
+				MovableMan:AddParticle(bullet);
 			end
-			
-			local casing
-			casing = CreateMOSParticle("Casing");
-			casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
-			casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-			MovableMan:AddParticle(casing);
-			MovableMan:AddParticle(bullet);
 			
 			self.delayedFire = false
 			
@@ -316,8 +314,21 @@ function Update(self)
 		end
 		if self.Chamber then
 			self:Deactivate();
-			
 			if self:IsReloading() then
+				
+				-- Fancy Reload Progress GUI
+				if not (not self.reloadCycle and self.parent:GetController():IsState(Controller.WEAPON_FIRE)) and self.parent:IsPlayerControlled() then
+					for i = 1, self.ammoCount do
+						local color = 120
+						local spacing = 4
+						local offset = Vector(0 - spacing * 0.5 + spacing * (i) - spacing * self.ammoCount / 2, (self.ammoCountRaised and i == self.ammoCount) and 35 or 36)
+						local position = self.parent.AboveHUDPos + offset
+						PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-2), 1, color);
+						PrimitiveMan:DrawLinePrimitive(position + Vector(1,-3), position + Vector(1,3), color);
+						PrimitiveMan:DrawLinePrimitive(position + Vector(-1,-3), position + Vector(-1,3), color);
+						PrimitiveMan:DrawLinePrimitive(position + Vector(1,3), position + Vector(-1,3), color);
+					end
+				end
 				
 				if self.Reloading == false then
 					self.reloadCycle = true;
@@ -342,10 +353,12 @@ function Update(self)
 					self.afterSoundPath = 
 					"SandstormSecurity.rte/Devices/Weapons/Handheld/M870/Sounds/BoltBackReload";
 					self.afterSoundVars = 1;
+					self.rotationTarget = 5
 				else
 					self.afterSoundPath = 
 					"SandstormSecurity.rte/Devices/Weapons/Handheld/M870/Sounds/BoltBack";
 					self.afterSoundVars = 1;
+					self.rotationTarget = 2
 				end
 				
 			elseif self.reloadPhase == 1 then
@@ -366,6 +379,7 @@ function Update(self)
 				"SandstormSecurity.rte/Devices/Weapons/Handheld/M870/Sounds/BoltForwardReload";
 				self.afterSoundVars = 1;
 				
+				self.rotationTarget = -10
 			elseif self.reloadPhase == 3 then
 				self.reloadDelay = self.shellInPrepareDelay;
 				self.afterDelay = self.shellInAfterDelay;
@@ -375,6 +389,7 @@ function Update(self)
 				"SandstormSecurity.rte/Devices/Weapons/Handheld/M870/Sounds/ShellInsert";
 				self.afterSoundVars = 6;
 				
+				self.rotationTarget = 10 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			elseif self.reloadPhase == 4 then
 				self.reloadDelay = self.boltForwardPrepareDelay;
 				self.afterDelay = self.boltForwardAfterDelay;
@@ -382,7 +397,9 @@ function Update(self)
 				self.prepareSoundVars = 1;
 				self.afterSoundPath = 
 				"SandstormSecurity.rte/Devices/Weapons/Handheld/M870/Sounds/BoltForward";
-				self.afterSoundVars = 1;		
+				self.afterSoundVars = 1;
+				
+				self.rotationTarget = -5
 			end
 			
 			if self.prepareSoundPlayed ~= true then
@@ -393,10 +410,27 @@ function Update(self)
 			end
 			
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+				--[[
+				if self.reloadPhase == 0 and self.Casing then
+					local shell
+					shell = CreateMOSParticle("Shell");
+					shell.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
+					shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
+					MovableMan:AddParticle(shell);
+					
+					self.Casing = false
+				end]]
+				if self.reloadPhase == 0 then
+					self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs * self.afterDelay
+				end
 			
 				self.phasePrepareFinished = true;
 			
 				if self.afterSoundPlayed ~= true then
+					if self.reloadPhase == 1 or self.reloadPhase == 3 then
+						self.horizontalAnim = self.horizontalAnim + 1
+						self.verticalAnim = self.verticalAnim - 1
+					end
 				
 					self.afterSoundPlayed = true;
 					if self.afterSoundPath then
@@ -483,7 +517,7 @@ function Update(self)
 						else
 							self.reloadPhase = 4;
 						end
-								
+						--[[		
 						if self.Casing == true then
 							-- local casing
 							-- casing = CreateAEmitter("Sandstorm M24 Rifle Casing");
@@ -492,7 +526,16 @@ function Update(self)
 							-- MovableMan:AddParticle(casing);
 
 							-- self.Casing = false;
-						end					
+						end]]				
+						if self.Casing then
+							local shell
+							shell = CreateMOSParticle("Shell");
+							shell.Pos = self.Pos+Vector(-3 * self.FlipFactor,-1):RadRotate(self.RotAngle);
+							shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
+							MovableMan:AddParticle(shell);
+							
+							self.Casing = false
+						end
 					
 					elseif self.reloadPhase == 1 then
 					
@@ -547,6 +590,8 @@ function Update(self)
 			end
 			
 		else
+			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 200, 1), 0)
+			self.JointOffset = self.originalJointOffset + Vector(1, 0) * f
 			
 			self.reloadTimer:Reset();
 			self.prepareSoundPlayed = false;
@@ -573,8 +618,6 @@ function Update(self)
 		self.Magazine.RoundCount = self.ammoCount;
 	end	
 	
-	-- PAWNIS RELOAD ANIMATION HERE
-	
 	-- Animation
 	if self.parent then
 		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
@@ -589,13 +632,21 @@ function Update(self)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		
 		self.RotAngle = self.RotAngle + total;
-		self:SetNumberValue("MagRotation", total);
+		--self:SetNumberValue("MagRotation", total);
+		
+		local supportOffset = Vector(0,0)
+		if self.Frame == 1 then
+			supportOffset = Vector(-1,0)
+		elseif self.Frame == 2 then
+			supportOffset = Vector(-3,0)
+		end
+		self.SupportOffset = self.originalSupportOffset + supportOffset
 		
 		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
 		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
 		self.Pos = self.Pos + offsetTotal;
-		self:SetNumberValue("MagOffsetX", offsetTotal.X);
-		self:SetNumberValue("MagOffsetY", offsetTotal.Y);
+		--self:SetNumberValue("MagOffsetX", offsetTotal.X);
+		--self:SetNumberValue("MagOffsetY", offsetTotal.Y);
 		
 		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance

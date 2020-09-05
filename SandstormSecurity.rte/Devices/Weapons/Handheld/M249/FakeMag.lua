@@ -30,7 +30,13 @@ function Update(self)
 		if self.parent:NumberValueExists("MagRemoved") then
 			self.Frame = 0;
 		else
-			self.Frame = 1;
+			--self.MagFrame
+			if self.parent:NumberValueExists("MagFrame") then
+				self.Frame = self.parent:GetNumberValue("MagFrame") + 1
+			else
+				self.Frame = 1;
+			end
+			
 		end
 		if self.parent:NumberValueExists("MagRotation") then
 			self.RotAngle = self.RotAngle + self.parent:GetNumberValue("MagRotation");

@@ -49,6 +49,8 @@ function Create(self)
 	self.horizontalAnim = 0
 	self.verticalAnim = 0
 	
+	self.MagFrame = 0
+	
 	self.angVel = 0
 	self.lastRotAngle = self.RotAngle
 	
@@ -82,6 +84,11 @@ function Create(self)
 		self.parent = ToAHuman(actor);
 	end
 	
+	self.originalSharpLength = self.SharpLength
+	self.recoilTimer = Timer();
+	self.recoilTimeMS = 30
+	self.recoilAcc = 0 -- for sinous
+	self.recoilStr = 0 -- for accumulator
 end
 
 function Update(self)
@@ -115,6 +122,8 @@ function Update(self)
 	
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+	
+	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.recoilTimer.ElapsedSimTimeMS / (self.recoilTimeMS * 3), 1), 2.0) * 0.1)
 	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "Angular Velocity = "..self.angVel, true, 0);
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle),  13);
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
@@ -163,7 +172,7 @@ function Update(self)
 			end
 		end
 	
-		self.Frame = 0;
+		self.Frame = 1;
 		if self.reloadPhase == 0 then
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;
@@ -251,7 +260,7 @@ function Update(self)
 				if self.reloadPhase == 0 then
 					self.phaseOnStop = 1;
 					local fake
-					fake = CreateMOSRotating("Fake Magazine MOSRotating M249");
+					fake = CreateMOSRotating(math.random(1,3) < 2 and "Fake Magazine MOSRotating M249 Light" or "Fake Magazine MOSRotating M249");
 					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
@@ -297,7 +306,7 @@ function Update(self)
 	else
 		self.rotationTarget = 0
 		
-		self.Frame = 0;
+		self.Frame = 1;
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
@@ -318,15 +327,37 @@ function Update(self)
 	if self.FiredFrame then	
 		self.canSmoke = true
 		self.smokeTimer:Reset()
+		self.recoilTimer:Reset()
 		
-		self.horizontalAnim = self.horizontalAnim + 0.2
-		self.angVel = self.angVel + RangeRand(0,1) * 3
-		self.Frame = 4;
+		self.horizontalAnim = self.horizontalAnim + 0.3
+		--self.recoilStr = self.recoilStr + 1.0
+		self.recoilStr = self.recoilStr + math.random(1,3) * 0.5
+		self.angVel = self.angVel + RangeRand(-1,1) * 3
+		self.Frame = 1;
+		
+		local chain
+		chain = CreateMOSParticle("Belt Connection M249");
+		chain.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
+		chain.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
+		MovableMan:AddParticle(chain);
 		
 		if self.Magazine then
-			if self.Magazine.RoundCount > 0 then			
-			else
+			if self.Magazine.RoundCount <= 0 then
 				self.chamberOnReload = true;
+			end
+			
+			if self.Magazine.RoundCount <= 1 then
+				self.MagFrame = 7
+			elseif self.Magazine.RoundCount < 2 then
+				self.MagFrame = 6
+			elseif self.Magazine.RoundCount < 3 then
+				self.MagFrame = 5
+			elseif self.Magazine.RoundCount < 4 then
+				self.MagFrame = 4
+			elseif self.Magazine.RoundCount < 5 then
+				self.MagFrame = 3
+			else
+				self.MagFrame = (self.MagFrame + 1) % 3
 			end
 		end
 		
@@ -431,16 +462,24 @@ function Update(self)
 		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 12.0) * 1000) / 1000
 		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 8.0) * 1000) / 1000
 		
+		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0) * 1000) / 1000
+		self.recoilAcc = (self.recoilAcc + self.recoilStr * TimerMan.DeltaTimeSecs) % (math.pi * 4)
+		
 		local stance = Vector()
 		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
 		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
 		
-		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
+		self.rotationTarget = self.rotationTarget - (self.angVel * 6) -- aim sway/smoothing
+		local recoilA = (math.sin(self.recoilAcc) * self.recoilStr) * 0.5
+		local recoilB = (math.sin(self.recoilAcc * 0.5) * self.recoilStr) * 0.1
+		self.rotationTarget = self.rotationTarget + recoilA + recoilB -- recoil
+		
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		
 		self.RotAngle = self.RotAngle + total;
 		self:SetNumberValue("MagRotation", total);
+		self:SetNumberValue("MagFrame", self.MagFrame);
 		
 		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
 		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset

@@ -35,6 +35,13 @@ function Create(self)
 		self.parent = ToAHuman(actor);
 	end
 	
+	self.angVel = 0
+	self.lastRotAngle = self.RotAngle
+	
+	self.rotation = 0
+	self.rotationTarget = 0
+	self.rotationSpeed = 5
+	
 	self.reloadTimer = Timer();
 	
 	self.boltUpPrepareDelay = 700;
@@ -77,6 +84,7 @@ function Create(self)
 end
 
 function Update(self)
+	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -88,6 +96,25 @@ function Update(self)
 			self.parentSet = true;
 		end
 	end
+	
+	-- Smoothing
+	local min_value = -math.pi;
+	local max_value = math.pi;
+	local value = self.RotAngle - self.lastRotAngle
+	local result;
+	local ret = 0
+	
+	local range = max_value - min_value;
+	if range <= 0 then
+		result = min_value;
+	else
+		ret = (value - min_value) % range;
+		if ret < 0 then ret = ret + range end
+		result = ret + min_value;
+	end
+	
+	self.lastRotAngle = self.RotAngle
+	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
 	if self.reChamber then
 		if self:IsReloading() then
@@ -380,6 +407,8 @@ function Update(self)
 		self.canSmoke = true
 		self.smokeTimer:Reset()
 		
+		self.angVel = self.angVel - RangeRand(0.7,1.1) * 6
+		
 		self.reloadTimer:Reset();
 		self.reChamber = true;
 		
@@ -462,6 +491,8 @@ function Update(self)
 		local chamberAnim = {Vector(0, 0), Vector(-4, -1), Vector(-4, -2), Vector(-5, -2), Vector(-6, -2), Vector(-7, -2), Vector(-2, -2), Vector(-2, -2), Vector(-2, -2)}
 		chamberOffset = chamberOffset + chamberAnim[self.Frame + 1]
 		
+		self.rotationTarget = self.rotationTarget - (self.angVel * 7) -- aim sway/smoothing
+		
 		local offset = chamberOffset
 		self.SupportOffset = self.originalSupportOffset + offset
 		
@@ -469,6 +500,15 @@ function Update(self)
 		if self.Chamber then
 			stance = stance + Vector(2,0)
 		end
+		
+		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
+		local total = math.rad(self.rotation) * self.FlipFactor
+		
+		self.RotAngle = self.RotAngle + total;
+		
+		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
+		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
+		self.Pos = self.Pos + offsetTotal;
 		
 		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
