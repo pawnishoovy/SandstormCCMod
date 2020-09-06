@@ -32,7 +32,7 @@ function Update(self)
 		else
 			--self.MagFrame
 			if self.parent:NumberValueExists("MagFrame") then
-				self.Frame = self.parent:GetNumberValue("MagFrame") + 1
+				self.Frame = self.parent:GetNumberValue("MagFrame")
 			else
 				self.Frame = 1;
 			end
