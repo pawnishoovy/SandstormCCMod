@@ -69,7 +69,7 @@ function Update(self)
 		
 		-- Tracer Trail
 		
-		if not self.noTracer and ((math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2) then
+		if not self.noTracer and ((math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2)) then
 			local maxi = travel.Magnitude/ FrameMan.PPM * 1.5
 			for i = 0, maxi do
 				--PrimitiveMan:DrawCirclePrimitive(self.Pos + travel / maxi * i, 2 + i / maxi * 3, 166);

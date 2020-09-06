@@ -36,6 +36,7 @@ function Create(self)
 	
 	self.originalSharpLength = self.SharpLength
 	
+	self.originalJointOffset = Vector(self.JointOffset.X, self.JointOffset.Y)
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
 	
@@ -74,6 +75,9 @@ function Create(self)
 	
 	self.ReloadTime = 9999;
 
+	-- F U N
+	self.recoilTimer = Timer();
+	self.recoilTimeMS = 60
 end
 
 function Update(self)
@@ -110,9 +114,16 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
+	local recoilFactor = math.pow(math.min(self.recoilTimer.ElapsedSimTimeMS / (self.recoilTimeMS * 4), 1), 2.0)
+	self.SharpLength = self.originalSharpLength * (0.9 + recoilFactor * 0.1)
+	self.rotationTarget = math.sin(recoilFactor * math.pi) * -10
+	
 	if self.FiredFrame then
 		self.Frame = 2;
 		self.angVel = self.angVel - RangeRand(0.7,1.1) * 10
+		--self.rotationTarget = -10
+		
+		self.recoilTimer:Reset()
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()
@@ -323,6 +334,8 @@ function Update(self)
 			end
 		end		
 	else
+		local f = math.max(1 - math.min((self.recoilTimer.ElapsedSimTimeMS - self.recoilTimeMS) / 300, 1), 0)
+		self.JointOffset = self.originalJointOffset + Vector(2, 0) * f
 		
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;

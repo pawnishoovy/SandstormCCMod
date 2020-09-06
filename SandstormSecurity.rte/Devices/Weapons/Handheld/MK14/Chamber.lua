@@ -108,7 +108,7 @@ function Update(self)
 	
 	if self.FiredFrame then
 		self.Frame = 2;
-		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
+		self.angVel = self.angVel - RangeRand(0.7,1.1) * 15
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()
@@ -188,25 +188,6 @@ function Update(self)
 
 	
 		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		
-		local bullet = CreateMOSRotating("Bullet MK14");
-		bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.05,0.05));
-		bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
-		bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
-		bullet:SetNumberValue("WoundDamageMultiplier", 2.0)
-		bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
-		bullet:SetNumberValue("NoSmoke", 1)
-		if self.parent then
-			bullet.Team = self.parent.Team;
-			bullet.IgnoresTeamHits = true;
-		end
-		
-		local casing
-		casing = CreateMOSParticle("Casing");
-		casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
-		casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-		MovableMan:AddParticle(casing);
-		MovableMan:AddParticle(bullet);
 	end
 	
 	-- PAWNIS RELOAD ANIMATION HERE
@@ -368,7 +349,7 @@ function Update(self)
 		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
 		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
 		
-		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
+		self.rotationTarget = self.rotationTarget - (self.angVel * 4)
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		

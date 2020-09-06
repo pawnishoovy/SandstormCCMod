@@ -71,7 +71,6 @@ function Create(self)
 	self.reloadPhase = 0;
 	
 	self.ReloadTime = 9999;
-
 end
 
 function Update(self)
@@ -117,6 +116,8 @@ function Update(self)
 	
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+	
+	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.FireTimer.ElapsedSimTimeMS / 500, 1), 2.0) * 0.1)
 	
 	if self.FiredFrame then
 	

@@ -514,6 +514,18 @@ function SecurityAIBehaviours.handleHealth(self)
 			local wounds = self.Head.WoundCount;
 			self.headWounds = wounds; -- to save variable rather than pointer to WoundCount
 		end
+		
+		-- ??? Free performance ???
+		for i = 1, self.InventorySize do
+			local item = self:Inventory();
+			if item then
+				item.ToDelete = true
+			end
+			self:SwapNextInventory(item, true);
+		end
+		if math.random(1,2) < 2 then
+			self:GetController():SetState(Controller.WEAPON_DROP,true);
+		end
 	end
 		
 	

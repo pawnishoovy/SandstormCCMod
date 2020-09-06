@@ -491,7 +491,7 @@ function Update(self)
 		local chamberAnim = {Vector(0, 0), Vector(-4, -1), Vector(-4, -2), Vector(-5, -2), Vector(-6, -2), Vector(-7, -2), Vector(-2, -2), Vector(-2, -2), Vector(-2, -2)}
 		chamberOffset = chamberOffset + chamberAnim[self.Frame + 1]
 		
-		self.rotationTarget = self.rotationTarget - (self.angVel * 7) -- aim sway/smoothing
+		self.rotationTarget = self.rotationTarget - (self.angVel * 5.5) -- aim sway/smoothing
 		
 		local offset = chamberOffset
 		self.SupportOffset = self.originalSupportOffset + offset

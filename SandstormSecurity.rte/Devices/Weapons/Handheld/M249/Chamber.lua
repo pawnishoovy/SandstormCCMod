@@ -104,6 +104,7 @@ function Create(self)
 end
 
 function Update(self)
+	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -146,7 +147,7 @@ function Update(self)
 		end
 		
 		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
-			local color = (self.reloadPhase == 0 and 105 or 120)
+			local color = (self.reloadPhase < 4 and 105 or 120)
 			local offset = Vector(0, 36)
 			local position = self.parent.AboveHUDPos + offset
 			
@@ -156,9 +157,9 @@ function Update(self)
 			local lastVecA = Vector(0, 0)
 			local lastVecB = Vector(0, 0)
 			
-			local bend = math.rad(9)
-			local step = 2.5
-			local width = 2
+			local bend = 0--math.rad(9)
+			local step = 2
+			local width = 3
 			
 			position = position + Vector(0, step * maxi * -0.5)
 			for i = mini, maxi do
@@ -193,6 +194,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/BoltBack";
 			
+			self.rotationTarget = 5
 		elseif self.reloadPhase == 1 then
 			self.Frame = 3;
 			self.reloadDelay = self.boltForwardPrepareDelay;
@@ -202,6 +204,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/BoltForward";
 			
+			self.rotationTarget = -5
 		elseif self.reloadPhase == 2 then
 			self.reloadDelay = self.coverUpPrepareDelay;
 			self.afterDelay = self.coverUpAfterDelay;
@@ -210,7 +213,8 @@ function Update(self)
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/CoverOpenPrepare";
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/CoverOpen";
-		
+			
+			self.rotationTarget = 0
 		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;
@@ -220,6 +224,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/MagOut";
 			
+			self.rotationTarget = -5
 		elseif self.reloadPhase == 4 then
 			self.MagFrame = 8;
 			self.reloadDelay = self.magInPrepareDelay;
@@ -229,6 +234,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/MagIn";
 			
+			self.rotationTarget = 5
 		elseif self.reloadPhase == 5 then
 			self.reloadDelay = self.beltOnPrepareDelay;
 			self.afterDelay = self.beltOnAfterDelay;
@@ -236,7 +242,8 @@ function Update(self)
 			self.prepareSoundPath = "SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/BeltOnPrepare";
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/BeltOn";
-
+			
+			self.rotationTarget = -5
 		elseif self.reloadPhase == 6 then
 			self.reloadDelay = self.coverDownPrepareDelay;
 			self.afterDelay = self.coverDownAfterDelay;
@@ -246,6 +253,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/CoverClose";
 			
+			self.rotationTarget = 5
 		elseif self.reloadPhase == 7 then
 			self.reloadDelay = self.shoulderPrepareDelay;
 			self.afterDelay = self.shoulderAfterDelay;
@@ -254,7 +262,8 @@ function Update(self)
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/ShoulderPrepare";
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M249/Sounds/Shoulder";	
-
+			
+			self.rotationTarget = 0
 		end
 		
 		if self.prepareSoundPlayed ~= true then
@@ -333,6 +342,18 @@ function Update(self)
 			end
 			
 			if self.afterSoundPlayed ~= true then
+				
+				if self.reloadPhase == 1 then
+					self.verticalAnim = self.verticalAnim + 1
+				elseif self.reloadPhase == 2 then
+					self.horizontalAnim = self.horizontalAnim - 1
+				elseif self.reloadPhase == 3 then
+					self.horizontalAnim = self.horizontalAnim + 1
+				elseif self.reloadPhase == 4 then
+					self.horizontalAnim = self.horizontalAnim - 1
+				elseif self.reloadPhase == 6 then
+					self.horizontalAnim = self.horizontalAnim + 1
+				end
 			
 				if self.reloadPhase == 0 then
 				
@@ -392,7 +413,6 @@ function Update(self)
 			end
 		end
 	else
-		self.rotationTarget = 0
 		
 		self.Frame = 1;
 		if self.reloadMagRemoved then

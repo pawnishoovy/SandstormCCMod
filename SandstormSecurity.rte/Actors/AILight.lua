@@ -752,28 +752,30 @@ function Update(self)
 		self.Health = self.Health -6
 	end
 	
-	-- Debug
-	local barValue = self.Stamina
-	local barValueMax = 100
-	local barOffset = Vector(0, 17)
-	local barLength = 10
-	-- Stamina
-	for i = 0, 1 do
-		-- Bar Background
-		PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(barLength, i), 26);
-		-- Bar Foreground
-		local fac = math.max(math.min(barValue / barValueMax, 1), 0)
-		PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(-barLength + (barLength * 2 * fac), i), 116);
-	end
-	-- Suppression
-	barValue = self.Suppression
-	barOffset = Vector(0, 20)
-	for i = 0, 1 do
-		-- Bar Background
-		PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(barLength, i), 26);
-		-- Bar Foreground
-		local fac = math.max(math.min(barValue / barValueMax, 1), 0)
-		PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(-barLength + (barLength * 2 * fac), i), 244);
+	if self:IsPlayerControlled() then
+		-- Debug
+		local barValue = self.Stamina
+		local barValueMax = 100
+		local barOffset = Vector(0, 17)
+		local barLength = 10
+		-- Stamina
+		for i = 0, 1 do
+			-- Bar Background
+			PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(barLength, i), 26);
+			-- Bar Foreground
+			local fac = math.max(math.min(barValue / barValueMax, 1), 0)
+			PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(-barLength + (barLength * 2 * fac), i), 116);
+		end
+		-- Suppression
+		barValue = self.Suppression
+		barOffset = Vector(0, 20)
+		for i = 0, 1 do
+			-- Bar Background
+			PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(barLength, i), 26);
+			-- Bar Foreground
+			local fac = math.max(math.min(barValue / barValueMax, 1), 0)
+			PrimitiveMan:DrawLinePrimitive(self.Pos + barOffset + Vector(-barLength, i), self.Pos + barOffset + Vector(-barLength + (barLength * 2 * fac), i), 244);
+		end
 	end
 	
 	if self.voiceSound then

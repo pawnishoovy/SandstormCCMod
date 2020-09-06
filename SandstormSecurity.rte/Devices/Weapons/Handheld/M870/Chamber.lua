@@ -249,8 +249,9 @@ function Update(self)
 				bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.15,0.15));
 				bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
 				bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
-				bullet:SetNumberValue("WoundDamageMultiplier", 0.7)
+				bullet:SetNumberValue("WoundDamageMultiplier", 1.0)
 				bullet:SetNumberValue("NoSmoke", 1)
+				bullet:SetNumberValue("NoTracer", 1)
 				if self.parent then
 					bullet.Team = self.parent.Team;
 					bullet.IgnoresTeamHits = true;
