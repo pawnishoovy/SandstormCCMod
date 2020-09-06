@@ -24,6 +24,7 @@ function Create(self)
 	
 	self.alwaysTracer = self:NumberValueExists("AlwaysTracer") and self:GetNumberValue("AlwaysTracer") == 1
 	self.noSmoke = self:NumberValueExists("NoSmoke") and self:GetNumberValue("NoSmoke") == 1
+	self.noTracer = self:NumberValueExists("NoTracer") and self:GetNumberValue("NoTracer") == 1
 	
 	--if self.smoke then
 	-- FANCY TRAIL BY FILIPEX2000
@@ -68,7 +69,7 @@ function Update(self)
 		
 		-- Tracer Trail
 		
-		if (math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2) then
+		if not self.noTracer and ((math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2) then
 			local maxi = travel.Magnitude/ FrameMan.PPM * 1.5
 			for i = 0, maxi do
 				--PrimitiveMan:DrawCirclePrimitive(self.Pos + travel / maxi * i, 2 + i / maxi * 3, 166);
