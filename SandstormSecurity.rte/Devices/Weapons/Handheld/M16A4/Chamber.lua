@@ -109,12 +109,14 @@ function Update(self)
 				self:Deactivate();
 			end
 		elseif self.shotCounter then
-			self:Activate();
 			if self.FiredFrame then
 				self.shotCounter = self.shotCounter + 1;
 				if self.shotCounter >= self.shotsPerBurst then
 					self.coolDownTimer = Timer();
 				end
+			end
+			if not self:IsActivated() then
+				self.coolDownTimer = Timer();
 			end
 		elseif self.FiredFrame then
 			self.shotCounter = 1;
