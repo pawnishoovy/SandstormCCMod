@@ -59,6 +59,7 @@ function Create(self)
 	self.canSmoke = false
 	
 	self.shotsPerBurst = 3;
+	self.shotCounter = 0;
 	self.coolDownDelay = (60000 / self.RateOfFire);
 	
 	self.reloadTimer = Timer();
@@ -103,26 +104,32 @@ function Update(self)
 	-- Burst (inefficient, should be incorporated into the rest of the code)
 	if self.Magazine then
 		if self.coolDownTimer then
+			if self.parent and self.parent:IsPlayerControlled() then
+				self.coolDownDelay = 5; -- much shorter delay for players, otherwise gets stuck and is sucky
+			else
+				self.coolDownDelay = (60000 / self.RateOfFire);
+			end
 			if self.coolDownTimer:IsPastSimMS(self.coolDownDelay) and self.parent and not (self:IsActivated() and self.parent:IsPlayerControlled()) then
-				self.coolDownTimer, self.shotCounter = nil;
+				self.coolDownTimer = nil;
 			else
 				self:Deactivate();
 			end
-		elseif self.shotCounter then
+		elseif self:IsActivated() or self.burstActivated then
+			self.burstActivated = true;
 			if self.FiredFrame then
 				self.shotCounter = self.shotCounter + 1;
 				if self.shotCounter >= self.shotsPerBurst then
 					self.coolDownTimer = Timer();
+					self.shotCounter = 0;
 				end
 			end
 			if not self:IsActivated() then
 				self.coolDownTimer = Timer();
+				self.burstActivated = false;
 			end
-		elseif self.FiredFrame then
-			self.shotCounter = 1;
 		end
 	else
-		self.coolDownTimer, self.shotCounter = nil;
+		self.coolDownTimer = nil;
 	end
 	
 	-- Smoothing
