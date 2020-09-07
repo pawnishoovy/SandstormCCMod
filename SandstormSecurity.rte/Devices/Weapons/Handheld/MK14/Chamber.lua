@@ -106,8 +106,160 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
+	-- PAWNIS RELOAD ANIMATION HERE
+	if self:IsReloading() then
+	
+		if self.parent then
+			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
+		end
+
+		if self.reloadPhase == 0 then
+			self.reloadDelay = self.magOutPrepareDelay;
+			self.afterDelay = self.magOutAfterDelay;			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagOutPrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagOut1";
+			
+			self.rotationTarget = 15;
+			
+		elseif self.reloadPhase == 1 then
+			self.reloadDelay = self.magInPrepareDelay;
+			self.afterDelay = self.magInAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagInPrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagIn1";
+			
+			self.rotationTarget = 15;
+			
+		elseif self.reloadPhase == 2 then
+			self.Frame = 2;
+			self.reloadDelay = self.boltBackPrepareDelay;
+			self.afterDelay = self.boltBackAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/BoltBack1";	
+
+			self.rotationTarget = 7;
+		
+		elseif self.reloadPhase == 3 then
+			self.Frame = 2;
+			self.reloadDelay = self.boltForwardPrepareDelay;
+			self.afterDelay = self.boltForwardAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/BoltForward1";
+			
+			self.rotationTarget = 7;
+			
+		end
+		
+		if self.prepareSoundPlayed ~= true then
+			self.prepareSoundPlayed = true;
+			if self.prepareSoundPath then
+				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			end
+		end
+	
+		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+		
+			if self.reloadPhase == 0 then
+				self:SetNumberValue("MagRemoved", 1);
+			elseif self.reloadPhase == 1 then
+				self:RemoveNumberValue("MagRemoved");
+			elseif self.reloadPhase == 2 then
+
+			elseif self.reloadPhase == 3 then
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 0;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					self.Frame = 1;
+				end
+			end
+			
+			if self.afterSoundPlayed ~= true then
+			
+				if self.reloadPhase == 0 then
+					self.phaseOnStop = 1;
+					local fake
+					fake = CreateMOSRotating("Fake Magazine MOSRotating MK14");
+					fake.Pos = self.Pos + Vector(-3 * self.FlipFactor, 3):RadRotate(self.RotAngle);
+					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
+					fake.RotAngle = self.RotAngle;
+					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
+					fake.HFlipped = self.HFlipped;
+					MovableMan:AddParticle(fake);
+					
+				elseif self.reloadPhase == 1 then
+					if self.chamberOnReload then
+						self.phaseOnStop = 2;
+					else
+						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
+						self.reloadPhase = 0;
+						self.phaseOnStop = nil;
+					end
+					self:RemoveNumberValue("MagRemoved");
+					
+				elseif self.reloadPhase == 2 then
+					self.horizontalAnim = self.horizontalAnim - 1;
+					self.angVel = self.angVel - 2;
+				elseif self.reloadPhase == 3 then
+					self.horizontalAnim = self.horizontalAnim + 1;
+					self.angVel = self.angVel + 4;
+					self.phaseOnStop = nil;
+				else
+					self.phaseOnStop = nil;
+				end
+			
+				self.afterSoundPlayed = true;
+				if self.afterSoundPath then
+					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+				end
+			end
+			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
+				self.reloadTimer:Reset();
+				self.prepareSoundPlayed = false;
+				self.afterSoundPlayed = false;
+				if self.chamberOnReload and self.reloadPhase == 1 then
+					self.reloadPhase = self.reloadPhase + 1;
+				elseif self.reloadPhase == 1 or self.reloadPhase == 3 then
+					self.ReloadTime = 0;
+					self.reloadPhase = 0;
+				else
+					self.reloadPhase = self.reloadPhase + 1;
+				end
+			end
+		end		
+	else
+		
+		if not self.chamberOnReload then
+			self.Frame = 0;
+		end
+		self.reloadTimer:Reset();
+		self.prepareSoundPlayed = false;
+		self.afterSoundPlayed = false;
+		if self.reloadPhase == 3 then
+			self.reloadPhase = 2;
+		end
+		if self.phaseOnStop then
+			self.reloadPhase = self.phaseOnStop;
+			self.phaseOnStop = nil;
+		end
+		self.ReloadTime = 9999;
+	end
+	
+	if self:DoneReloading() == true and self.chamberOnReload then
+		self.Magazine.RoundCount = 20
+		self.chamberOnReload = false;
+	elseif self:DoneReloading() then
+		self.Magazine.RoundCount = 21
+		self.chamberOnReload = false;
+	end	
+	-- PAWNIS RELOAD ANIMATION HERE
+	
 	if self.FiredFrame then
-		self.Frame = 2;
+		self.Frame = 3;
 		self.angVel = self.angVel - RangeRand(0.7,1.1) * 15
 		
 		self.canSmoke = true
@@ -189,156 +341,6 @@ function Update(self)
 	
 		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 	end
-	
-	-- PAWNIS RELOAD ANIMATION HERE
-	if self:IsReloading() then
-	
-		if self.parent then
-			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
-		end
-
-		if self.reloadPhase == 0 then
-			self.reloadDelay = self.magOutPrepareDelay;
-			self.afterDelay = self.magOutAfterDelay;			
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagOutPrepare1";
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagOut1";
-			
-			self.rotationTarget = 15;
-			
-		elseif self.reloadPhase == 1 then
-			self.reloadDelay = self.magInPrepareDelay;
-			self.afterDelay = self.magInAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagInPrepare1";
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/MagIn1";
-			
-			self.rotationTarget = 15;
-			
-		elseif self.reloadPhase == 2 then
-			self.Frame = 2;
-			self.reloadDelay = self.boltBackPrepareDelay;
-			self.afterDelay = self.boltBackAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/BoltBack1";	
-
-			self.rotationTarget = 7;
-		
-		elseif self.reloadPhase == 3 then
-			self.Frame = 2;
-			self.reloadDelay = self.boltForwardPrepareDelay;
-			self.afterDelay = self.boltForwardAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK14/Sounds/BoltForward1";
-			
-			self.rotationTarget = 7;
-			
-		end
-		
-		if self.prepareSoundPlayed ~= true then
-			self.prepareSoundPlayed = true;
-			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-			end
-		end
-	
-		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
-		
-			if self.reloadPhase == 0 then
-				self:SetNumberValue("MagRemoved", 1);
-			elseif self.reloadPhase == 1 then
-				self:RemoveNumberValue("MagRemoved");
-			elseif self.reloadPhase == 2 then
-
-			elseif self.reloadPhase == 3 then
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.Frame = 0;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 1;
-				end
-			end
-			
-			if self.afterSoundPlayed ~= true then
-				
-				if self.reloadPhase == 2 then
-					self.horizontalAnim = self.horizontalAnim - 3
-					self.angVel = self.angVel - 37
-				end
-			
-				if self.reloadPhase == 0 then
-					self.phaseOnStop = 1;
-					local fake
-					fake = CreateMOSRotating("Fake Magazine MOSRotating MK14");
-					fake.Pos = self.Pos + Vector(-3 * self.FlipFactor, 3):RadRotate(self.RotAngle);
-					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
-					fake.RotAngle = self.RotAngle;
-					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
-					fake.HFlipped = self.HFlipped;
-					MovableMan:AddParticle(fake);
-					
-				elseif self.reloadPhase == 1 then
-					if self.chamberOnReload then
-						self.phaseOnStop = 2;
-					else
-						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
-						self.reloadPhase = 0;
-						self.phaseOnStop = nil;
-					end
-					self:RemoveNumberValue("MagRemoved");
-					
-				else
-					self.phaseOnStop = nil;
-				end
-			
-				self.afterSoundPlayed = true;
-				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-				end
-			end
-			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
-				self.reloadTimer:Reset();
-				self.prepareSoundPlayed = false;
-				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 1 then
-					self.reloadPhase = self.reloadPhase + 1;
-				elseif self.reloadPhase == 1 or self.reloadPhase == 3 then
-					self.ReloadTime = 0;
-					self.reloadPhase = 0;
-				else
-					self.reloadPhase = self.reloadPhase + 1;
-				end
-			end
-		end		
-	else
-		
-		if not self.chamberOnReload then
-			self.Frame = 0;
-		end
-		self.reloadTimer:Reset();
-		self.prepareSoundPlayed = false;
-		self.afterSoundPlayed = false;
-		if self.reloadPhase == 3 then
-			self.reloadPhase = 2;
-		end
-		if self.phaseOnStop then
-			self.reloadPhase = self.phaseOnStop;
-			self.phaseOnStop = nil;
-		end
-		self.ReloadTime = 9999;
-	end
-	
-	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 20
-		self.chamberOnReload = false;
-	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 21
-		self.chamberOnReload = false;
-	end	
-	-- PAWNIS RELOAD ANIMATION HERE
 	
 	-- Animation
 	if self.parent then

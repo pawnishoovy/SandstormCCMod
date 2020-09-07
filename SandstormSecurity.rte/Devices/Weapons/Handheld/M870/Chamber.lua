@@ -477,6 +477,8 @@ function Update(self)
 					end
 					
 				elseif self.reloadPhase == 3 then
+					
+					self.phaseOnStop = 3;
 				
 					if self.parent:GetController():IsState(Controller.WEAPON_FIRE) then
 						self.reloadCycle = false;

@@ -272,7 +272,11 @@ function Update(self)
 	else
 		self.rotationTarget = 0
 		
-		self.Frame = 0;
+		if self.chamberOnReload then
+			self.Frame = 4;
+		else
+			self.Frame = 0;
+		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
