@@ -32,6 +32,9 @@ function Create(self)
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
 	
+	self.shellsToEject = self.Magazine.Capacity
+	self.ejectedShell = false
+	
 	self.rotation = 0
 	self.rotationTarget = 0
 	self.rotationSpeed = 9
@@ -67,6 +70,20 @@ function Create(self)
 	
 	self.ReloadTime = 9999;
 	
+	self.swayAcc = 0 -- for sinous
+	self.swayStr = 0 -- for accumulator
+	
+	self.cocked = false -- precision mode
+	self.cockTimer = Timer()
+	self.cockDelay = self.delayedFireTimeMS * 2
+	self.cockedAimFocus = 300 -- how long it takes to focus
+	self.activated = false
+	
+	self.originalRotAngle = self.RotAngle
+	self.lastAnimRotAngle = self.RotAngle
+	
+	self.fireRateTimer = Timer()
+	
 	local ms = 1 / (self.RateOfFire / 60) * 1000
 	ms = ms + self.delayedFireTimeMS
 	self.RateOfFire = 1 / (ms / 1000) * 60
@@ -75,6 +92,7 @@ end
 
 function Update(self)
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
+	self.originalRotAngle = self.RotAngle -- Important Stuff
 	
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -91,9 +109,9 @@ function Update(self)
 	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
 		if self.delayedFire then
 			self.delayedFire = false
-			if self.Magazine then
-				self.Magazine.RoundCount = self.Magazine.RoundCount + 1
-			end
+			--if self.Magazine then
+			--	self.Magazine.RoundCount = self.Magazine.RoundCount + 1
+			--end
 		end
 	end
 	self.lastAge = self.Age + 0
@@ -117,7 +135,12 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
-	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (self.delayedFireTimeMS * 5), 1), 2.0) * 0.1)
+	local sharpRecoil = (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (250), 1), 2.0) * 0.1)
+	local sharpFocus = math.pow(math.min(self.cockTimer.ElapsedSimTimeMS / (self.cockDelay + self.cockedAimFocus), 1), 2)
+	
+	--self.SharpLength = self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)
+	local sharpSpeed = 15
+	self.SharpLength = (self.SharpLength + (self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)) * TimerMan.DeltaTimeSecs * sharpSpeed) / (1 + TimerMan.DeltaTimeSecs * sharpSpeed)
 	
 	if not self:IsActivated() then
 		self.canShoot = true
@@ -127,21 +150,278 @@ function Update(self)
 		self:Deactivate()
 	end
 	
-	if self.FiredFrame then
+	local shot = false
+	if self.parent and not self:IsReloading() then
+		self:Deactivate()
+		
+		local active = self.parent:GetController():IsState(Controller.WEAPON_FIRE) == true
+		if active then
+			if not self.activated then
+				self.activated = true
+				self.cockTimer:Reset()
+			end
+			
+			if not self.Magazine or self.Magazine.RoundCount < 1 then
+				self:Reload();
+			else
+				if self.cockTimer:IsPastSimMS(self.cockDelay) then
+					if not self.cocked then
+						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/PrecisionPre"..math.random(1,4)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+						self.cocked = true
+						self.angVel = self.angVel - RangeRand(0.7,1.1) * 5
+						self.swayAcc = 0
+					end
+					
+					-- Cool awesome precision mode focus hud cosshair
+					if self.parent:IsPlayerControlled() then
+						local color = 120
+						local dist = 250 - 10 * math.sin(sharpFocus * math.pi * 2)
+						
+						local q = 5
+						local an = 15 * 0.5
+						for i = -q, q do
+							local fac = i / q
+							local pos = self.Pos + Vector(dist * self.FlipFactor,0):RadRotate(self.originalRotAngle + math.rad(an) * fac)
+							--PrimitiveMan:DrawCirclePrimitive(pos, 1, color);
+							PrimitiveMan:DrawLinePrimitive(pos, pos, color);
+							--PrimitiveMan:DrawCirclePrimitive(self.Pos + Vector(dist * self.FlipFactor,0):RadRotate(self.originalRotAngle + math.rad(15) * fac), 1, color);
+						end
+						--PrimitiveMan:DrawCirclePrimitive(self.Pos + Vector(dist * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), 1, color);
+						PrimitiveMan:DrawLinePrimitive(self.Pos + Vector((dist - 5) * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), self.Pos + Vector((dist + 5) * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), color);
+					end
+				end
+			end
+		else
+			if self.activated then
+				if self.Magazine and self.Magazine.RoundCount > 0 and self.delayedFire == false and self.fireRateTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
+					shot = true
+					self.fireRateTimer:Reset()
+					self.cockTimer:Reset()
+				end
+				self.activated = false
+			end
+			self.cockTimer:Reset()
+		end
+	else
+		self.activated = false
+	end
+	
+	--if self.FiredFrame then
+	if shot then
 		self.delayedFire = true
 		self.delayedFireTimer:Reset()
+		
+		if not self.cocked then
+			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Pre"..math.random(1,6)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+		end
+		
+		--self.angVel = self.angVel - RangeRand(0.7,1.1) * 5 * (math.random(0,1) - 0.5) * 2.0
+	end
+	
+	-- PAWNIS RELOAD ANIMATION HERE
+	if self:IsReloading() then
+	
+		if self.parent then
+			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
+		end
+
+		if self.reloadPhase == 0 then
+			self.reloadDelay = self.cylinderOpenPrepareDelay;
+			self.afterDelay = self.cylinderOpenAfterDelay;			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpenPrepare";
+			self.prepareSoundVars = 2;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpen";
+			self.afterSoundVars = 2;
+			
+			self.rotationTarget = 5;
+			self.ejectedShell = false
+		elseif self.reloadPhase == 1 then
+			self.reloadDelay = self.ejectorRodPrepareDelay;
+			self.afterDelay = self.ejectorRodAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRodPrepare";
+			self.prepareSoundVars = 2;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRod";
+			self.afterSoundVars = 2;
+			
+			self.rotationTarget = 45;
+			
+		elseif self.reloadPhase == 2 then
+			self.reloadDelay = self.speedLoaderPrepareDelay;
+			self.afterDelay = self.speedLoaderAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoaderPrepare";
+			self.prepareSoundVars = 2;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoader";
+			self.afterSoundVars = 2;
+			
+			self.rotationTarget = -25;
+			
+		elseif self.reloadPhase == 3 then
+			self.reloadDelay = self.cylinderClosePrepareDelay;
+			self.afterDelay = self.cylinderCloseAfterDelay;		
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderClose";
+			self.afterSoundVars = 2;
+			
+			self.rotationTarget = -5;
+			--self.rotationTarget = -360 * 2; -- meme reload
+		end
+		
+		if self.prepareSoundPlayed ~= true then
+			self.prepareSoundPlayed = true;
+			if self.prepareSoundPath then
+				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			end
+		end
+	
+		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+			
+			if self.afterSoundPlayed ~= true then
+			
+				if self.reloadPhase == 0 then
+				
+					self.phaseOnStop = nil;
+					
+				elseif self.reloadPhase == 1 then
+				
+					self.phaseOnStop = 2;
+					
+					if self.ejectedShell == false then
+						self.ejectedShell = true;
+						for i = 1, self.shellsToEject do
+							local shell = CreateMOSParticle("Casing", "Base.rte");
+							shell.Pos = self.Pos;
+							shell.Vel = Vector(math.random() * (-3) * self.FlipFactor, 0):RadRotate(self.RotAngle):DegRotate((math.random() * 32) - 16);
+							MovableMan:AddParticle(shell);
+						end
+					end
+					
+					self.verticalAnim = self.verticalAnim + 1
+					self.horizontalAnim = self.horizontalAnim - 2
+					
+				elseif self.reloadPhase == 2 then
+				
+					self.phaseOnStop = nil;
+					
+					self.horizontalAnim = self.horizontalAnim + 2
+				elseif self.reloadPhase == 3 then
+				
+					self.phaseOnStop = nil;
+					
+					self.verticalAnim = self.verticalAnim - 1
+				else
+					self.phaseOnStop = nil;
+				end
+			
+				self.afterSoundPlayed = true;
+				if self.afterSoundPath then
+					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+				end
+			end
+			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
+				self.reloadTimer:Reset();
+				self.prepareSoundPlayed = false;
+				self.afterSoundPlayed = false;
+				if self.reloadPhase == 3 then
+					self.ReloadTime = 0;
+					self.reloadPhase = 0;
+				else
+					self.reloadPhase = self.reloadPhase + 1;
+				end
+			end
+		end		
+	else
+		
+		self.reloadTimer:Reset();
+		self.prepareSoundPlayed = false;
+		self.afterSoundPlayed = false;
+		if self.reloadPhase == 3 then
+			self.reloadPhase = 2;
+		end
+		if self.phaseOnStop then
+			self.reloadPhase = self.phaseOnStop;
+			self.phaseOnStop = nil;
+		end
+		self.ReloadTime = 9999;
+		-- SLIDE animation when firing
+		-- don't ask, math magic
+		if self.Magazine and self.Magazine.RoundCount < 1 or not self.Magazine then
+			self.chamberOnReload = true;
+			self.Frame = self.delayedFire and 0 or 2
+		else
+			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
+			self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
+		end
+	end
+	
+	if self:DoneReloading() == true and self.chamberOnReload then
+		self.Magazine.RoundCount = 7
+		self.chamberOnReload = false;
+	elseif self:DoneReloading() then
+		self.Magazine.RoundCount = 8
+		self.chamberOnReload = false;
+	end	
+	-- PAWNIS RELOAD ANIMATION HERE
+	
+	-- Animation
+	if self.parent then
+		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
+		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
+		
+		local str = math.min(self.Vel.Magnitude, 20) + (self.swayStr + 4) * (1 - sharpFocus)
+		self.swayStr = math.floor(self.swayStr / (1 + TimerMan.DeltaTimeSecs * 6.0) * 1000) / 1000
+		self.swayAcc = (self.swayAcc + str * TimerMan.DeltaTimeSecs) % (math.pi * 4)
+		
+		local stance = Vector()
+		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
+		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
+		
+		self.rotationTarget = self.rotationTarget - (self.angVel * 3) -- aim sway/smoothing
+		local swayA = (math.sin(self.swayAcc) * str) * 0.5
+		local swayB = (math.sin(self.swayAcc * 0.5) * str) * 0.1
+		
+		self.rotationTarget = self.rotationTarget + (swayA + swayB) -- sway
+		
+		self.rotationTarget = self.rotationTarget + (self.cocked and ((1 - sharpFocus) * 15) or 0) -- cock anim
+		
+		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
+		local total = math.rad(self.rotation) * self.FlipFactor
+		
+		self.RotAngle = self.RotAngle + total;
+		self:SetNumberValue("MagRotation", total);
+		
+		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
+		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
+		self.Pos = self.Pos + offsetTotal;
+		self:SetNumberValue("MagOffsetX", offsetTotal.X);
+		self:SetNumberValue("MagOffsetY", offsetTotal.Y);
+		
+		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
+		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+		
+		self.lastAnimRotAngle = self.RotAngle
 	end
 	
 	if self.delayedFire then
 		self:Deactivate()
 		self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs / self.delayedFireTimeMS * 1000
-		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) then
-			self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
+		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) or self.cocked then
+			self.swayStr = self.swayStr + 15
+			
+			if self.Magazine then
+				self.Magazine.RoundCount = self.Magazine.RoundCount - 1
+			end
 			
 			self.canSmoke = true
 			self.smokeTimer:Reset()
 			
-			local muzzleFlash = CreateAttachable("Muzzle Flash Pistol", "Base.rte");
+			local muzzleFlash = CreateAttachable("Muzzle Flash Shotgun", "Base.rte");
 			muzzleFlash.ParentOffset = self.MuzzleOffset
 			muzzleFlash.Lifetime = TimerMan.DeltaTimeSecs * 1300
 			muzzleFlash.Frame = math.random(0, muzzleFlash.FrameCount - 1);
@@ -213,204 +493,24 @@ function Update(self)
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			
 			local bullet = CreateMOSRotating("Bullet ColtPython");
-			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.05,0.05));
+			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
 			bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
 			bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
 			bullet:SetNumberValue("WoundDamageMultiplier", 2.0)
+			bullet:SetNumberValue("Wounds", math.random(2,3))
 			bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
 			bullet:SetNumberValue("NoSmoke", 1)
 			if self.parent then
 				bullet.Team = self.parent.Team;
 				bullet.IgnoresTeamHits = true;
 			end
-			
-			local casing
-			casing = CreateMOSParticle("Casing");
-			casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
-			casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-			MovableMan:AddParticle(casing);
 			MovableMan:AddParticle(bullet);
 			
 			self.delayedFire = false
 			
 			self.canShoot = false
+			self.cocked = false
 		end
-	end
-	
-	-- PAWNIS RELOAD ANIMATION HERE
-	if self:IsReloading() then
-	
-		if self.parent then
-			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
-		end
-
-		if self.reloadPhase == 0 then
-			self.reloadDelay = self.cylinderOpenPrepareDelay;
-			self.afterDelay = self.cylinderOpenAfterDelay;			
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpenPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpen";
-			self.afterSoundVars = 2;
-			
-			self.rotationTarget = 5;
-			
-		elseif self.reloadPhase == 1 then
-			self.reloadDelay = self.ejectorRodPrepareDelay;
-			self.afterDelay = self.ejectorRodAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRodPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRod";
-			self.afterSoundVars = 2;
-			
-			self.rotationTarget = 45;
-			
-		elseif self.reloadPhase == 2 then
-			self.reloadDelay = self.speedLoaderPrepareDelay;
-			self.afterDelay = self.speedLoaderAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoaderPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoader";
-			self.afterSoundVars = 2;
-			
-			self.rotationTarget = -25;
-			
-		elseif self.reloadPhase == 3 then
-			self.reloadDelay = self.cylinderClosePrepareDelay;
-			self.afterDelay = self.cylinderCloseAfterDelay;		
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderClose";
-			self.afterSoundVars = 2;
-			
-			self.rotationTarget = -5;
-			
-		end
-		
-		if self.prepareSoundPlayed ~= true then
-			self.prepareSoundPlayed = true;
-			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-			end
-		end
-	
-		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
-		
-			if self.reloadPhase == 0 then
-			
-			elseif self.reloadPhase == 1 then			
-				
-			elseif self.reloadPhase == 2 then
-			
-			elseif self.reloadPhase == 2 then
-
-			end
-			
-			if self.afterSoundPlayed ~= true then
-			
-				if self.reloadPhase == 0 then
-				
-					self.phaseOnStop = nil;
-					
-				elseif self.reloadPhase == 1 then
-				
-					self.phaseOnStop = 2;
-
-					-- TODO: casings
-					
-					self.verticalAnim = self.verticalAnim + 1
-					
-				elseif self.reloadPhase == 2 then
-				
-					self.phaseOnStop = nil;
-					
-				elseif self.reloadPhase == 3 then
-				
-					self.phaseOnStop = nil;
-				
-				else
-					self.phaseOnStop = nil;
-				end
-			
-				self.afterSoundPlayed = true;
-				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-				end
-			end
-			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
-				self.reloadTimer:Reset();
-				self.prepareSoundPlayed = false;
-				self.afterSoundPlayed = false;
-				if self.reloadPhase == 3 then
-					self.ReloadTime = 0;
-					self.reloadPhase = 0;
-				else
-					self.reloadPhase = self.reloadPhase + 1;
-				end
-			end
-		end		
-	else
-		
-		self.reloadTimer:Reset();
-		self.prepareSoundPlayed = false;
-		self.afterSoundPlayed = false;
-		if self.reloadPhase == 3 then
-			self.reloadPhase = 2;
-		end
-		if self.phaseOnStop then
-			self.reloadPhase = self.phaseOnStop;
-			self.phaseOnStop = nil;
-		end
-		self.ReloadTime = 9999;
-		-- SLIDE animation when firing
-		-- don't ask, math magic
-		if self.Magazine and self.Magazine.RoundCount < 1 or not self.Magazine then
-			self.chamberOnReload = true;
-			self.Frame = self.delayedFire and 0 or 2
-		else
-			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
-			self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
-		end
-	end
-	
-	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 7
-		self.chamberOnReload = false;
-	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 8
-		self.chamberOnReload = false;
-	end	
-	-- PAWNIS RELOAD ANIMATION HERE
-	
-	-- Animation
-	if self.parent then
-		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
-		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
-		
-		local stance = Vector()
-		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
-		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
-		
-		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
-		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
-		local total = math.rad(self.rotation) * self.FlipFactor
-		
-		self.RotAngle = self.RotAngle + total;
-		self:SetNumberValue("MagRotation", total);
-		
-		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
-		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
-		self.Pos = self.Pos + offsetTotal;
-		self:SetNumberValue("MagOffsetX", offsetTotal.X);
-		self:SetNumberValue("MagOffsetY", offsetTotal.Y);
-		
-		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
-		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
 	end
 	
 	if self.canSmoke and not self.smokeTimer:IsPastSimMS(1500) then
