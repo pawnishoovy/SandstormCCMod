@@ -60,17 +60,21 @@ function Create(self)
 	
 	self.reloadTimer = Timer();
 	
-	self.magOutPrepareDelay = 500;
+	self.magOutPrepareDelay = 600;
 	self.magOutAfterDelay = 1000;
-	self.magInPrepareDelay = 900;
+	self.magInPrepareDelay = 950;
 	self.magInAfterDelay = 500;
+	self.magInAfterDelay = 200;
+	self.magHitPrepareDelay = 400;
+	self.magHitAfterDelay = 500;
 	self.boltForwardPrepareDelay = 1000;
 	self.boltForwardAfterDelay = 950;
 	
 	-- phases:
 	-- 0 magout
 	-- 1 magin
-	-- 2 boltforward
+	-- 2 maghit
+	-- 3 boltforward
 	
 	self.reloadPhase = 0;
 	
@@ -183,6 +187,16 @@ function Update(self)
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
 		elseif self.reloadPhase == 2 then
+			self.reloadDelay = self.magHitPrepareDelay;
+			self.afterDelay = self.magHitAfterDelay;
+			
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/VHS2/Sounds/MagHit1";
+			
+			self.rotationTarget = 5-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
+			
+		elseif self.reloadPhase == 3 then
 			self.Frame = 4;
 			self.reloadDelay = self.boltForwardPrepareDelay;
 			self.afterDelay = self.boltForwardAfterDelay;
@@ -208,7 +222,7 @@ function Update(self)
 				self:SetNumberValue("MagRemoved", 1);
 			elseif self.reloadPhase == 1 then
 				self:RemoveNumberValue("MagRemoved");
-			elseif self.reloadPhase == 2 then
+			elseif self.reloadPhase == 3 then
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/7)*1.3)) then
 					self.Frame = 0;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/7)*1.2)) then
@@ -235,15 +249,18 @@ function Update(self)
 					
 					self.verticalAnim = self.verticalAnim + 1
 				elseif self.reloadPhase == 1 then
+					self:RemoveNumberValue("MagRemoved");
+					
+					self.verticalAnim = self.verticalAnim - 0.3
+				elseif self.reloadPhase == 2 then
 					if self.chamberOnReload then
 						self.phaseOnStop = 2;
 					else
 						self.phaseOnStop = nil;
 					end
-					self:RemoveNumberValue("MagRemoved");
 					
 					self.verticalAnim = self.verticalAnim - 1
-				elseif self.reloadPhase == 2 then
+				elseif self.reloadPhase == 3 then
 					self.angVel = self.angVel + -20;
 					self.phaseOnStop = nil;
 				else
@@ -259,9 +276,9 @@ function Update(self)
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 1 then
+				if self.chamberOnReload and self.reloadPhase == 2 then
 					self.reloadPhase = self.reloadPhase + 1;
-				elseif self.reloadPhase == 1 or self.reloadPhase == 2 then
+				elseif self.reloadPhase == 2 or self.reloadPhase == 3 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
 				else
