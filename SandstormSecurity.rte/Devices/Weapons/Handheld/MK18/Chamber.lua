@@ -4,40 +4,42 @@ function Create(self)
 
 	-- Sounds --
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.addSounds.Start = {["Variations"] = 2,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/AddStart"};
+	self.addSounds.Start = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/AddStart"};
 	self.addSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/Add"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/Add"};
 	
 	self.bassSounds = {["Loop"] = nil};
 	self.bassSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/Bass"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/Bass"};
 	
-	self.mechSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.mechSounds = {["Start"] = nil, ["Loop"] = nil, ["End"] = nil};
 	self.mechSounds.Start = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/MechStart"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/MechStart"};
 	self.mechSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/Mech"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/Mech"};
+	self.mechSounds.End = {["Variations"] = 1,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/MechEnd"};
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
 	self.noiseSounds.Outdoors.Loop = {["Variations"] = 13,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseOutdoors"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseOutdoors"};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseOutdoorsEnd"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseOutdoorsEnd"};
 	self.noiseSounds.Indoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseIndoors"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseIndoors"};
 	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseIndoorsEnd"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseIndoorsEnd"};
 	self.noiseSounds.bigIndoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseBigIndoors"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseBigIndoors"};
 	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/NoiseBigIndoorsEnd"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/CompliSoundV2/ReflectionOutdoors"};
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/CompliSoundV2/ReflectionOutdoors"};
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
@@ -58,20 +60,17 @@ function Create(self)
 	
 	self.reloadTimer = Timer();
 	
-	self.magOutPrepareDelay = 450;
+	self.magOutPrepareDelay = 400;
 	self.magOutAfterDelay = 500;
-	self.magInPrepareDelay = 950;
-	self.magInAfterDelay = 200;
-	self.magHitPrepareDelay = 400;
-	self.magHitAfterDelay = 500;
-	self.boltForwardPrepareDelay = 700;
+	self.magInPrepareDelay = 850;
+	self.magInAfterDelay = 500;
+	self.boltForwardPrepareDelay = 300;
 	self.boltForwardAfterDelay = 400;
 	
 	-- phases:
 	-- 0 magout
 	-- 1 magin
-	-- 2 maghit
-	-- 3 boltforward
+	-- 2 boltforward
 	
 	self.reloadPhase = 0;
 	
@@ -168,9 +167,9 @@ function Update(self)
 			self.afterDelay = self.magOutAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/MagOutPrepare1";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/Sounds/MagOutPrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/MagOut1";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/Sounds/MagOut1";
 			
 			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
@@ -179,30 +178,20 @@ function Update(self)
 			self.afterDelay = self.magInAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/MagInPrepare1";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/Sounds/MagInPrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/MagIn1";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/Sounds/MagIn1";
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
 		elseif self.reloadPhase == 2 then
-			self.reloadDelay = self.magHitPrepareDelay;
-			self.afterDelay = self.magHitAfterDelay;
-			
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/MagHit1";
-			
-			self.rotationTarget = 5-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
-			
-		elseif self.reloadPhase == 3 then
 			self.Frame = 3;
 			self.reloadDelay = self.boltForwardPrepareDelay;
 			self.afterDelay = self.boltForwardAfterDelay;
 			
 			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M4A1/Sounds/BoltRelease1";
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/MK18/Sounds/BoltRelease1";
 			
 			self.rotationTarget = -4-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 		end
@@ -220,7 +209,7 @@ function Update(self)
 				self:SetNumberValue("MagRemoved", 1);
 			elseif self.reloadPhase == 1 then
 				self:RemoveNumberValue("MagRemoved");
-			elseif self.reloadPhase == 3 then
+			elseif self.reloadPhase == 2 then
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 					self.Frame = 0;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
@@ -235,7 +224,7 @@ function Update(self)
 				if self.reloadPhase == 0 then
 					self.phaseOnStop = 1;
 					local fake
-					fake = CreateMOSRotating("Fake Magazine MOSRotating M4A1");
+					fake = CreateMOSRotating("Fake Magazine MOSRotating MK18");
 					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
@@ -245,21 +234,17 @@ function Update(self)
 					
 					self.verticalAnim = self.verticalAnim + 1
 				elseif self.reloadPhase == 1 then
-
-					self:RemoveNumberValue("MagRemoved");
-					
-					self.verticalAnim = self.verticalAnim - 0.3
-				elseif self.reloadPhase == 2 then		
 					if self.chamberOnReload then
-						self.phaseOnStop = 3;
+						self.phaseOnStop = 2;
 					else
 						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
 						self.reloadPhase = 0;
 						self.phaseOnStop = nil;
-					end				
-					self.verticalAnim = self.verticalAnim - 1				
-					self.phaseOnStop = nil;				
-				elseif self.reloadPhase == 3 then				
+					end
+					self:RemoveNumberValue("MagRemoved");
+					
+					self.verticalAnim = self.verticalAnim - 1
+				elseif self.reloadPhase == 2 then				
 					self.angVel = self.angVel - 10;
 					self.phaseOnStop = nil;
 				else
@@ -275,9 +260,9 @@ function Update(self)
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 2 then
+				if self.chamberOnReload and self.reloadPhase == 1 then
 					self.reloadPhase = self.reloadPhase + 1;
-				elseif self.reloadPhase == 2 or self.reloadPhase == 3 then
+				elseif self.reloadPhase == 1 or self.reloadPhase == 2 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
 				else
