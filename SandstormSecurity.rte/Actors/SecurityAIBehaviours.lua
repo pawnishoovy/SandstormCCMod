@@ -634,10 +634,23 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if self.EquippedItem then
 	
-		-- RELOADING
+		-- RELOADING, SUPPRESSING
 
 		if (IsHDFirearm(self.EquippedItem)) then
-			local reloading = ToHDFirearm(self.EquippedItem):IsReloading();
+			local gun = ToHDFirearm(self.EquippedItem);
+			local reloading = gun:IsReloading();
+			
+			if gun:IsActivated() then
+				if gun.FiredFrame then
+					self.gunShotCounter = self.gunShotCounter + 1;
+				end
+				if self.gunShotCounter > 60 and self.suppressingVoicelineTimer:IsPastSimMS(self.suppressingVoicelineDelay) then
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 2, true);
+					self.suppressingVoicelineTimer:Reset();
+				end
+			else
+				self.gunShotCounter = 0;
+			end			
 			
 			if (reloading) then
 				if (self.reloadVoicelinePlayed ~= true) then
@@ -657,7 +670,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 			self.reloadVoicelinePlayed = false;
 		end
 		
-		-- END RELOADING
+		-- END RELOADING, SUPPRESSING
 		
 		-- THROWING GRENADES
 	

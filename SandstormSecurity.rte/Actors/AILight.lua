@@ -224,6 +224,8 @@ function Create(self)
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Death/Incapacitated",
 			Suppressed =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Suppression/SuppressedByGunfire",
+			Suppressing =
+			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Suppressing/Suppressing",
 			witnessDeath = 
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/DeathReactions/FriendlyDown",
 			witnessGruesomeDeath = 
@@ -283,6 +285,7 @@ function Create(self)
 			seriousDeath = 15,
 			Incapacitated = 11,
 			Suppressed = 37,
+			Suppressing = 5,
 			witnessDeath = 8,
 			witnessGruesomeDeath = 5,
 			inhaleLight = 8,
@@ -325,6 +328,8 @@ function Create(self)
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Death/Incapacitated",
 			Suppressed =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Suppression/SuppressedByGunfire",
+			Suppressing =
+			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Suppressing/Suppressing",
 			witnessDeath = 
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/DeathReactions/FriendlyDown",
 			witnessGruesomeDeath = 
@@ -384,6 +389,7 @@ function Create(self)
 			seriousDeath = 18,
 			Incapacitated = 13,
 			Suppressed = 34,
+			Suppressing = 5,
 			witnessDeath = 8,
 			witnessGruesomeDeath = 5,
 			inhaleLight = 10,
@@ -432,6 +438,8 @@ function Create(self)
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Death/Incapacitated",
 		Suppressed =
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Suppression/SuppressedByGunfire",
+		Suppressing =
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Suppressing/Suppressing",
 		witnessDeath = 
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/DeathReactions/FriendlyDown",
 		witnessGruesomeDeath = 
@@ -491,6 +499,7 @@ function Create(self)
 		seriousDeath = 15,
 		Incapacitated = 12,
 		Suppressed = 34,
+		Suppressing = 5,
 		witnessDeath = 8,
 		witnessGruesomeDeath = 5,
 		inhaleLight = 10,
@@ -550,6 +559,10 @@ function Create(self)
 	
 	self.suppressedVoicelineTimer = Timer();
 	self.suppressedVoicelineDelay = 5000;
+	
+	self.gunShotCounter = 0;
+	self.suppressingVoicelineTimer = Timer();
+	self.suppressingVoicelineDelay = 15000;
 	
 	self.blinkTimer = Timer();
 	self.blinkDelay = math.random(5000, 11000);
