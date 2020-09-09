@@ -244,6 +244,7 @@ function Update(self)
 		
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			
+			--[[
 			for i = 1, 6 do -- PLACEHOLDER
 				local bullet = CreateMOSRotating("Bullet M870");
 				bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.15,0.15));
@@ -257,7 +258,18 @@ function Update(self)
 					bullet.IgnoresTeamHits = true;
 				end
 				MovableMan:AddParticle(bullet);
+			end]]
+			
+			local bullet = CreateMOSRotating("Bullet M870");
+			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
+			bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
+			bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
+			bullet:SetNumberValue("WoundDamageMultiplier", 1.0)
+			if self.parent then
+				bullet.Team = self.parent.Team;
+				bullet.IgnoresTeamHits = true;
 			end
+			MovableMan:AddParticle(bullet);
 			
 			self.delayedFire = false
 			
