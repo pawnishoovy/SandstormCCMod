@@ -170,6 +170,7 @@ function Update(self)
 						self.cocked = true
 						self.angVel = self.angVel - RangeRand(0.7,1.1) * 5
 						self.swayAcc = 0
+						self.Frame = 1;
 					end
 					
 					-- Cool awesome precision mode focus hud cosshair
@@ -213,6 +214,7 @@ function Update(self)
 		
 		if not self.cocked then
 			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Pre"..math.random(1,6)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			self.Frame = 1;
 		end
 		
 		--self.angVel = self.angVel - RangeRand(0.7,1.1) * 5 * (math.random(0,1) - 0.5) * 2.0
@@ -221,6 +223,7 @@ function Update(self)
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self:IsReloading() then
 	
+		self.Reloading = true;
 		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
 		end
@@ -281,6 +284,38 @@ function Update(self)
 		end
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+		
+			self.phasePrepareFinished = true;
+		
+			if self.reloadPhase == 0 then
+			
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
+					self.Frame = 3;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.8)) then
+					self.Frame = 2;
+				end
+			elseif self.reloadPhase == 1 then
+			
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+					self.Frame = 3;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 4;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					self.Frame = 5;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+					self.Frame = 4;
+				end
+				
+			elseif self.reloadPhase == 2 then
+			
+			elseif self.reloadPhase == 3 then
+			
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
+					self.Frame = 0;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.8)) then
+					self.Frame = 2;
+				end
+			end
 			
 			if self.afterSoundPlayed ~= true then
 			
@@ -331,42 +366,48 @@ function Update(self)
 				if self.reloadPhase == 3 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
+					self.Reloading = false;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
 			end
-		end		
+		else
+			self.phasePrepareFinished = false;
+		end
 	else
-		
+		if self.Reloading then
+			if self.phasePrepareFinished then
+				if self.reloadPhase == 0 then
+					self.Frame = 3;
+				elseif self.reloadPhase == 1 then
+					self.Frame = 3;
+				elseif self.reloadPhase == 2 then
+					self.Frame = 3;
+				elseif self.reloadPhase == 3 then
+					self.Frame = 0;
+				end
+			else
+				if self.reloadPhase == 0 then
+					self.Frame = 0;
+				elseif self.reloadPhase == 1 then
+					self.Frame = 3;
+				elseif self.reloadPhase == 2 then
+					self.Frame = 3;
+				elseif self.reloadPhase == 3 then
+					self.Frame = 3;
+				end
+			end
+		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
-		if self.reloadPhase == 3 then
-			self.reloadPhase = 2;
-		end
 		if self.phaseOnStop then
 			self.reloadPhase = self.phaseOnStop;
 			self.phaseOnStop = nil;
 		end
 		self.ReloadTime = 9999;
-		-- SLIDE animation when firing
-		-- don't ask, math magic
-		if self.Magazine and self.Magazine.RoundCount < 1 or not self.Magazine then
-			self.chamberOnReload = true;
-			self.Frame = self.delayedFire and 0 or 2
-		else
-			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 100, 1), 0)
-			self.Frame = self.delayedFire and 0 or math.floor(f * 2 + 0.55)
-		end
 	end
-	
-	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 7
-		self.chamberOnReload = false;
-	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 8
-		self.chamberOnReload = false;
-	end	
+
 	-- PAWNIS RELOAD ANIMATION HERE
 	
 	-- Animation
@@ -413,6 +454,8 @@ function Update(self)
 		self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs / self.delayedFireTimeMS * 1000
 		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) or self.cocked then
 			self.swayStr = self.swayStr + 15
+			
+			self.Frame = 0;
 			
 			if self.Magazine then
 				self.Magazine.RoundCount = self.Magazine.RoundCount - 1
