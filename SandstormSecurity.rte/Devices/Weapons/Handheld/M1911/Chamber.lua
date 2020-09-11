@@ -234,7 +234,7 @@ function Update(self)
 			end
 			
 			local casing
-			casing = CreateMOSParticle("Casing");
+			casing = CreateMOSParticle("Casing Pistol");
 			casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
 			casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
 			MovableMan:AddParticle(casing);

@@ -66,6 +66,8 @@ function Update(self)
 				local pos = Vector(pellet.PosX, pellet.PosY)
 				local vel = Vector(pellet.VelX, pellet.VelY)--:RadRotate(RangeRand(-0.01,0.01))
 				
+				local lastPos = Vector(pos.X, pos.Y)
+				
 				local lethalityLoss = TimerMan.DeltaTimeSecs * vel.Magnitude * 9
 				if pellet.Lethality - lethalityLoss < 0 and pellet.LethalityStopX == 0 and pellet.LethalityStopY == 0 then
 					pellet.LethalityStopX = pos.X
@@ -179,7 +181,7 @@ function Update(self)
 				
 				
 				if pellet.Tracer then
-					local t = (vel * rte.PxTravelledPerFrame)
+					local t = SceneMan:ShortestDistance(pos, lastPos, SceneMan.SceneWrapsX) * rte.PxTravelledPerFrame * 7--(vel * rte.PxTravelledPerFrame)
 					local maxi = t.Magnitude * 0.05 * math.random(1,self.pelletCount) / self.pelletCount
 					for i = 0, maxi do
 						local particle = CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4));

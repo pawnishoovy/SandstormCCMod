@@ -426,7 +426,7 @@ function Update(self)
 				--[[
 				if self.reloadPhase == 0 and self.Casing then
 					local shell
-					shell = CreateMOSParticle("Shell");
+					shell = CreateMOSParticle("Shell Shotgun");
 					shell.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
 					shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
 					MovableMan:AddParticle(shell);
@@ -532,19 +532,9 @@ function Update(self)
 						else
 							self.reloadPhase = 4;
 						end
-						--[[		
-						if self.Casing == true then
-							-- local casing
-							-- casing = CreateAEmitter("Sandstorm M24 Rifle Casing");
-							-- casing.Pos = self.Pos+Vector(-5*self.FlipFactor,-2):RadRotate(self.RotAngle);
-							-- casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-							-- MovableMan:AddParticle(casing);
-
-							-- self.Casing = false;
-						end]]				
 						if self.Casing then
 							local shell
-							shell = CreateMOSParticle("Shell");
+							shell = CreateMOSParticle("Shell Shotgun");
 							shell.Pos = self.Pos+Vector(-3 * self.FlipFactor,-1):RadRotate(self.RotAngle);
 							shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
 							MovableMan:AddParticle(shell);

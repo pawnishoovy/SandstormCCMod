@@ -330,7 +330,7 @@ function Update(self)
 					if self.ejectedShell == false then
 						self.ejectedShell = true;
 						for i = 1, self.shellsToEject do
-							local shell = CreateMOSParticle("Casing", "Base.rte");
+							local shell = CreateMOSParticle("Casing Pistol");
 							shell.Pos = self.Pos;
 							shell.Vel = Vector(math.random() * (-3) * self.FlipFactor, 0):RadRotate(self.RotAngle):DegRotate((math.random() * 32) - 16);
 							MovableMan:AddParticle(shell);

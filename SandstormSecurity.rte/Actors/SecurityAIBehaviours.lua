@@ -75,9 +75,17 @@ function SecurityAIBehaviours.createExertionSoundEffect(self)
 	if self.Stamina < 20 then
 		self.exertionSound = self.voiceSounds.seriousExertion
 		self.exertionSoundVar = self.voiceSoundVariations.seriousExertion
+		
+		-- experimental
+		SecurityAIBehaviours.createEmotion(self, 2, 1, 700);
 	elseif self.Stamina < 65 then
 		self.exertionSound = self.voiceSounds.Exertion
 		self.exertionSoundVar = self.voiceSoundVariations.Exertion
+		
+		-- experimental
+		if math.random(1,4) < 2 then
+			SecurityAIBehaviours.createEmotion(self, 2, 1, 600);
+		end
 	else
 		self.exertionSound = nil
 		self.exertionSoundVar = nil
@@ -556,6 +564,8 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 				else
 					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleHeavy, self.voiceSoundVariations.exhaleHeavy, 0);
 					self.Inhale = true;
+					-- experimental
+					SecurityAIBehaviours.createEmotion(self, 1, 0, 300);
 				end		
 			elseif self.Stamina < 50 then	
 				if self.Inhale then
@@ -564,6 +574,8 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 				else
 					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleMedium, self.voiceSoundVariations.exhaleMedium, 0);
 					self.Inhale = true;
+					-- experimental
+					SecurityAIBehaviours.createEmotion(self, 1, 0, 200);
 				end		
 			elseif self.Stamina < 70 then	
 				if self.Inhale then
