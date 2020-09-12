@@ -4,7 +4,7 @@ function Create(self)
 	self.playSound = true;
 	
 	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Magazine/"
-	local name = "SmallMetal"
+	local name = "SmallPoly"
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Variations"] = 6,
