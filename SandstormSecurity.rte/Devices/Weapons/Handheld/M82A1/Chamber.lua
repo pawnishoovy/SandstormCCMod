@@ -59,7 +59,9 @@ function Create(self)
 	self.magOutPrepareDelay = 1300;
 	self.magOutAfterDelay = 300;
 	self.magInPrepareDelay = 1200;
-	self.magInAfterDelay = 360;
+	self.magInAfterDelay = 200;
+	self.magHitPrepareDelay = 200;
+	self.magHitAfterDelay = 300;
 	self.boltBackPrepareDelay = 1200;
 	self.boltBackAfterDelay = 200;
 	self.boltForwardPrepareDelay = 350;
@@ -68,12 +70,13 @@ function Create(self)
 	-- phases:
 	-- 0 magout
 	-- 1 magin
-	-- 2 boltback
-	-- 3 boltforward
+	-- 2 maghit
+	-- 3 boltback
+	-- 4 boltforward
 	
 	self.reloadPhase = 0;
 	
-	self.ReloadTime = 9999;
+	self.ReloadTime = 19999;
 
 	-- F U N
 	self.recoilTimer = Timer();
@@ -234,6 +237,15 @@ function Update(self)
 			self.rotationTarget = 15;
 			
 		elseif self.reloadPhase == 2 then
+			self.reloadDelay = self.magHitPrepareDelay;
+			self.afterDelay = self.magHitAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M82A1/Sounds/MagHit";
+			
+			self.rotationTarget = 15;
+			
+		elseif self.reloadPhase == 3 then
 			self.Frame = 0;
 			self.reloadDelay = self.boltBackPrepareDelay;
 			self.afterDelay = self.boltBackAfterDelay;
@@ -244,7 +256,7 @@ function Update(self)
 
 			self.rotationTarget = 7;
 		
-		elseif self.reloadPhase == 3 then
+		elseif self.reloadPhase == 4 then
 			self.Frame = 2;
 			self.reloadDelay = self.boltForwardPrepareDelay;
 			self.afterDelay = self.boltForwardAfterDelay;
@@ -269,13 +281,13 @@ function Update(self)
 				self:SetNumberValue("MagRemoved", 1);
 			elseif self.reloadPhase == 1 then
 				self:RemoveNumberValue("MagRemoved");
-			elseif self.reloadPhase == 2 then
+			elseif self.reloadPhase == 3 then
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
 					self.Frame = 2;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 					self.Frame = 1;
 				end
-			elseif self.reloadPhase == 3 then
+			elseif self.reloadPhase == 4 then
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
 					self.Frame = 0;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
@@ -285,7 +297,7 @@ function Update(self)
 			
 			if self.afterSoundPlayed ~= true then
 				
-				if self.reloadPhase == 2 then
+				if self.reloadPhase == 3 then
 					self.horizontalAnim = self.horizontalAnim - 3
 				end
 			
@@ -302,14 +314,16 @@ function Update(self)
 					
 				elseif self.reloadPhase == 1 then
 					if self.chamberOnReload then
-						self.phaseOnStop = 2;
+						self.phaseOnStop = 3;
 					else
-						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
-						self.reloadPhase = 0;
-						self.phaseOnStop = nil;
+						self.phaseOnStop = 2;
 					end
 					self:RemoveNumberValue("MagRemoved");
-					
+				elseif self.reloadPhase == 2 then
+					self.angVel = self.angVel - 5;
+					self.phaseOnStop = 3;
+				elseif self.reloadPhase == 3 then
+					self.phaseOnStop = 3;
 				else
 					self.phaseOnStop = nil;
 				end
@@ -323,11 +337,12 @@ function Update(self)
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 1 then
+				if self.chamberOnReload and self.reloadPhase == 2 then
 					self.reloadPhase = self.reloadPhase + 1;
-				elseif self.reloadPhase == 1 or self.reloadPhase == 3 then
+				elseif self.reloadPhase == 2 or self.reloadPhase == 4 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
+					self.phaseOnStop = nil;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
@@ -340,14 +355,14 @@ function Update(self)
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
-		if self.reloadPhase == 3 then
-			self.reloadPhase = 2;
+		if self.reloadPhase == 4 then
+			self.reloadPhase = 3;
 		end
 		if self.phaseOnStop then
 			self.reloadPhase = self.phaseOnStop;
 			self.phaseOnStop = nil;
 		end
-		self.ReloadTime = 9999;
+		self.ReloadTime = 19999;
 	end
 	
 	if self:DoneReloading() == true and self.chamberOnReload then
