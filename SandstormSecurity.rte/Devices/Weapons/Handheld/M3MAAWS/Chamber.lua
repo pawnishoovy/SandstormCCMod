@@ -225,6 +225,7 @@ function Update(self)
 			
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
 					self.Frame = 4;
+					--[[
 					if not self.roundRemoved then
 						self.roundRemoved = true;
 						local fake
@@ -236,7 +237,7 @@ function Update(self)
 						fake.HFlipped = self.HFlipped;
 						MovableMan:AddParticle(fake);
 						
-					end
+					end]]
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.2)) then
 					self.Frame = 5;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.9)) then
@@ -480,6 +481,28 @@ function Update(self)
 		else
 			self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 			self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+		end
+		
+		-- Dirty Fix
+		if self.reloadPhase == 2 then
+			
+			if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
+				self.Frame = 4;
+				
+				if not self.roundRemoved then
+					self.roundRemoved = true;
+					local fake
+					fake = CreateMOSRotating("Casing M3MAAWS");
+					fake.Pos = self.Pos + Vector(-9*self.FlipFactor, 2):RadRotate(self.RotAngle);
+					fake.Vel = self.Vel + Vector(-4*self.FlipFactor, 0):RadRotate(self.RotAngle);
+					fake.RotAngle = self.RotAngle;
+					--fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
+					fake.HFlipped = self.HFlipped;
+					MovableMan:AddParticle(fake);
+					
+				end
+			end
+			
 		end
 	end
 	
