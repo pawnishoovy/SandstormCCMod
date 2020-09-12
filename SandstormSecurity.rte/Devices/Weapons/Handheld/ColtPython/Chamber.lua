@@ -84,6 +84,9 @@ function Create(self)
 	
 	self.fireRateTimer = Timer()
 	
+	self.reloadHUDAmmo = 0
+	self.reloadHUDAmmoMax = 6
+	
 	local ms = 1 / (self.RateOfFire / 60) * 1000
 	ms = ms + self.delayedFireTimeMS
 	self.RateOfFire = 1 / (ms / 1000) * 60
@@ -162,6 +165,9 @@ function Update(self)
 			end
 			
 			if not self.Magazine or self.Magazine.RoundCount < 1 then
+				if self.Magazine then
+					self.reloadHUDAmmo = self.Magazine.RoundCount
+				end
 				self:Reload();
 			else
 				if self.cockTimer:IsPastSimMS(self.cockDelay) then
@@ -220,8 +226,26 @@ function Update(self)
 		--self.angVel = self.angVel - RangeRand(0.7,1.1) * 5 * (math.random(0,1) - 0.5) * 2.0
 	end
 	
+	if self.Magazine and not self:IsReloading() then
+		self.reloadHUDAmmo = self.Magazine.RoundCount
+	end
+	
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self:IsReloading() then
+	
+		if self.parent:IsPlayerControlled() then
+			for i = 1, self.reloadHUDAmmoMax do
+				local position = Vector(math.floor(self.parent.AboveHUDPos.X), math.floor(self.parent.AboveHUDPos.Y)) + Vector(0, 37)
+				local color = 105
+				if i <= self.reloadHUDAmmo then
+					color = 120
+				end
+				
+				position = position + Vector(5,0):RadRotate(math.pi * 2 * i / self.reloadHUDAmmoMax)
+				position = Vector(math.floor(position.X), math.floor(position.Y))
+				PrimitiveMan:DrawCirclePrimitive(position, 1, color);
+			end
+		end
 	
 		self.Reloading = true;
 		if self.parent then
@@ -307,7 +331,7 @@ function Update(self)
 				end
 				
 			elseif self.reloadPhase == 2 then
-			
+				self.reloadHUDAmmo = self.reloadHUDAmmoMax
 			elseif self.reloadPhase == 3 then
 			
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
@@ -324,7 +348,7 @@ function Update(self)
 					self.phaseOnStop = nil;
 					
 				elseif self.reloadPhase == 1 then
-				
+					self.reloadHUDAmmo = 0
 					self.phaseOnStop = 2;
 					
 					if self.ejectedShell == false then
