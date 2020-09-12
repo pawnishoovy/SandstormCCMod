@@ -629,10 +629,18 @@ function SecurityAIBehaviours.handleHeadFrames(self)
 		
 		
 	if self.emotionDuration > 0 and self.emotionTimer:IsPastSimMS(self.emotionDuration) then
-		self.Head.Frame = self.Suppressed and (self.baseHeadFrame + 2) or self.baseHeadFrame;
+		if (self.Suppressed or self.Suppressing) then
+			self.Head.Frame = self.baseHeadFrame + 2;
+		else
+			self.Head.Frame = self.baseHeadFrame;
+		end
 	elseif (self.emotionDuration == 0) and ((not self.voiceSound or not self.voiceSound:IsBeingPlayed())) then
-		-- if suppressed base emotion is angry
-		self.Head.Frame = self.Suppressed and (self.baseHeadFrame + 2) or self.baseHeadFrame;
+		-- if suppressed OR suppressing base emotion is angry
+		if (self.Suppressed or self.Suppressing) then
+			self.Head.Frame = self.baseHeadFrame + 2;
+		else
+			self.Head.Frame = self.baseHeadFrame;
+		end
 	end
 
 end
@@ -656,12 +664,18 @@ function SecurityAIBehaviours.handleVoicelines(self)
 				if gun.FiredFrame then
 					self.gunShotCounter = self.gunShotCounter + 1;
 				end
+				if self.gunShotCounter > 30 then
+					self.Suppressing = true;
+				else
+					self.Suppressing = false;
+				end
 				if self.gunShotCounter > 60 and self.suppressingVoicelineTimer:IsPastSimMS(self.suppressingVoicelineDelay) then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 2, true);
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 3, true);
 					self.suppressingVoicelineTimer:Reset();
 				end
 			else
 				self.gunShotCounter = 0;
+				self.Suppressing = false;
 			end			
 			
 			if (reloading) then
