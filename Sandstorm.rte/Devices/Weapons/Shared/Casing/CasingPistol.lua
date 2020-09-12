@@ -69,7 +69,7 @@ function OnCollideWithTerrain(self, terrainID)
 			sound = (roll and self.SolidMetalRoll or self.SolidMetalHit)
 		end
 		
-		AudioMan:PlaySound(sound.Path .. math.random(1, sound.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 200, false);
+		AudioMan:PlaySound(sound.Path .. math.random(1, sound.Variations) .. ".wav", self.Pos, -1, 0, 15, 1, 200, false);
 	end
 	--print(self.impulse.Magnitude)
 end
