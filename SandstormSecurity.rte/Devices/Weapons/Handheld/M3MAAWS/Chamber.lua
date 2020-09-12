@@ -26,7 +26,7 @@ function Create(self)
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/ReflectionOutdoors"};
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
-	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
+	self.originalSharpStanceOffset = Vector(math.abs(self.SharpStanceOffset.X), self.SharpStanceOffset.Y)
 	
 	self.rotation = 0
 	self.rotationTarget = 0
@@ -77,6 +77,7 @@ function Create(self)
 end
 
 function Update(self)
+	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -117,42 +118,12 @@ function Update(self)
 		end
 		
 		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
-			local color = (self.reloadPhase == 0 and 105 or 120)
-			local offset = Vector(0, 36)
-			local position = self.parent.AboveHUDPos + offset
-			
-			local mini = 0
-			local maxi = 4
-			
-			local lastVecA = Vector(0, 0)
-			local lastVecB = Vector(0, 0)
-			
-			local bend = math.rad(9)
-			local step = 2.5
-			local width = 2
-			
-			position = position + Vector(0, step * maxi * -0.5)
-			for i = mini, maxi do
-				
-				local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
-				local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
-				
-				-- Jitter fix
-				vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
-				vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
-				position = Vector(math.floor(position.X), math.floor(position.Y))
-				
-				if i ~= mini then
-					PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
-					PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
-				end
-				if i == mini or i == maxi then
-					PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
-				end
-				
-				lastVecA = Vector(vecA.X, vecA.Y)
-				lastVecB = Vector(vecB.X, vecB.Y)
-			end
+			local color = (self.reloadPhase < 3 and 105 or 120)
+			local position = self.parent.AboveHUDPos + Vector(0, 36)
+			PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-3), 2, color);
+			PrimitiveMan:DrawLinePrimitive(position + Vector(2,-2), position + Vector(2,4), color);
+			PrimitiveMan:DrawLinePrimitive(position + Vector(-2,-2), position + Vector(-2,4), color);
+			PrimitiveMan:DrawLinePrimitive(position + Vector(2,4), position + Vector(-2,4), color);
 		end
 
 		if self.reloadPhase == 0 then
@@ -163,6 +134,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Raise1";
 			
+			self.rotationTarget = -15
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.openTubePrepareDelay;
 			self.afterDelay = self.openTubeAfterDelay;
@@ -171,6 +143,7 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/OpenTube1";
 			
+			self.rotationTarget = 10
 		elseif self.reloadPhase == 2 then
 			self.reloadDelay = self.removeRoundPrepareDelay;
 			self.afterDelay = self.removeRoundAfterDelay;
@@ -178,13 +151,15 @@ function Update(self)
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/RemoveRound1";
 			
+			self.rotationTarget = 17
 		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.insertRoundPrepareDelay;
 			self.afterDelay = self.insertRoundAfterDelay;
 			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/InsertRound1";
-
+			
+			self.rotationTarget = -50
 		elseif self.reloadPhase == 4 then
 			self.reloadDelay = self.closeTubePrepareDelay;
 			self.afterDelay = self.closeTubeAfterDelay;
@@ -194,6 +169,7 @@ function Update(self)
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/CloseTube1";
 			self.horizontalAnim = 0.5
 			
+			self.rotationTarget = -5
 		elseif self.reloadPhase == 5 then
 			self.reloadDelay = self.shoulderPrepareDelay;
 			self.afterDelay = self.shoulderAfterDelay;
@@ -203,6 +179,7 @@ function Update(self)
 			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Shoulder1";
 			self.horizontalAnim = 0.5
 
+			self.rotationTarget = 5
 		end
 		
 		if self.prepareSoundPlayed ~= true then
@@ -213,7 +190,7 @@ function Update(self)
 		end
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
-		
+			
 			if self.reloadPhase == 0 then
 
 			elseif self.reloadPhase == 1 then
@@ -234,10 +211,10 @@ function Update(self)
 				
 					local fake
 					fake = CreateMOSRotating("Casing M3MAAWS");
-					fake.Pos = self.Pos + Vector(-7*self.FlipFactor, 2):RadRotate(self.RotAngle);
+					fake.Pos = self.Pos + Vector(-9*self.FlipFactor, 2):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(-4*self.FlipFactor, 0):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
-					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
+					--fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
 					fake.HFlipped = self.HFlipped;
 					MovableMan:AddParticle(fake);
 					
@@ -286,7 +263,7 @@ function Update(self)
 		self.smokeTimer:Reset()
 		
 		self.horizontalAnim = self.horizontalAnim + 0.2
-		self.angVel = self.angVel + RangeRand(0,1) * 3
+		self.angVel = self.angVel - RangeRand(0,1) * 6
 		self.Frame = 4;
 		
 		if self.Magazine then
@@ -382,7 +359,7 @@ function Update(self)
 		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
 		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
 		
-		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
+		self.rotationTarget = self.rotationTarget - (self.angVel * 4)
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		
@@ -395,11 +372,22 @@ function Update(self)
 		self:SetNumberValue("MagOffsetX", offsetTotal.X);
 		self:SetNumberValue("MagOffsetY", offsetTotal.Y);
 		
-		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
-		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+		if self:IsReloading() then -- Shoulder/Raise
+		
+			if self.reloadPhase == 3 then
+				self.StanceOffset = Vector(7, 4) + stance
+				self.SharpStanceOffset = Vector(7, 4) + stance
+			elseif self.reloadPhase > 0 and self.reloadPhase < 4 then
+				self.StanceOffset = Vector(8, 0) + stance
+				self.SharpStanceOffset = Vector(8, 0) + stance
+			end
+		else
+			self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
+			self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
+		end
 	end
 	
-	if self.canSmoke and not self.smokeTimer:IsPastSimMS(1500) then
+	if self.canSmoke and not self.smokeTimer:IsPastSimMS(3000) then
 		--[[
 		local poof = CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
 		poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
@@ -408,7 +396,7 @@ function Update(self)
 		poof.GlobalAccScalar = RangeRand(0.9, 1.0) * -0.4; -- Go up and down
 		MovableMan:AddParticle(poof);
 		]]
-		if self.smokeDelayTimer:IsPastSimMS(120) then
+		if self.smokeDelayTimer:IsPastSimMS(80) then
 			
 			local poof = math.random(1,2) < 2 and CreateMOSParticle("Tiny Smoke Ball 1") or CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
 			poof.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
