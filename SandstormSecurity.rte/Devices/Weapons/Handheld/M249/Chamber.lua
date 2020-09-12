@@ -40,7 +40,7 @@ function Create(self)
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M249/CompliSoundV2/ReflectionOutdoors"};
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
-	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
+	self.originalSharpStanceOffset = Vector(math.abs(self.SharpStanceOffset.X), self.SharpStanceOffset.Y)
 	
 	self.rotation = 0
 	self.rotationTarget = 0
