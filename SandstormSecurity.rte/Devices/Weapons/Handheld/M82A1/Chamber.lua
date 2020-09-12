@@ -212,6 +212,45 @@ function Update(self)
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self:IsReloading() then
 	
+		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
+			local color = (self.reloadPhase == 0 and 105 or 120)
+			local offset = Vector(0, 36)
+			local position = self.parent.AboveHUDPos + offset
+			
+			local mini = 0
+			local maxi = 4
+			
+			local lastVecA = Vector(0, 0)
+			local lastVecB = Vector(0, 0)
+			
+			local bend = 0
+			local step = 1.5
+			local width = 4
+			
+			position = position + Vector(0, step * maxi * -0.5)
+			for i = mini, maxi do
+				
+				local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i * 0.75):RadRotate(bend * i)
+				local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				
+				-- Jitter fix
+				vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
+				vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
+				position = Vector(math.floor(position.X), math.floor(position.Y))
+				
+				if i ~= mini then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
+					PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
+				end
+				if i == mini or i == maxi then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
+				end
+				
+				lastVecA = Vector(vecA.X, vecA.Y)
+				lastVecB = Vector(vecB.X, vecB.Y)
+			end
+		end
+	
 		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
 		end
