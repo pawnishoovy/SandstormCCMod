@@ -113,7 +113,7 @@ function Update(self)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
 	
 	if self:IsReloading() then
-		if self.parent then
+		if self.parent and self.reloadPhase > 0 and  self.reloadPhase < 5 then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
 		end
 		
