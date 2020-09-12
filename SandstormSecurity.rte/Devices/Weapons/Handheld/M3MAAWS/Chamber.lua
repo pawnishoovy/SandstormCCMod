@@ -1,9 +1,9 @@
 function Create(self)
 
 	self.parentSet = false;
-	
+
 	-- Sounds --
-	self.addSounds = {["Loop"] = nil};
+	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
 	self.addSounds.Loop = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/Add"};
 	
@@ -11,42 +11,26 @@ function Create(self)
 	self.bassSounds.Loop = {["Variations"] = 1,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/Bass"};
 	
-	self.mechSounds = {["Loop"] = nil};
-	self.mechSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/Mech"};
-	
-	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
-	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
-	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 5,
+	self.noiseSounds = {["Outdoors"] = {["End"] = nil},
+	["Indoors"] = {["End"] = nil},
+	["bigIndoors"] = {["End"] = nil}};
+	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 6,
+	self.noiseSounds.Indoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
+	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/ReflectionOutdoors"};
 	
-	self.lastAge = self.Age
-	
-	self.delayedFire = false
-	self.delayedFireTimer = Timer();
-	self.delayedFireTimeMS = 25
-	
-	
-	self.originalSharpLength = self.SharpLength
-	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
 	
-	self.originalJointOffset = Vector(self.JointOffset.X, self.JointOffset.Y)
-	self.originalSupportOffset = Vector(math.abs(self.SupportOffset.X), self.SupportOffset.Y)
-	
 	self.rotation = 0
 	self.rotationTarget = 0
-	self.rotationSpeed = 9
+	self.rotationSpeed = 5
 	
 	self.horizontalAnim = 0
 	self.verticalAnim = 0
@@ -60,40 +44,40 @@ function Create(self)
 	
 	self.reloadTimer = Timer();
 	
-	self.afterReloadDelay = 400;
-	self.afterReloadTimer = Timer();
-	
-	self.boltBackPrepareDelay = 200;
-	self.boltBackAfterDelay = 50;
-	self.firstShellInPrepareDelay = 750;
-	self.firstShellInAfterDelay = 700;
-	self.boltForwardFirstShellPrepareDelay = 200;
-	self.boltForwardFirstShellAfterDelay = 200;
-	self.shellInPrepareDelay = 400;
-	self.shellInAfterDelay = 400;
-	self.boltForwardPrepareDelay = 200;
-	self.boltForwardAfterDelay = 200;
+	self.raisePrepareDelay = 350;
+	self.raiseAfterDelay = 300;
+	self.openTubePrepareDelay = 550;
+	self.openTubeAfterDelay = 540;
+	self.removeRoundPrepareDelay = 200;
+	self.removeRoundAfterDelay = 500;
+	self.insertRoundPrepareDelay = 1800;
+	self.insertRoundAfterDelay = 730;
+	self.closeTubePrepareDelay = 120;
+	self.closeTubeAfterDelay = 700;
+	self.shoulderPrepareDelay = 760;
+	self.shoulderAfterDelay = 400;
 	
 	-- phases:
-	-- 0 boltback
-	-- 1 firstshellin
-	-- 2 boltforwardfirstshell
-	-- 3 shellin
-	-- 4 boltforward
+	-- 0 raise
+	-- 1 opentube
+	-- 2 removeround
+	-- 3 insertround
+	-- 4 closetube
+	-- 5 shoulder
 	
 	self.reloadPhase = 0;
 	
 	self.ReloadTime = 19999;
+
+	local actor = MovableMan:GetMOFromID(self.RootID);
+	if actor and IsAHuman(actor) then
+		self.parent = ToAHuman(actor);
+	end
 	
-	local ms = 1 / (self.RateOfFire / 60) * 1000
-	ms = ms + self.delayedFireTimeMS
-	self.RateOfFire = 1 / (ms / 1000) * 60
-	self.canShoot = true -- Prevent "automatic" bug, force semi-auto
 end
 
 function Update(self)
-	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
-	
+
 	if self.ID == self.RootID then
 		self.parent = nil;
 		self.parentSet = false;
@@ -104,17 +88,6 @@ function Update(self)
 			self.parentSet = true;
 		end
 	end
-	
-	-- Check if switched weapons/hide in the inventory, etc.
-	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
-		if self.delayedFire then
-			self.delayedFire = false
-			if self.Magazine then
-				self.Magazine.RoundCount = self.Magazine.RoundCount + 1
-			end
-		end
-	end
-	self.lastAge = self.Age + 0
 	
 	-- Smoothing
 	local min_value = -math.pi;
@@ -134,522 +107,293 @@ function Update(self)
 	
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "Angular Velocity = "..self.angVel, true, 0);
+	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle),  13);
+	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
 	
-	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (self.delayedFireTimeMS * 5), 1), 2.0) * 0.1)
-	
-	if not self:IsActivated() then
-		self.canShoot = true
-	end
-	
-	if not self.canShoot then
-		self:Deactivate()
-	end
-	
-	if self.FiredFrame then
-		self.delayedFire = true
-		self.delayedFireTimer:Reset()
-	end
-	
-	if self.delayedFire then
-		self:Deactivate()
-		self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs / self.delayedFireTimeMS * 1000
-		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) then
-			self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
-			
-			self.canSmoke = true
-			self.smokeTimer:Reset()
-			
-			self.reloadTimer:Reset();
-			self.reChamber = true;
-			
-			if self.Magazine then
-				self.ammoCount = 0 + self.Magazine.RoundCount; -- +0 to avoid reference bullshit and save it as a number properly
-				if self.ammoCount == 0 then
-					self.breechShellReload = true;
-					self:Reload();
-				end
-			end
-			
-			local muzzleFlash = CreateAttachable("Muzzle Flash Shotgun", "Base.rte");
-			muzzleFlash.ParentOffset = self.MuzzleOffset
-			muzzleFlash.Lifetime = TimerMan.DeltaTimeSecs * 1300
-			muzzleFlash.Frame = math.random(0, muzzleFlash.FrameCount - 1);
-			self:AddAttachable(muzzleFlash);
-			
-			if self.noiseEndSound then
-				if self.noiseEndSound:IsBeingPlayed() then
-					self.noiseEndSound:Stop(-1)
-				end
-			end
-			
-			if self.reflectionSound then
-				if self.reflectionSound:IsBeingPlayed() then
-					self.reflectionSound:Stop(-1)
-				end
-			end
-
-			local outdoorRays = 0;
-			
-			local indoorRays = 0;
-			
-			local bigIndoorRays = 0;
-
-			if self.parent:IsPlayerControlled() then
-				local Vector2 = Vector(0,-700); -- straight up
-				local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
-				local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
-				local Vector2SlightLeft = Vector(0,-700):RadRotate(22.5*(math.pi/180));
-				local Vector2SlightRight = Vector(0,-700):RadRotate(-22.5*(math.pi/180));		
-				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
-				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg
-
-				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-				self.rayRight = SceneMan:CastObstacleRay(self.Pos, Vector2Right, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-				self.rayLeft = SceneMan:CastObstacleRay(self.Pos, Vector2Left, Vector3, Vector4, self.RootID, self.Team, 128, 7);			
-				self.raySlightRight = SceneMan:CastObstacleRay(self.Pos, Vector2SlightRight, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-				self.raySlightLeft = SceneMan:CastObstacleRay(self.Pos, Vector2SlightLeft, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-				
-				self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
-			else
-				local Vector2 = Vector(0,-700); -- straight up
-				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
-				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
-				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-				
-				self.rayTable = {self.ray};
-			end
-			
-			for _, rayLength in ipairs(self.rayTable) do
-				if rayLength < 0 then
-					outdoorRays = outdoorRays + 1;
-				elseif rayLength > 170 then
-					bigIndoorRays = bigIndoorRays + 1;
-				else
-					indoorRays = indoorRays + 1;
-				end
-			end
-			
-			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);			
-			self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			
-			if outdoorRays >= 2 then
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-				self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			else -- bigIndoor
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			end
-
-		
-			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			
-			for i = 1, 6 do -- PLACEHOLDER
-				local bullet = CreateMOSRotating("Bullet M3MAAWS");
-				bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.15,0.15));
-				bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
-				bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
-				bullet:SetNumberValue("WoundDamageMultiplier", 1.0)
-				bullet:SetNumberValue("NoSmoke", 1)
-				bullet:SetNumberValue("NoTracer", 1)
-				if self.parent then
-					bullet.Team = self.parent.Team;
-					bullet.IgnoresTeamHits = true;
-				end
-				MovableMan:AddParticle(bullet);
-			end
-			
-			self.delayedFire = false
-			
-			self.canShoot = false
-		end
-	end
-	
-	-- PAWNIS RELOAD ANIMATION HERE
-	if self.reChamber then
-		if self:IsReloading() then
-			self.Reloading = true;
-			self.reloadCycle = true;
-			if self.ammoCount == 0 then
-				self.reloadPhase = 0;
-			else
-				self.reloadPhase = 3;
-			end
-		end
-		self.reChamber = false;
-		self.Chamber = true;
-		self.Casing = true;
-	end
-	
-	if self:IsReloading() and (not self.Chamber) then -- if we start reloading from "scratch"
-		self.Chamber = true;
-		self.ReloadTime = 19999;
-		self.Reloading = true;
-		self.reloadCycle = true;
-		if self.breechShellReload then
-			self.reloadPhase = 0;
-		else
-			self.reloadPhase = 3;
-		end
-	end
-	
-	if self.parent then
-	
-		local ctrl = self.parent:GetController();
-		local screen = ActivityMan:GetActivity():ScreenOfPlayer(ctrl.Player);
-	
-		if self:IsReloading() then
+	if self:IsReloading() then
+		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
-			self.afterReloadTimer:Reset();
-		elseif not self.afterReloadTimer:IsPastSimMS(self.afterReloadDelay) then
-			self:Deactivate();
 		end
-			
 		
-		if self.resumeReload then
-			self:Reload();
-			self.resumeReload = false;
-			if self.reloadPhase == 3 and self.ammoCount == 8 then
-				self.reloadPhase = 4;
+		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
+			local color = (self.reloadPhase == 0 and 105 or 120)
+			local offset = Vector(0, 36)
+			local position = self.parent.AboveHUDPos + offset
+			
+			local mini = 0
+			local maxi = 4
+			
+			local lastVecA = Vector(0, 0)
+			local lastVecB = Vector(0, 0)
+			
+			local bend = math.rad(9)
+			local step = 2.5
+			local width = 2
+			
+			position = position + Vector(0, step * maxi * -0.5)
+			for i = mini, maxi do
+				
+				local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				
+				-- Jitter fix
+				vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
+				vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
+				position = Vector(math.floor(position.X), math.floor(position.Y))
+				
+				if i ~= mini then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
+					PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
+				end
+				if i == mini or i == maxi then
+					PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
+				end
+				
+				lastVecA = Vector(vecA.X, vecA.Y)
+				lastVecB = Vector(vecB.X, vecB.Y)
 			end
 		end
-		if self.Chamber then
-			self:Deactivate();
-			if self:IsReloading() then
-				
-				-- Fancy Reload Progress GUI
-				if not (not self.reloadCycle and self.parent:GetController():IsState(Controller.WEAPON_FIRE)) and self.parent:IsPlayerControlled() then
-					for i = 1, self.ammoCount do
-						local color = 120
-						local spacing = 4
-						local offset = Vector(0 - spacing * 0.5 + spacing * (i) - spacing * self.ammoCount / 2, (self.ammoCountRaised and i == self.ammoCount) and 35 or 36)
-						local position = self.parent.AboveHUDPos + offset
-						PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-2), 1, color);
-						PrimitiveMan:DrawLinePrimitive(position + Vector(1,-3), position + Vector(1,3), color);
-						PrimitiveMan:DrawLinePrimitive(position + Vector(-1,-3), position + Vector(-1,3), color);
-						PrimitiveMan:DrawLinePrimitive(position + Vector(1,3), position + Vector(-1,3), color);
-					end
-				end
-				
-				if self.Reloading == false then
-					self.reloadCycle = true;
-					self.ReloadTime = 19999;
-					self.Reloading = true;
-					-- self.reloadTimer:Reset();
-					-- self.prepareSoundPlayed = false;
-					-- self.afterSoundPlayed = false;
-				end
-				
-			else
-				self.Reloading = false;
-			end
+
+		if self.reloadPhase == 0 then
+			self.reloadDelay = self.raisePrepareDelay;
+			self.afterDelay = self.raiseAfterDelay;			
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/RaisePrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Raise1";
 			
+		elseif self.reloadPhase == 1 then
+			self.reloadDelay = self.openTubePrepareDelay;
+			self.afterDelay = self.openTubeAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/OpenTubePrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/OpenTube1";
+			
+		elseif self.reloadPhase == 2 then
+			self.reloadDelay = self.removeRoundPrepareDelay;
+			self.afterDelay = self.removeRoundAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/RemoveRound1";
+			
+		elseif self.reloadPhase == 3 then
+			self.reloadDelay = self.insertRoundPrepareDelay;
+			self.afterDelay = self.insertRoundAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/InsertRound1";
+
+		elseif self.reloadPhase == 4 then
+			self.reloadDelay = self.closeTubePrepareDelay;
+			self.afterDelay = self.closeTubeAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/CloseTubePrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/CloseTube1";
+			self.horizontalAnim = 0.5
+			
+		elseif self.reloadPhase == 5 then
+			self.reloadDelay = self.shoulderPrepareDelay;
+			self.afterDelay = self.shoulderAfterDelay;
+			self.prepareSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/ShoulderPrepare1";
+			self.afterSoundPath = 
+			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Shoulder1";
+			self.horizontalAnim = 0.5
+
+		end
+		
+		if self.prepareSoundPlayed ~= true then
+			self.prepareSoundPlayed = true;
+			if self.prepareSoundPath then
+				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			end
+		end
+	
+		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
+		
 			if self.reloadPhase == 0 then
-				self.reloadDelay = self.boltBackPrepareDelay;
-				self.afterDelay = self.boltBackAfterDelay;
-				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				if self:IsReloading() then
-					self.afterSoundPath = 
-					"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/BoltBackReload";
-					self.afterSoundVars = 1;
-					self.rotationTarget = 5
-				else
-					self.afterSoundPath = 
-					"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/BoltBack";
-					self.afterSoundVars = 1;
-					self.rotationTarget = 2
-				end
-				
+
 			elseif self.reloadPhase == 1 then
-				self.reloadDelay = self.firstShellInPrepareDelay
-				self.afterDelay = self.firstShellInAfterDelay
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/ShellInsertBreech";
-				self.afterSoundVars = 1;
-				
+
 			elseif self.reloadPhase == 2 then
-				self.reloadDelay = self.boltForwardFirstShellPrepareDelay;
-				self.afterDelay = self.boltForwardFirstShellAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/BoltForwardReload";
-				self.afterSoundVars = 1;
-				
-				self.rotationTarget = -10
+
 			elseif self.reloadPhase == 3 then
-				self.reloadDelay = self.shellInPrepareDelay;
-				self.afterDelay = self.shellInAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/ShellInsert";
-				self.afterSoundVars = 6;
-				
-				self.rotationTarget = 10 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
+			
 			elseif self.reloadPhase == 4 then
-				self.reloadDelay = self.boltForwardPrepareDelay;
-				self.afterDelay = self.boltForwardAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/BoltForward";
-				self.afterSoundVars = 1;
-				
-				self.rotationTarget = -5
+			
+			elseif self.reloadPhase == 5 then
+
 			end
 			
-			if self.prepareSoundPlayed ~= true then
-				self.prepareSoundPlayed = true;
-				if self.prepareSoundPath then
-					self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			if self.afterSoundPlayed ~= true then
+			
+				if self.reloadPhase == 2 then
+				
+					local fake
+					fake = CreateMOSRotating("Casing M3MAAWS");
+					fake.Pos = self.Pos + Vector(-7*self.FlipFactor, 2):RadRotate(self.RotAngle);
+					fake.Vel = self.Vel + Vector(-4*self.FlipFactor, 0):RadRotate(self.RotAngle);
+					fake.RotAngle = self.RotAngle;
+					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
+					fake.HFlipped = self.HFlipped;
+					MovableMan:AddParticle(fake);
+					
+				elseif self.reloadPhase == 5 then
+
+				else
+					self.phaseOnStop = nil;
+				end
+			
+				self.afterSoundPlayed = true;
+				if self.afterSoundPath then
+					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
 				end
 			end
-			
-			if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
-				--[[
-				if self.reloadPhase == 0 and self.Casing then
-					local shell
-					shell = CreateMOSParticle("Shell");
-					shell.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
-					shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-					MovableMan:AddParticle(shell);
-					
-					self.Casing = false
-				end]]
-				if self.reloadPhase == 0 then
-					self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs * self.afterDelay
+			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
+				self.reloadTimer:Reset();
+				self.prepareSoundPlayed = false;
+				self.afterSoundPlayed = false;
+				if self.reloadPhase == 5 then
+					self.ReloadTime = 0;
+					self.reloadPhase = 0;
+				else
+					self.reloadPhase = self.reloadPhase + 1;
 				end
-			
-				self.phasePrepareFinished = true;
-			
-				if self.afterSoundPlayed ~= true then
-					if self.reloadPhase == 1 or self.reloadPhase == 3 then
-						self.horizontalAnim = self.horizontalAnim + 1
-						self.verticalAnim = self.verticalAnim - 1
-					end
-				
-					self.afterSoundPlayed = true;
-					if self.afterSoundPath then
-						self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-					end
-				end
-			
-				if self.reloadPhase == 0 then
-					
-					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-						self.Frame = 2;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-						self.Frame = 1;
-					end
-					
-				elseif self.reloadPhase == 1 then
-				
-					if self.parent:GetController():IsState(Controller.WEAPON_FIRE) then
-						self.reloadCycle = false;
-						PrimitiveMan:DrawTextPrimitive(screen, self.parent.AboveHUDPos + Vector(0, 30), "Interrupting...", true, 1);
-					end
-				
-					if self.ammoCountRaised ~= true then
-						self.ammoCountRaised = true;
-						if self.ammoCount < 8 then
-							self.ammoCount = self.ammoCount + 1;
-							if self.ammoCount == 8 then
-								self.reloadCycle = false;
-							end
-						else
-							self.reloadCycle = false;
-						end
-					end
-					
-					self.phaseOnStop = 2;
-					
-				elseif self.reloadPhase == 2 then
-					
-					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-						self.Frame = 0;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-						self.Frame = 1;
-					end
-					
-				elseif self.reloadPhase == 3 then
-					
-					self.phaseOnStop = 3;
-				
-					if self.parent:GetController():IsState(Controller.WEAPON_FIRE) then
-						self.reloadCycle = false;
-						PrimitiveMan:DrawTextPrimitive(screen, self.parent.AboveHUDPos + Vector(0, 30), "Interrupting...", true, 1);
-					end
-
-					if self.ammoCountRaised ~= true then
-						self.ammoCountRaised = true;
-						if self.ammoCount < 8 then
-							self.ammoCount = self.ammoCount + 1;
-							if self.ammoCount == 8 then
-								self.reloadCycle = false;
-							end
-						else
-							self.reloadCycle = false;
-						end
-					end
-
-				elseif self.reloadPhase == 4 then
-					
-					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-						self.Frame = 0;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-						self.Frame = 1;
-					end
-
-				end
-				
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
-					self.reloadTimer:Reset();
-					self.prepareSoundPlayed = false;
-					self.afterSoundPlayed = false;
-					if self.reloadPhase == 0 then
-
-						if not self:IsReloading() then
-							self.reloadPhase = 4;
-						elseif self.breechShellReload == true then
-							self.reloadPhase = self.reloadPhase + 1;
-						else
-							self.reloadPhase = 4;
-						end
-						--[[		
-						if self.Casing == true then
-							-- local casing
-							-- casing = CreateAEmitter("Sandstorm M24 Rifle Casing");
-							-- casing.Pos = self.Pos+Vector(-5*self.FlipFactor,-2):RadRotate(self.RotAngle);
-							-- casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-							-- MovableMan:AddParticle(casing);
-
-							-- self.Casing = false;
-						end]]				
-						if self.Casing then
-							local shell
-							shell = CreateMOSParticle("Shell");
-							shell.Pos = self.Pos+Vector(-3 * self.FlipFactor,-1):RadRotate(self.RotAngle);
-							shell.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-							MovableMan:AddParticle(shell);
-							
-							self.Casing = false
-						end
-					
-					elseif self.reloadPhase == 1 then
-					
-						self.ammoCountRaised = false;
-					
-						self.reloadPhase = self.reloadPhase + 1;
-						
-					elseif self.reloadPhase == 2 then
-					
-						if self.reloadCycle then
-							self.reloadPhase = 3; -- same phase baby the ride never ends (except at 8 rounds)
-						else
-							self.ReloadTime = 0;
-							self.reloadPhase = 0;
-							self.Chamber = false;
-						end
-						
-					elseif self.reloadPhase == 3 then
-					
-						self.ammoCountRaised = false;
-					
-						if self.reloadCycle then
-							self.reloadPhase = 3; -- same phase baby the ride never ends (except at 8 rounds)
-						else
-							self.ReloadTime = 0;
-							self.reloadPhase = 0;
-							self.Chamber = false;
-						end
-					
-					elseif self.reloadPhase == 4 then
-					
-						if self:IsReloading() then
-							if self.ammoCount < 8 then
-								self.reloadPhase = 3;
-							else
-								self.ReloadTime = 0;
-								self.reloadPhase = 0;
-								self.Chamber = false;
-							end
-						else
-							self.ReloadTime = 0;
-							self.reloadPhase = 0;
-							self.Chamber = false;
-						end
-						
-					else
-						self.reloadPhase = self.reloadPhase + 1;
-					end
-				end				
-			else
-				self.phasePrepareFinished = false;
 			end
-			
-		else
-			local f = math.max(1 - math.min((self.delayedFireTimer.ElapsedSimTimeMS - self.delayedFireTimeMS) / 200, 1), 0)
-			self.JointOffset = self.originalJointOffset + Vector(1, 0) * f
-			
-			self.reloadTimer:Reset();
-			self.prepareSoundPlayed = false;
-			self.afterSoundPlayed = false;
-			self.ReloadTime = 19999;
 		end
 	else
-		self.ammoCountRaised = false;
-		if self.Reloading then
-			self.resumeReload = true;
+		self.rotationTarget = 0
+		
+		self.Frame = 0;
+		self.reloadTimer:Reset();
+		self.prepareSoundPlayed = false;
+		self.afterSoundPlayed = false;
+		if self.reloadPhase == 3 then
+			self.reloadPhase = 2;
 		end
 		if self.phaseOnStop then
 			self.reloadPhase = self.phaseOnStop;
 			self.phaseOnStop = nil;
 		end
-		self.reloadTimer:Reset();
-		self.prepareSoundPlayed = false;
-		self.afterSoundPlayed = false;
-		self.ReloadTime = 19999;
+		self.ReloadTime = 9999;
 	end
 	
-	if self:DoneReloading() then
-		self.breechShellReload = false;
-		self.Magazine.RoundCount = self.ammoCount;
+	if self.FiredFrame then	
+		self.canSmoke = true
+		self.smokeTimer:Reset()
+		
+		self.horizontalAnim = self.horizontalAnim + 0.2
+		self.angVel = self.angVel + RangeRand(0,1) * 3
+		self.Frame = 4;
+		
+		if self.Magazine then
+			if self.Magazine.RoundCount > 0 then			
+			else
+				self.chamberOnReload = true;
+			end
+		end
+		
+		if self.noiseEndSound then
+			if self.noiseEndSound:IsBeingPlayed() then
+				self.noiseEndSound:Stop(-1)
+			end
+		end
+		
+		if self.reflectionSound then
+			if self.reflectionSound:IsBeingPlayed() then
+				self.reflectionSound:Stop(-1)
+			end
+		end
+
+		--local Effect = CreateMOSParticle("Tiny Smoke Ball 1", "Base.rte")
+		--Effect.Pos = self.MuzzlePos;
+		--Effect.Vel = (self.Vel + Vector(RangeRand(-20,20), RangeRand(-20,20)) + Vector(150*self.FlipFactor,0):RadRotate(self.RotAngle)) / 30
+		--MovableMan:AddParticle(Effect)
+
+		local outdoorRays = 0;
+		
+		local indoorRays = 0;
+		
+		local bigIndoorRays = 0;
+
+		if self.parent:IsPlayerControlled() then
+			local Vector2 = Vector(0,-700); -- straight up
+			local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
+			local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
+			local Vector2SlightLeft = Vector(0,-700):RadRotate(22.5*(math.pi/180));
+			local Vector2SlightRight = Vector(0,-700):RadRotate(-22.5*(math.pi/180));		
+			local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+			local Vector4 = Vector(0,0); -- dont need this but is needed as an arg
+
+			self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+			self.rayRight = SceneMan:CastObstacleRay(self.Pos, Vector2Right, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+			self.rayLeft = SceneMan:CastObstacleRay(self.Pos, Vector2Left, Vector3, Vector4, self.RootID, self.Team, 128, 7);			
+			self.raySlightRight = SceneMan:CastObstacleRay(self.Pos, Vector2SlightRight, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+			self.raySlightLeft = SceneMan:CastObstacleRay(self.Pos, Vector2SlightLeft, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+			
+			self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
+		else
+			local Vector2 = Vector(0,-700); -- straight up
+			local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+			local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
+			self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+			
+			self.rayTable = {self.ray};
+		end
+		
+		for _, rayLength in ipairs(self.rayTable) do
+			if rayLength < 0 then
+				outdoorRays = outdoorRays + 1;
+			elseif rayLength > 170 then
+				bigIndoorRays = bigIndoorRays + 1;
+			else
+				indoorRays = indoorRays + 1;
+			end
+		end
+		
+		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		
+		if outdoorRays >= 2 then
+			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
+			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		else -- bigIndoor
+			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		end
+		
+		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+
+	end
+	
+	if not self:IsActivated() then
+		self.firstShot = true;
 	end	
 	
 	-- Animation
 	if self.parent then
-		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
-		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
+		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 12.0) * 1000) / 1000
+		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 8.0) * 1000) / 1000
 		
 		local stance = Vector()
-		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
-		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
+		stance = stance + Vector(-5,0) * self.horizontalAnim -- Horizontal animation
+		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
 		
 		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		
 		self.RotAngle = self.RotAngle + total;
-		--self:SetNumberValue("MagRotation", total);
-		
-		local supportOffset = Vector(0,0)
-		if self.Frame == 1 then
-			supportOffset = Vector(-1,0)
-		elseif self.Frame == 2 then
-			supportOffset = Vector(-3,0)
-		end
-		self.SupportOffset = self.originalSupportOffset + supportOffset
+		self:SetNumberValue("MagRotation", total);
 		
 		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
 		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
 		self.Pos = self.Pos + offsetTotal;
-		--self:SetNumberValue("MagOffsetX", offsetTotal.X);
-		--self:SetNumberValue("MagOffsetY", offsetTotal.Y);
+		self:SetNumberValue("MagOffsetX", offsetTotal.X);
+		self:SetNumberValue("MagOffsetY", offsetTotal.Y);
 		
 		self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
