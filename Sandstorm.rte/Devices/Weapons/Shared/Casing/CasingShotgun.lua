@@ -10,7 +10,7 @@ function Create(self)
 	self.ConcreteHit = {["Variations"] = 10,
 	["Path"] = dir..name.."/Concrete/HitConcrete"};
 	
-	self.ConcreteRoll = {["Variations"] = 10,
+	self.ConcreteRoll = {["Variations"] = 9,
 	["Path"] = dir..name.."/Concrete/RollConcrete"};
 	
 	--
