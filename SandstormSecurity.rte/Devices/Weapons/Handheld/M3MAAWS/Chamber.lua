@@ -387,11 +387,30 @@ function Update(self)
 				self.reflectionSound:Stop(-1)
 			end
 		end
-
-		--local Effect = CreateMOSParticle("Tiny Smoke Ball 1", "Base.rte")
-		--Effect.Pos = self.MuzzlePos;
-		--Effect.Vel = (self.Vel + Vector(RangeRand(-20,20), RangeRand(-20,20)) + Vector(150*self.FlipFactor,0):RadRotate(self.RotAngle)) / 30
-		--MovableMan:AddParticle(Effect)
+		
+		-- Back Blast
+		local effectNames = {"Small Smoke Ball 1", "Tiny Smoke Ball 1", "Blast Ball Small 1", "Tracer Smoke Ball 1"}
+		for i = 1, 23 do
+		
+			local effect = CreateMOSParticle(effectNames[math.random(1, #effectNames)])
+			effect.Pos = self.Pos + Vector(-13 * self.FlipFactor, -1):RadRotate(self.RotAngle) + Vector(RangeRand(-1,1), RangeRand(-1,1));
+			effect.Vel = self.Vel + Vector(-30 * self.FlipFactor,0):RadRotate(self.RotAngle + RangeRand(-1,1) * 0.15 * math.random(1,3)) * RangeRand(0.1,1.5) * math.random(1,3)
+			effect.Lifetime = effect.Lifetime * RangeRand(1.0,3.0)
+			effect.AirResistance = effect.AirResistance * RangeRand(0.5,0.8)
+			MovableMan:AddParticle(effect)
+		end
+		
+		-- Ground Smoke
+		local maxi = 70
+		for i = 1, maxi do
+			
+			local effect = CreateMOSRotating("Ground Smoke Particle 1", "Sandstorm.rte")
+			effect.Pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1)) * 3
+			effect.Vel = self.Vel + Vector(math.random(90,150),0):RadRotate(math.pi * 2 / maxi * i + RangeRand(-2,2) / maxi)
+			effect.Lifetime = effect.Lifetime * RangeRand(0.5,2.0)
+			effect.AirResistance = effect.AirResistance * RangeRand(0.5,0.8)
+			MovableMan:AddParticle(effect)
+		end
 
 		local outdoorRays = 0;
 		
