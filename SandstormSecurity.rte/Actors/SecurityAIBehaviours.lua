@@ -244,12 +244,13 @@ function SecurityAIBehaviours.handleMovement(self)
 				end
 			end
 			
+			local movement = (cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true or self.Vel.Magnitude > 3)
 			if not (crouching) then -- don't do any footstep sounds if we're crawling
 				if mat ~= nil then
 					--PrimitiveMan:DrawTextPrimitive(footPos, mat.PresetName, true, 0);
 					if self.feetContact[i] == false then
 						self.feetContact[i] = true
-						if self.feetTimers[i]:IsPastSimMS(self.footstepTime) then						
+						if self.feetTimers[i]:IsPastSimMS(self.footstepTime) and movement then						
 							local terrainStepSoundEntryToUse = self.terrainStepSounds.Walk[self.footPixel] and self.footPixel or 12;
 							local sprintOrWalkSoundEffects = {
 							[false] = {
@@ -271,7 +272,7 @@ function SecurityAIBehaviours.handleMovement(self)
 				else
 					if self.feetContact[i] == true then
 						self.feetContact[i] = false
-						if self.feetTimers[i]:IsPastSimMS(self.footstepTime) then
+						if self.feetTimers[i]:IsPastSimMS(self.footstepTime) and movement then
 							if self.isSprinting == true then
 								SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.sprintPre, self.movementSoundVariations.sprintPre); -- messy, but we put it here to save on isSprinting check
 							else
