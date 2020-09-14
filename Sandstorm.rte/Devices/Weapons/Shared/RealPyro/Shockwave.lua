@@ -59,29 +59,37 @@ function Update(self)
 					local strSumCheck = SceneMan:CastStrengthSumRay(self.Pos, self.Pos + dist, 3, 0);
 					if strSumCheck < self.strength then
 						local massFactor = math.sqrt(1 + math.abs(mo.Mass));
-						local distFactor = 1 + dist.Magnitude * 0.1;
+						local distFactor = 1 + dist.Magnitude * 0.1
 						local forceVector =	dist:SetMagnitude((self.strength - strSumCheck) /distFactor);
-						mo.Vel = mo.Vel + forceVector /massFactor;
-						mo.AngularVel = mo.AngularVel - forceVector.X /(massFactor + math.abs(mo.AngularVel));
-						mo:AddForce(forceVector * massFactor, Vector());
 						
+						local closeFactor = math.min(dist.Magnitude * 0.02, 1)
+						mo.Vel = mo.Vel + forceVector / massFactor * closeFactor;
+						mo.AngularVel = mo.AngularVel - forceVector.X /(massFactor + math.abs(mo.AngularVel));
+						mo:AddForce(forceVector * massFactor * closeFactor, Vector());
 						if IsMOSRotating(mo) then
 							mo = ToMOSRotating(mo)
 							-- 400 - 200
-							local wounding = math.pow((self.strength - strSumCheck) / distFactor / 50, 3.0)
+							local wounding = math.pow((self.strength - strSumCheck) / distFactor / 50, 2.0)
 							local woundName = mo:GetEntryWoundPresetName()
 							local woundNameExit = mo:GetExitWoundPresetName()
-							if woundName and woundNameExit and math.floor(wounding + 0.5) > 0 then
+							if woundName and woundName ~= "" and woundNameExit and woundNameExit ~= "" and math.floor(wounding + 0.5) > 0 then
 								for i = 1, math.floor(wounding + 0.5) do
 									local wound = CreateAEmitter(woundName)
 									if wound then
 										mo:AddWound(wound, Vector(RangeRand(-1,1),RangeRand(-1,1)) * self.Radius * 0.7, true)
 									end
+									
+								end
+								if wounding > 0.7 and IsActor(mo) and IsAHuman(mo) then
+									local act = ToActor(mo)
+									if act.Status == 0 then
+										act.Status = 1
+									end
 								end
 								
 							end
 							
-							if mo.GibImpulseLimit ~= nil and mo.GibImpulseLimit > 0 and (forceVector * massFactor).Magnitude > (mo.GibImpulseLimit * distFactor) * RangeRand(1.3,3) then
+							if mo.GibImpulseLimit ~= nil and mo.GibImpulseLimit > 0 and (forceVector * massFactor).Magnitude > (mo.GibImpulseLimit * distFactor) * RangeRand(1.3,3) * 1.5 then
 								mo:GibThis()
 							end
 						end
