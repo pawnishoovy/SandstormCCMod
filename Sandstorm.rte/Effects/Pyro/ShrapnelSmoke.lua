@@ -4,7 +4,8 @@ function Create(self)
 	
 	self.baseSharpness = self.Sharpness
 	
-	self.effectNames = {"Tiny Smoke Ball 1", "Tiny Smoke Ball 1", "Tiny Smoke Ball 1",  "Tiny Smoke Ball 1", "Tracer Smoke Ball 1", "Blast Ball Small 1", "Tracer Smoke Ball 1"}
+	--self.effectNames = {"Tiny Smoke Ball 1", "Tiny Smoke Ball 1", "Tiny Smoke Ball 1",  "Tiny Smoke Ball 1", "Tracer Smoke Ball 1", "Blast Ball Small 1", "Tracer Smoke Ball 1"}
+	self.effectNames = {"Tiny Smoke Ball 1", "Tiny Smoke Ball 1", "Tiny Smoke Ball 1",  "Tiny Smoke Ball 1", "Tracer Smoke Ball 1"}
 end
 
 function Update(self)
