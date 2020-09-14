@@ -2,6 +2,48 @@ function Create(self)
 	self.strength = self.Mass * self.Vel.Magnitude;
 	self.range = 5 * self.Vel.Magnitude;
 	
+	local maxi = 1
+	
+	--[[
+	maxi = 240
+	for i = 1, maxi do
+		local effect = CreateMOPixel("Shockwave Blast", "Sandstorm.rte")
+		effect.Pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1)) * 3
+		effect.Vel = Vector(self.Vel.Magnitude * RangeRand(0.95,1.05) * 2,0):RadRotate(math.pi * 2 / maxi * i + RangeRand(-1,1) / maxi)
+		effect.Lifetime = effect.Lifetime * math.random(1,4) * 0.5
+		MovableMan:AddParticle(effect)
+	end]]
+	
+	--[[
+	local maxi = 240
+	for i = 1, maxi do
+		local effect = CreateMOSParticle("Fire Ball 4 B", "Sandstorm.rte")
+		effect.Pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1))
+		effect.Vel = Vector(self.Vel.Magnitude * RangeRand(0.95,1.05) * 0.7,0):RadRotate(math.pi * 2 / maxi * i + RangeRand(-1,1) / maxi)
+		effect.Lifetime = effect.Lifetime * math.random(1,8) * 0.15
+		MovableMan:AddParticle(effect)
+	end]]
+	
+	maxi = 100
+	for i = 1, maxi do
+		local pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1)) * 6
+		for i = 1, 3 do
+			if SceneMan:GetTerrMatter(pos.X, pos.Y) == 0 then
+				break
+			else
+				pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1)) * 6
+			end
+		end
+		
+		local effect = CreateMOSRotating("Ground Smoke Particle 1", "Sandstorm.rte")
+		--effect.Pos = self.Pos + Vector(RangeRand(-1,1), RangeRand(-1,1)) * 6
+		effect.Pos = pos
+		effect.Vel = Vector(math.random(110,200),0):RadRotate(math.pi * 2 / maxi * i + RangeRand(-2,2) / maxi)
+		effect.Lifetime = effect.Lifetime * RangeRand(0.8,2.0)
+		effect.AirResistance = effect.AirResistance * RangeRand(0.5,0.8)
+		MovableMan:AddParticle(effect)
+	end
+	
 	self.shockwave = true
 end
 function Update(self)
@@ -26,7 +68,7 @@ function Update(self)
 						if IsMOSRotating(mo) then
 							mo = ToMOSRotating(mo)
 							-- 400 - 200
-							local wounding = math.pow((self.strength - strSumCheck) / distFactor / 85, 3.0)
+							local wounding = math.pow((self.strength - strSumCheck) / distFactor / 50, 3.0)
 							local woundName = mo:GetEntryWoundPresetName()
 							local woundNameExit = mo:GetExitWoundPresetName()
 							if woundName and woundNameExit and math.floor(wounding + 0.5) > 0 then
