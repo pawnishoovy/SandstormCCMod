@@ -657,7 +657,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 		-- RELOADING, SUPPRESSING
 
-		if (IsHDFirearm(self.EquippedItem)) then
+		if (IsHDFirearm(self.EquippedItem) and self.EquippedItem:IsInGroup("Weapons")) then
 			local gun = ToHDFirearm(self.EquippedItem);
 			local reloading = gun:IsReloading();
 			
