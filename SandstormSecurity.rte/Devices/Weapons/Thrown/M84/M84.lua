@@ -15,11 +15,11 @@ function Create(self)
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
 	self.concreteHit.Hard = {["Variations"] = 8,
-	["Path"] = dir.."Frag/Concrete/HitHardConcrete"};
+	["Path"] = dir.."Flash/Concrete/HitHardConcrete"};
 	self.concreteHit.Medium = {["Variations"] = 8,
-	["Path"] = dir.."Frag/Concrete/HitMediumConcrete"};
+	["Path"] = dir.."Flash/Concrete/HitMediumConcrete"};
 	self.concreteHit.Soft = {["Variations"] = 8,
-	["Path"] = dir.."Frag/Concrete/HitSoftConcrete"};
+	["Path"] = dir.."Flash/Concrete/HitSoftConcrete"};
 	
 	self.concreteRoll = {["Variations"] = 8,
 	["Path"] = dir.."Frag/Concrete/RollConcrete"};
@@ -29,17 +29,17 @@ function Create(self)
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
 	self.dirtHit.Hard = {["Variations"] = 9,
-	["Path"] = dir.."Frag/Dirt/HitHardDirt"};
+	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
 	self.dirtHit.Medium = {["Variations"] = 9,
-	["Path"] = dir.."Frag/Dirt/HitMediumDirt"};
+	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
 	self.dirtHit.Soft = {["Variations"] = 9,
-	["Path"] = dir.."Frag/Dirt/HitSoftDirt"};
+	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
 	
 	self.dirtRoll = {["Variations"] = 9,
 	["Path"] = dir.."Frag/Dirt/RollDirt"};
 	
 	--
-	
+	--[[
 	self.sandHit = {["IDs"] = {[6] = "Exists", [8] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
 	self.sandHit.Hard = {["Variations"] = 6,
@@ -50,18 +50,30 @@ function Create(self)
 	["Path"] = dir.."Frag/Sand/HitSoftSand"};
 	
 	self.sandRoll = {["Variations"] = 6,
-	["Path"] = dir.."Frag/Sand/RollSand"};
+	["Path"] = dir.."Frag/Sand/RollSand"};]]
+	
+	self.sandHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
+	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
+	self.sandHit.Hard = {["Variations"] = 9,
+	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
+	self.sandHit.Medium = {["Variations"] = 9,
+	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
+	self.sandHit.Soft = {["Variations"] = 9,
+	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
+	
+	self.sandRoll = {["Variations"] = 9,
+	["Path"] = dir.."Frag/Dirt/RollDirt"};
 	
 	--
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
 	self.solidMetalHit.Hard = {["Variations"] = 10,
-	["Path"] = dir.."Frag/SolidMetal/HitHardSolidMetal"};
+	["Path"] = dir.."Flash/SolidMetal/HitHardSolidMetal"};
 	self.solidMetalHit.Medium = {["Variations"] = 10,
-	["Path"] = dir.."Frag/SolidMetal/HitMediumSolidMetal"};
+	["Path"] = dir.."Flash/SolidMetal/HitMediumSolidMetal"};
 	self.solidMetalHit.Soft = {["Variations"] = 10,
-	["Path"] = dir.."Frag/SolidMetal/HitSoftSolidMetal"};
+	["Path"] = dir.."Flash/SolidMetal/HitSoftSolidMetal"};
 	
 	self.solidMetalRoll = {["Variations"] = 10,
 	["Path"] = dir.."Frag/SolidMetal/RollSolidMetal"};
@@ -143,14 +155,14 @@ function Update(self)
 		if self.Live ~= true and self.pinPulled then
 			self.lifeTimer:Reset();
 			self.Live = true;
-			local spoon = CreateMOSParticle("M67 Grenade Spoon");
+			local spoon = CreateMOSParticle("M84 Grenade Spoon");
 			spoon.Pos = self.Pos;
 			spoon.Vel = self.Vel+Vector(0,-6)+Vector(3*math.random(),0):RadRotate(math.random()*(math.pi*2));
 			MovableMan:AddParticle(spoon);
 			
 			self.frm = 2
 			
-			self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M67/Sounds/SpoonEject" .. math.random(1,4) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);			
+			self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/SpoonEject" .. math.random(1,4) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);			
 		end
 	end
 
@@ -158,14 +170,14 @@ function Update(self)
 		self.lifeTimer:Reset();
 		self.pinPulled = true;
 		
-		local pin = CreateMOSParticle("M67 Grenade Pin");
+		local pin = CreateMOSParticle("M84 Grenade Pin");
 		pin.Pos = self.Pos;
 		pin.Vel = self.Vel+Vector(0,-6)+Vector(3*math.random(),0):RadRotate(math.random()*(math.pi*2));
 		MovableMan:AddParticle(pin);
 		
 		self.frm = 1
 		
-		self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M67/Sounds/PullPin" .. math.random(1,4) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/PullPin" .. math.random(1,3) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 	end	
 	
 	if self.Live and self.lifeTimer:IsPastSimMS(self.fuseTime) then

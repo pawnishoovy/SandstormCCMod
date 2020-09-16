@@ -47,7 +47,7 @@ function Create(self)
 	self.shockwave = true
 end
 function Update(self)
-	PrimitiveMan:DrawCirclePrimitive(self.Pos, self.range, 5)
+	--PrimitiveMan:DrawCirclePrimitive(self.Pos, self.range, 5)
 	
 	-- Run the effect on Update() to give other particles a chance to reach the target
 	if self.shockwave then
@@ -102,5 +102,5 @@ function Update(self)
 		self.shockwave = false
 	end
 	
-	--self.ToDelete = true;
+	self.ToDelete = true;
 end
