@@ -14,11 +14,11 @@ function Create(self)
 	
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.concreteHit.Hard = {["Variations"] = 8,
+	self.concreteHit.Hard = {["Variations"] = 9,
 	["Path"] = dir.."Flash/Concrete/HitHardConcrete"};
-	self.concreteHit.Medium = {["Variations"] = 8,
+	self.concreteHit.Medium = {["Variations"] = 9,
 	["Path"] = dir.."Flash/Concrete/HitMediumConcrete"};
-	self.concreteHit.Soft = {["Variations"] = 8,
+	self.concreteHit.Soft = {["Variations"] = 9,
 	["Path"] = dir.."Flash/Concrete/HitSoftConcrete"};
 	
 	self.concreteRoll = {["Variations"] = 8,
@@ -28,9 +28,9 @@ function Create(self)
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.dirtHit.Hard = {["Variations"] = 9,
+	self.dirtHit.Hard = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
-	self.dirtHit.Medium = {["Variations"] = 9,
+	self.dirtHit.Medium = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
 	self.dirtHit.Soft = {["Variations"] = 9,
 	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
@@ -54,11 +54,11 @@ function Create(self)
 	
 	self.sandHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.sandHit.Hard = {["Variations"] = 9,
+	self.sandHit.Hard = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
-	self.sandHit.Medium = {["Variations"] = 9,
+	self.sandHit.Medium = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
-	self.sandHit.Soft = {["Variations"] = 9,
+	self.sandHit.Soft = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
 	
 	self.sandRoll = {["Variations"] = 9,
@@ -68,11 +68,11 @@ function Create(self)
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.solidMetalHit.Hard = {["Variations"] = 10,
+	self.solidMetalHit.Hard = {["Variations"] = 5,
 	["Path"] = dir.."Flash/SolidMetal/HitHardSolidMetal"};
-	self.solidMetalHit.Medium = {["Variations"] = 10,
+	self.solidMetalHit.Medium = {["Variations"] = 4,
 	["Path"] = dir.."Flash/SolidMetal/HitMediumSolidMetal"};
-	self.solidMetalHit.Soft = {["Variations"] = 10,
+	self.solidMetalHit.Soft = {["Variations"] = 8,
 	["Path"] = dir.."Flash/SolidMetal/HitSoftSolidMetal"};
 	
 	self.solidMetalRoll = {["Variations"] = 10,
