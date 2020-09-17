@@ -466,6 +466,8 @@ function SecurityAIBehaviours.handleHealth(self)
 	local wasInjured = self.Health < (self.oldHealth - 25);
 	local wasHeavilyInjured = self.Health < (self.oldHealth - 50);
 	
+	local wasFlashed = self:NumberValueExists("Flashed")
+	
 	if (healthTimerReady or wasLightlyInjured or wasInjured or wasHeavilyInjured) then
 		self.oldHealth = self.Health;
 		self.healthUpdateTimer:Reset();	
@@ -480,7 +482,11 @@ function SecurityAIBehaviours.handleHealth(self)
 			self.Suppression = self.Suppression + math.random(9,13);
 		end
 		
-		if (wasInjured or wasHeavilyInjured) and self.Head then
+		if (wasInjured or wasHeavilyInjured or wasFlashed) and self.Head then
+			if wasFlashed then
+				self:RemoveNumberValue("Flashed")
+			end
+			
 			if self.Health > 0 then
 				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
 				self.Stamina = self.Stamina - 25;
