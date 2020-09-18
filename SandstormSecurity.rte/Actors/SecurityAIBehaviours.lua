@@ -794,7 +794,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if self:NumberValueExists("Flashed") then
 		self:RemoveNumberValue("Flashed");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 2, true);
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 4, true);
 	end
 		
 		
