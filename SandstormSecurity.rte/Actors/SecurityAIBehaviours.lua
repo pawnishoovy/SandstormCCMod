@@ -465,9 +465,7 @@ function SecurityAIBehaviours.handleHealth(self)
 	local wasLightlyInjured = self.Health < (self.oldHealth - 5);
 	local wasInjured = self.Health < (self.oldHealth - 25);
 	local wasHeavilyInjured = self.Health < (self.oldHealth - 50);
-	
-	local wasFlashed = self:NumberValueExists("Flashed")
-	
+
 	if (healthTimerReady or wasLightlyInjured or wasInjured or wasHeavilyInjured) then
 		self.oldHealth = self.Health;
 		self.healthUpdateTimer:Reset();	
@@ -482,10 +480,7 @@ function SecurityAIBehaviours.handleHealth(self)
 			self.Suppression = self.Suppression + math.random(9,13);
 		end
 		
-		if (wasInjured or wasHeavilyInjured or wasFlashed) and self.Head then
-			if wasFlashed then
-				self:RemoveNumberValue("Flashed")
-			end
+		if (wasInjured or wasHeavilyInjured) and self.Head then
 			
 			if self.Health > 0 then
 				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
@@ -796,6 +791,12 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		end
 		self:RemoveNumberValue("Sandstorm Friendly Down")
 	end
+	
+	if self:NumberValueExists("Flashed") then
+		self:RemoveNumberValue("Flashed");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 2, true);
+	end
+		
 		
 
 end

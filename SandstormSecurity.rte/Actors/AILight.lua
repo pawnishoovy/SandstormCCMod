@@ -250,6 +250,8 @@ function Create(self)
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Exertion/SeriousExertion",
 			Pain =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Pain/Pain",
+			Flashed =
+			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Flashed/Flashed",
 			Reload =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecAmericanMale/Reload/Reload",
 			suppressedReload =
@@ -299,6 +301,7 @@ function Create(self)
 			Exertion = 7,
 			seriousExertion = 7,
 			Pain = 17,
+			Flashed = 5,
 			Reload = 29,
 			suppressedReload = 35,
 			flashOut = 8,
@@ -354,6 +357,8 @@ function Create(self)
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/SeriousExertion",
 			Pain =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Pain/Pain",
+			Flashed =
+			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Flashed/Flashed",
 			Reload =
 			"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Reload/Reload",
 			suppressedReload =
@@ -403,6 +408,7 @@ function Create(self)
 			Exertion = 8,
 			seriousExertion = 4,
 			Pain = 15,
+			Flashed = 5,
 			Reload = 32,
 			suppressedReload = 30,
 			flashOut = 8,
@@ -464,6 +470,8 @@ function Create(self)
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Exertion/SeriousExertion",
 		Pain =
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Pain/Pain",
+		Flashed =
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Flashed/Flashed",
 		Reload =
 		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabFemale/Reload/Reload",
 		suppressedReload =
@@ -513,6 +521,7 @@ function Create(self)
 		Exertion = 8,
 		seriousExertion = 4,
 		Pain = 18,
+		Flashed = 4,
 		Reload = 25,
 		suppressedReload = 29,
 		flashOut = 8,
