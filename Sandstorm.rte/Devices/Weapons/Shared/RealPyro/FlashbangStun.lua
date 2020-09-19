@@ -38,8 +38,8 @@ function Update(self)
 					canFlash = true
 				end
 				
-				if canFlash then
-					if actor.Status == 0 then
+				if canFlash and actor.ClassName ~= "ADoor" and actor.ClassName ~= "ACraft" then
+					if actor.Status == 0 and IsAHuman(actor) then
 						actor.Status = 1
 					end
 					if math.random(1,3) < 2 and actor:GetController() then
@@ -58,7 +58,7 @@ function Update(self)
 		local actor = ToActor(MovableMan:FindObjectByUniqueID(ID))
 		if actor then
 			actor = ToActor(actor)
-			if actor.Status == 0 then
+			if actor.Status == 0 and IsAHuman(actor) then
 				actor.Status = 1
 			end
 			local ctrl = actor:GetController()
