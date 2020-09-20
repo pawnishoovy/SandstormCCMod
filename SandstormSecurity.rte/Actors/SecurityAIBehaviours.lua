@@ -216,7 +216,7 @@ function SecurityAIBehaviours.handleMovement(self)
 		if foot ~= nil then
             local footPos = foot.Pos				
 			local mat = nil
-			local offsetY = foot.Radius * 0.7 - math.max(self.Vel.Y * FrameMan.PPM * TimerMan.DeltaTimeSecs, 0) * 4
+			local offsetY = foot.Radius * 0.7 - math.max(self.Vel.Y * GetPPM() * TimerMan.DeltaTimeSecs, 0) * 4
 			-- Walk mode (Precise)
 			if cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true then
 				local maxi = 2

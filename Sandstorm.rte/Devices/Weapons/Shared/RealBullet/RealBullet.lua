@@ -59,7 +59,7 @@ function Update(self)
 	end
 	
 	if self.canTravel then
-		local travelVel = (Vector(self.Vel.X, self.Vel.Y) * rte.PxTravelledPerFrame)--:RadRotate(RangeRand(-1,1) * 0.05) -- Weird effect
+		local travelVel = (Vector(self.Vel.X, self.Vel.Y) * GetPPM() * TimerMan.DeltaTimeSecs)--:RadRotate(RangeRand(-1,1) * 0.05) -- Weird effect
 		local travel = travelVel
 		
 		local endPos = Vector(self.Pos.X, self.Pos.Y); -- This value is going to be overriden by function below, this is the end of the ray
@@ -70,7 +70,7 @@ function Update(self)
 		-- Tracer Trail
 		
 		if not self.noTracer and ((math.random(1,5) < 2 and self.tracer > 0 and self.ricochetCount < 1) or (self.alwaysTracer and math.random(1,5) <= 2)) then
-			local maxi = travel.Magnitude/ FrameMan.PPM * 1.5
+			local maxi = travel.Magnitude/ GetPPM() * 1.5
 			for i = 0, maxi do
 				--PrimitiveMan:DrawCirclePrimitive(self.Pos + travel / maxi * i, 2 + i / maxi * 3, 166);
 				local particle = CreateMOPixel("Real Bullet Glow");

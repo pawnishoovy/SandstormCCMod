@@ -88,7 +88,7 @@ function Update(self)
 				
 				local hit = false
 				
-				local travelVec = vel * rte.PxTravelledPerFrame
+				local travelVec = vel * GetPPM() * TimerMan.DeltaTimeSecs;
 				
 				local moCheck = rte.NoMOID
 				if pellet.Lethality > 0 then
