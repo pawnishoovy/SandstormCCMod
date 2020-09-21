@@ -65,7 +65,7 @@ function OnCollideWithTerrain(self, terrainID)
 				end
 			end
 			
-			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Wounds/Light/LimbImpact"..math.random(7)..".wav", self.Pos)
+			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Wounds/LimbImpact"..math.random(7)..".wav", self.Pos)
 		end
 	end
 end
