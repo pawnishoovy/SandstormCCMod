@@ -698,6 +698,8 @@ function Create(self)
 	-- RANDOM ARMOR AND UNIFORM
 	local legsSkin = 0
 	local armsSkin = 0
+	
+	
 	local camo = math.random(1,3) >= 2
 	if camo then
 		local rn = math.random(0, 4)
@@ -706,6 +708,7 @@ function Create(self)
 		legsSkin = rn
 	else
 		local rn = math.random(0, 2)
+		
 		self.Frame = rn + 6
 		armsSkin = 18 + rn * 2 + skin
 		legsSkin = math.random(0,7)
@@ -730,7 +733,10 @@ function Create(self)
 		self.DamageMultiplier = self.DamageMultiplier * 0.9
 		self.GibWoundLimit = self.GibWoundLimit + math.random(1,2)
 	end	
+	
+	local helmet = math.random(1, 100) < 50;
 
+	
 	if self.Head then
 		local glasses = math.random(1, 100) < 50;
 		local hat = math.random(1, 100) < 50;
@@ -738,7 +744,15 @@ function Create(self)
 			local headAttachable = CreateAttachable("Sandstorm Security Light Glasses", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
 		end
-		if hat then
+		if helmet then
+			local headAttachable = CreateAttachable("Sandstorm Security Light Helmet", "SandstormSecurity.rte");
+			if camo then
+				headAttachable.Frame = self.Frame
+			else
+				headAttachable.Frame = math.random(6, 7)
+			end
+			self.Head:AddAttachable(headAttachable);
+		elseif hat then
 			local headAttachable = CreateAttachable("Sandstorm Security Light Hat", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
 		end

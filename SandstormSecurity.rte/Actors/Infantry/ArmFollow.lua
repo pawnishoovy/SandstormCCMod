@@ -17,7 +17,8 @@ function Update(self)
 		
 		self:RemoveWounds(self.WoundCount);
 		self.Frame = parent.Frame + self.skin * 5
-		local dif = (Vector(ToArm(parent).HandPos.X, ToArm(parent).HandPos.Y) - Vector(self.Pos.X, self.Pos.Y) + Vector(parent.JointOffset.X * self.FlipFactor, parent.JointOffset.Y)) * self.FlipFactor
+		--local dif = (Vector(ToArm(parent).HandPos.X, ToArm(parent).HandPos.Y) - Vector(self.Pos.X, self.Pos.Y) + Vector(parent.JointOffset.X * self.FlipFactor, parent.JointOffset.Y)) * self.FlipFactor
+		local dif = (Vector(ToArm(parent).HandPos.X, ToArm(parent).HandPos.Y) - Vector(self.Pos.X, self.Pos.Y)) * self.FlipFactor
 		local angle = dif.AbsRadAngle
 		--PrimitiveMan:DrawCirclePrimitive(Vector(ToArm(parent).HandPos.X, ToArm(parent).HandPos.Y), 1, 13);
 		--PrimitiveMan:DrawCirclePrimitive(Vector(ToArm(parent).HandPos.X, ToArm(parent).HandPos.Y) + Vector(parent.JointOffset.X * self.FlipFactor, parent.JointOffset.Y), 1, 5);
