@@ -82,6 +82,6 @@ function Create(self)
 	if camo and math.random(1, 100) < 40 then
 		local backpack = CreateAttachable("Sandstorm Security Backpack", "SandstormSecurity.rte")
 		self:AddAttachable(backpack);
-		backpack.Frame = 2 + ((rn == 1 or rn == 2) and 3 or 0)
+		backpack.Frame = 0 + ((rn == 1 or rn == 2) and 3 or 0)
 	end
 end
