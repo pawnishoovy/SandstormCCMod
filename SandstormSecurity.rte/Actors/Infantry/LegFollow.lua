@@ -17,6 +17,10 @@ function Update(self)
 		
 		self:RemoveWounds(self.WoundCount);
 		self.Frame = parent.Frame + self.skin * 5
+		
+		--local offset = Vector(parent.JointOffset.X * parent.FlipFactor, parent.JointOffset.Y)
+		--local pos = parent.Pos
+		--PrimitiveMan:DrawLinePrimitive(pos, pos + offset:RadRotate(parent.RotAngle), 5);
 	else
 		self:GibThis()
 	end

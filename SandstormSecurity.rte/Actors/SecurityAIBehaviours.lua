@@ -141,7 +141,7 @@ end
 function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "vel = ".. math.floor(self.Vel.Y), true, 0);
 	-- Lose balance while falling
-	if self.Vel.Y > 15.5 and self.Status == 0 then
+	if self.Vel.Y > 14.5 and self.Status == 0 then
 		self.Status = 1
 		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 5, 2, true)
 		SecurityAIBehaviours.createEmotion(self, 4, 4, 1000);
@@ -174,10 +174,10 @@ function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 			else
 				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Fall, self.movementSoundVariations.Fall);
 				if self.terrainCollided then
-					if self.terrainImpactSounds[self.terrainCollidedWith] ~= nil then
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactSounds[self.terrainCollidedWith], self.terrainImpactSoundVariations[self.terrainCollidedWith]);
+					if self.terrainImpactLightSounds[self.terrainCollidedWith] ~= nil then
+						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
 					else
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactSounds[12], self.terrainImpactSoundVariations[12]); -- default concrete
+						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
 					end
 					self.terrainCollided = false;
 				end
@@ -818,6 +818,8 @@ function SecurityAIBehaviours.handleDying(self)
 
 
 	if self.Head then
+		--self.Head.CollidesWithTerrainWhenAttached = false
+		
 		if self.Head.WoundCount > self.headWounds then
 			self.deathSoundPlayed = true;
 			self.dyingSoundPlayed = true;
@@ -887,6 +889,81 @@ function SecurityAIBehaviours.handleDying(self)
 		end
 	end
 end
+
+function SecurityAIBehaviours.handleRagdoll(self)
+	-- EXPERIMENTAL BETTER RAGDOLL
+	local radius = self.Radius * 0.9
+	
+	local min_value = -math.pi;
+	local max_value = math.pi;
+	local value = self.RotAngle
+	local result;
+	local ret = 0
+	
+	local range = max_value - min_value;
+	if range <= 0 then
+		result = min_value;
+	else
+		ret = (value - min_value) % range;
+		if ret < 0 then ret = ret + range end
+		result = ret + min_value;
+	end
+	
+	local str = math.max(1 - math.abs(result / math.pi * 2.0), 0)
+	-- Trip on the ground
+	for j = 0, 1 do
+		local pos = self.Pos + Vector(0, -3):RadRotate(self.RotAngle)
+		if self.Head and math.random(1,2) < 2 then
+			pos = self.Head.Pos
+		end
+		
+		local maxi = 6
+		for i = 0, maxi do
+			local checkVec = Vector(radius * (0.7 - 0.2 * j),0):RadRotate(math.pi * 2 / maxi * i + self.RotAngle)
+			local checkOrigin = Vector(pos.X, pos.Y) + checkVec + Vector(self.Vel.X, self.Vel.Y) * rte.PxTravelledPerFrame * 0.3
+			local checkPix = SceneMan:GetTerrMatter(checkOrigin.X, checkOrigin.Y)
+			
+			if checkPix > 0 then
+				self.Vel = self.Vel - Vector(checkVec.X, checkVec.Y):SetMagnitude(30 * str) * TimerMan.DeltaTimeSecs
+				self.AngularVel = self.AngularVel + (self.AngularVel / math.abs(self.AngularVel)) * str * 20 * TimerMan.DeltaTimeSecs
+			end
+		end
+		
+	end
+	
+	-- SOUNDS
+	
+	local mat = self.HitWhatTerrMaterial
+	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + self.TravelImpulse * 0.1, 5);
+	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + self.Vel, 13);
+	--self.TravelImpulse.Magnitude
+	if mat ~= 0 then
+		if self.TravelImpulse.Magnitude > 700 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
+			if self.terrainImpactHeavySounds[self.terrainCollidedWith] ~= nil then
+				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[self.terrainCollidedWith], self.terrainImpactHeavySoundVariations[self.terrainCollidedWith]);
+			else
+				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[12], self.terrainImpactHeavySoundVariations[12]); -- default concrete
+			end
+			self.ragdollTerrainImpactDelay = math.random(200, 500)
+			self.ragdollTerrainImpactTimer:Reset()
+		elseif self.TravelImpulse.Magnitude > 400 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
+			if self.terrainImpactLightSounds[self.terrainCollidedWith] ~= nil then
+				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
+			else
+				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
+			end
+			self.ragdollTerrainImpactDelay = math.random(200, 500)
+			self.ragdollTerrainImpactTimer:Reset()
+		elseif self.TravelImpulse.Magnitude > 230 then
+			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crawl/Crawl"..math.random(1,5)..".wav", self.Pos)
+		end
+	end
+end
+
+--MovableObject:
+--    Prop HitWhatMOID, r/o
+--    Prop HitWhatTerrMaterial, r/o
+--    Prop HitWhatParticleUniqueID, r/o
 
 function SecurityAIBehaviours.handleHeadLoss(self)
 	if not (self.Head) then
