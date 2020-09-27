@@ -14,6 +14,14 @@ function Create(self)
 		poof.Lifetime = poof.Lifetime * RangeRand(0.9, 1.6) * 0.2
 		MovableMan:AddParticle(poof);
 	end
+	
+	-- epic pawnis armor pen
+	self.useArmorSystem = false;
+	self.bluntDamage = false;
+	self.RHA = self:GetNumberValue("RHA");
+	self.MPA = self:GetNumberValue("MPA");
+	self.desiredDamage = self:GetNumberValue("Damage");
+	
 	self.Vel = Vector(self.Vel.X, self.Vel.Y) * RangeRand(0.9,1.1)
 	self.canTravel = true
 	self.ricochetCount = 0
@@ -105,9 +113,40 @@ function Update(self)
 				local checkPix = SceneMan:GetMOIDPixel(checkOrigin.X, checkOrigin.Y)
 				if checkPix and checkPix ~= rte.NoMOID and MovableMan:GetMOFromID(checkPix).Team ~= self.Team then
 					local MO = ToMOSRotating(MovableMan:GetMOFromID(checkPix))
+					self.MOHit = MO;
 					local woundName = MO:GetEntryWoundPresetName()
 					local woundNameExit = MO:GetExitWoundPresetName()
 					hitMO = true
+					
+					-- epic pawnis armorpen
+					if MO:NumberValueExists("ArmorRHA") then -- if we have hit an MO that has this value, it has our armor system
+						self.useArmorSystem = true; -- tell the code to spawn proper damage pixel
+						local desiredWounds
+						if self:NumberValueExists("Wounds") then
+							desiredWounds = self:GetNumberValue("Wounds");
+						else
+							desiredWounds = 1;
+						end
+						local MORHA = MO:GetNumberValue("ArmorRHA");
+						local MOMPA = MO:GetNumberValue("ArmorMPA");
+						
+						-- ROUND ONE: RHA VS RHA
+						
+						local modifiedRHA = self.RHA - MORHA;
+						self.modifiedDamage = self.desiredDamage * (modifiedRHA / self.RHA)
+						self.modifiedWounds = math.floor((desiredWounds * (modifiedRHA / self.RHA)) + 0.5) -- ghetto round
+						if self.modifiedWounds < 1 then
+							self.modifiedWounds = 1;
+						end
+						if self.modifiedDamage < 1 then -- bad armor pen, we're going blunt
+							-- ROUND TWO: MPA VS MPA
+							self.bluntDamage = true; -- tell code later not to spawn any pixel
+							local modifiedMPA = self.MPA - MOMPA;
+							self.modifiedDamage = self.desiredDamage * (modifiedMPA / self.MPA)
+						end
+					end
+						
+					
 					if string.find(MO.Material.PresetName,"Flesh") or (woundName and string.find(woundName,"Flesh")) or (woundNameExit and string.find(woundNameExit,"Flesh")) then
 						hitGFXType = 1
 					elseif string.find(MO.Material.PresetName,"Metal") or (woundName and string.find(woundName,"Dent")) or (woundNameExit and string.find(woundNameExit,"Dent")) then
@@ -197,17 +236,40 @@ function Update(self)
 				if self:NumberValueExists("Wounds") then
 					maxi = self:GetNumberValue("Wounds");
 				end
-				for i = 1, maxi do
-					local pixel = CreateMOPixel("Real Bullet Damage");
-					pixel.Vel = Vector(hitVel.X, hitVel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
-					pixel.Sharpness = self.Sharpness
-					pixel.Mass = self.Mass
-					pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
-					pixel.Pos = self.Pos - Vector(self.Vel.X,self.Vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
-					pixel.Team = self.Team
-					pixel.IgnoresTeamHits = true;
-					MovableMan:AddParticle(pixel);
+				if self.modifiedWounds then
+					maxi = self.modifiedWounds;
 				end
+				if self.bluntDamage then
+					if self.modifiedDamage > 0 then
+						local actor = ToActor(self.MOHit:GetRootParent());
+						actor.Health = actor.Health - self.modifiedDamage;
+					end
+				else
+					for i = 1, maxi do
+						local pixel = CreateMOPixel("Real Bullet Damage");
+						pixel.Vel = Vector(hitVel.X, hitVel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
+						pixel.Sharpness = self.Sharpness
+						pixel.Mass = self.Mass
+						-- we assume in the following code that the wound's burstdamage is 5.
+						if self.useArmorSystem then
+							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
+							pixel:SetWhichMOToNotHit(self.MOHit, -1)
+						else
+							pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
+						end
+						pixel.Pos = self.Pos - Vector(self.Vel.X,self.Vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
+						pixel.Team = self.Team
+						pixel.IgnoresTeamHits = true;
+						MovableMan:AddParticle(pixel);
+					end
+				end
+				if self.MOHit then
+					print("hitmo: " .. tostring(self.MOHit))
+				end
+				print("armorsystem: " .. tostring(self.useArmorSystem))
+				print("blunt: " .. tostring(self.bluntDamage))
+				print("modified damage: " .. tostring(self.modifiedDamage))
+				print("modified wounds: " .. tostring(self.modifiedWounds))
 				
 				local effect = CreateMOSRotating(hitGFXType == 0 and "Real Bullet Hit Effect Default" or hitGFX[hitGFXType]);
 				if effect then
