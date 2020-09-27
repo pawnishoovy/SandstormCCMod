@@ -4,8 +4,8 @@ function Create(self)
 	-- Gear Light Armor
 	-- less gibs, more damage, more realistic deaths
 	local woundLimitMultiplier = 1.5
-	local woundDamageMultiplier = 1.5
-	self.DamageMultiplier = self.DamageMultiplier * woundDamageMultiplier
+	-- local woundDamageMultiplier = 1.5
+	-- self.DamageMultiplier = self.DamageMultiplier * woundDamageMultiplier
 	self.GibWoundLimit = self.GibWoundLimit * woundLimitMultiplier
     for limb in self.Attachables do
         limb.GibWoundLimit = limb.GibWoundLimit * woundLimitMultiplier
