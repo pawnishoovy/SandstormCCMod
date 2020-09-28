@@ -21,9 +21,6 @@ function Create(self)
 	self.RHA = self:GetNumberValue("RHA");
 	self.MPA = self:GetNumberValue("MPA");
 	self.desiredDamage = self:GetNumberValue("Damage");
-	self.desiredWounds = self:GetNumberValue("Wounds");
-	self.modifiedDamage = self.desiredDamage;
-	self.modifiedWounds = self.desiredWounds;
 	
 	self.Vel = Vector(self.Vel.X, self.Vel.Y) * RangeRand(0.9,1.1)
 	self.canTravel = true
@@ -253,14 +250,19 @@ function Update(self)
 						pixel.Vel = Vector(hitVel.X, hitVel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
 						pixel.Sharpness = self.Sharpness
 						pixel.Mass = self.Mass
-						-- we assume in the following code that the wound's burstdamage is 5.
-						pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
-						self.debugWoundMult = pixel.WoundDamageMultiplier;
 						pixel.Pos = self.Pos - Vector(self.Vel.X,self.Vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
 						pixel.Team = self.Team
 						pixel.IgnoresTeamHits = true;
 						MovableMan:AddParticle(pixel);
-						ToMovableObject(pixel):SetWhichMOToNotHit(self.MOHit, -1) -- broken
+						
+						-- we assume in the following code that the wound's burstdamage is 5.
+						if self.useArmorSystem then
+							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
+							pixel:SetWhichMOToNotHit(self.MOHit, -1)
+							print(self.MOHit.PresetName)
+						else
+							pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
+						end
 					end
 				end
 				if self.MOHit then
@@ -269,7 +271,6 @@ function Update(self)
 				print("armorsystem: " .. tostring(self.useArmorSystem))
 				print("blunt: " .. tostring(self.bluntDamage))
 				print("modified damage: " .. tostring(self.modifiedDamage))
-				print("woundmult: " .. tostring(self.debugWoundMult))
 				print("modified wounds: " .. tostring(self.modifiedWounds))
 				
 				local effect = CreateMOSRotating(hitGFXType == 0 and "Real Bullet Hit Effect Default" or hitGFX[hitGFXType]);
