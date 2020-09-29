@@ -29,9 +29,6 @@ function Create(self)
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/ReflectionOutdoors"};
 	
-	self.lastAge = self.Age
-	
-	self.Fire = false
 	self.FireTimer = Timer();
 	
 	
@@ -87,17 +84,6 @@ function Update(self)
 		end
 	end
 	
-	-- Check if switched weapons/hide in the inventory, etc.
-	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
-		if self.Fire then
-			self.Fire = false
-			if self.Magazine then
-				self.Magazine.RoundCount = self.Magazine.RoundCount + 1
-			end
-		end
-	end
-	self.lastAge = self.Age + 0
-	
 	-- Smoothing
 	local min_value = -math.pi;
 	local max_value = math.pi;
@@ -117,23 +103,15 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
-	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.FireTimer.ElapsedSimTimeMS / 500, 1), 2.0) * 0.1)
+	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.FireTimer.ElapsedSimTimeMS / 250, 1), 2.0) * 0.1)
 	
 	if self.FiredFrame then
-	
-		self.Fire = true;
 		self.FireTimer:Reset();
 	
 		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()
-		
-		local muzzleFlash = CreateAttachable("Muzzle Flash Pistol", "Base.rte");
-		muzzleFlash.ParentOffset = self.MuzzleOffset
-		muzzleFlash.Lifetime = TimerMan.DeltaTimeSecs * 1300
-		muzzleFlash.Frame = math.random(0, muzzleFlash.FrameCount - 1);
-		self:AddAttachable(muzzleFlash);
 		
 		if self.noiseEndSound then
 			if self.noiseEndSound:IsBeingPlayed() then
@@ -202,29 +180,6 @@ function Update(self)
 
 	
 		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		
-		local bullet = CreateMOSRotating("Bullet M9");
-		bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle + RangeRand(-0.05,0.05));
-		bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
-		bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
-		bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
-		if self.parent then
-			bullet.Team = self.parent.Team;
-			bullet.IgnoresTeamHits = true;
-		end
-		
-		local casing
-		casing = CreateMOSParticle("Casing Pistol");
-		casing.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
-		casing.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
-		MovableMan:AddParticle(casing);
-		MovableMan:AddParticle(bullet);
-		
-		self.Fire = false
-		
-		self.canShoot = false
-	else
-		self.Fire = false;
 	end
 	
 	-- PAWNIS RELOAD ANIMATION HERE
@@ -361,10 +316,10 @@ function Update(self)
 	end
 	
 	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 7
+		self.Magazine.RoundCount = 14
 		self.chamberOnReload = false;
 	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 8
+		self.Magazine.RoundCount = 15
 		self.chamberOnReload = false;
 	end	
 	-- PAWNIS RELOAD ANIMATION HERE
