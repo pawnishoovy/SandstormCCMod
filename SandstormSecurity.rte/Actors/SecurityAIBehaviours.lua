@@ -436,7 +436,7 @@ function SecurityAIBehaviours.handleMovement(self)
 				self.proneTerrainPlayed = false;
 				self.Stamina = self.Stamina - 6;
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Prone, self.movementSoundVariations.Prone);
+				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Crouch, self.movementSoundVariations.Crouch);
 			end
 		end
 	else

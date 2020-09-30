@@ -1,5 +1,7 @@
 
 function Create(self)
+
+	self.baseRTE = "Sandstorm.rte";
 	
 	-- Gear Light Armor
 	-- less gibs, more damage, more realistic deaths
@@ -10,6 +12,20 @@ function Create(self)
     for limb in self.Attachables do
         limb.GibWoundLimit = limb.GibWoundLimit * woundLimitMultiplier
 	end
+	
+	self.movementSounds = {Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Land/Land",
+	Jump = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Jump/Jump",
+	Crawl = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crawl/Crawl",
+	Sprint = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Prone/Prone",
+	Crouch = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crouch/Crouch",
+	Stand = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Stand/Stand",
+	Throw = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Throw/Throw",
+	Fall = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Fall/Fall",
+	walkPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Walk/Pre",
+	walkPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Walk/Post",
+	sprintPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Sprint/Pre",
+	sprintPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Sprint/Post",
+	Impact = 0,};
 	
 	-- RANDOM ARMOR AND UNIFORM
 	local skin = self:GetNumberValue("SkinTone")
