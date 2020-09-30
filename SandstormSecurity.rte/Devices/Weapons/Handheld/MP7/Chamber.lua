@@ -28,13 +28,13 @@ function Create(self)
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseOutdoors"};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.Loop = {["Variations"] = 15,
+	self.noiseSounds.Indoors.Loop = {["Variations"] = 5,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseIndoors"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 8,
+	self.noiseSounds.Indoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.Loop = {["Variations"] = 15,
+	self.noiseSounds.bigIndoors.Loop = {["Variations"] = 5,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseBigIndoors"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
+	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/MP7/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
