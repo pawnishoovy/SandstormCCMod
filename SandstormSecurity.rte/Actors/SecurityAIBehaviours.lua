@@ -474,13 +474,17 @@ function SecurityAIBehaviours.handleHealth(self)
 			self.Suppression = self.Suppression + 100;
 			self.Status = 1
 		elseif wasInjured then
-			self.Suppression = self.Suppression + 50;
+			self.Suppression = self.Suppression + 60;
 		elseif wasLightlyInjured then
 			SecurityAIBehaviours.createEmotion(self, 2, 4, 500);
 			self.Suppression = self.Suppression + math.random(9,13);
 		end
 		
 		if (wasInjured or wasHeavilyInjured) and self.Head then
+		
+			-- remove the shockwave value, so we don't care about it if we were close enough
+			-- to get injured this bad anyway.
+			self:RemoveNumberValue("Sandstorm Shockwave");
 			
 			if self.Health > 0 then
 				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
@@ -601,24 +605,35 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 		self.Stamina = math.min(self.Stamina, 100)
 		self.staminaUpdateTimer:Reset();
 	end
+	
+	if self:NumberValueExists("Sandstorm Shockwave") then
+		self:RemoveNumberValue("Sandstorm Shockwave");
+		self.Suppression = self.Suppression + 60;
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 5, 2, false);
+	end
+	
 	if (suppressionTimerReady) then
+		if self.Suppression > 50 then
+			if self.Suppression > 99 and self.suppressedVoicelineTimer:IsPastSimMS(self.suppressedVoicelineDelay) then
+				-- keep playing voicelines if we keep being suppressed to the max
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
+				self.suppressedVoicelineTimer:Reset();
+			end
+			if self.Suppressed == false then -- initial voiceline
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
+			end
+			self.Suppressed = true;
+		else
+			self.Suppressed = false;
+		end
 		self.Suppression = math.min(self.Suppression, 100)
 		if self.Suppression > 80 then
-			self.Suppression = self.Suppression - 15;
+			self.Suppression = self.Suppression - 2.5;
 		elseif self.Suppression > 0 then
 			self.Suppression = self.Suppression - 10;
 		end
 		self.Suppression = math.max(self.Suppression, 0)
 		self.suppressionUpdateTimer:Reset();
-		if self.Suppression > 50 then
-			self.Suppressed = true;
-			if self.suppressedVoicelineTimer:IsPastSimMS(self.suppressedVoicelineDelay) then
-				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
-				self.suppressedVoicelineTimer:Reset();
-			end				
-		else
-			self.Suppressed = false;
-		end
 	end
 end
 

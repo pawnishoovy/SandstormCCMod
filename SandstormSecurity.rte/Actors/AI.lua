@@ -240,6 +240,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Death/Incapacitated",
 			Suppressed =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Suppression/SuppressedByGunfire",
+			SuppressedByExplosion =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Suppression/SuppressedByExplosion",
 			Suppressing =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Suppressing/Suppressing",
 			witnessDeath = 
@@ -303,6 +305,7 @@ function Create(self)
 			seriousDeath = 15,
 			Incapacitated = 11,
 			Suppressed = 37,
+			SuppressedByExplosion = 6,
 			Suppressing = 5,
 			witnessDeath = 8,
 			witnessGruesomeDeath = 5,
@@ -347,6 +350,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Death/Incapacitated",
 			Suppressed =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Suppression/SuppressedByGunfire",
+			SuppressedByExplosion =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Suppression/SuppressedByExplosion",
 			Suppressing =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Suppressing/Suppressing",
 			witnessDeath = 
@@ -410,6 +415,7 @@ function Create(self)
 			seriousDeath = 18,
 			Incapacitated = 13,
 			Suppressed = 34,
+			SuppressedByExplosion = 5,
 			Suppressing = 5,
 			witnessDeath = 8,
 			witnessGruesomeDeath = 5,
@@ -460,6 +466,8 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/Incapacitated",
 		Suppressed =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Suppression/SuppressedByGunfire",
+		SuppressedByExplosion =
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Suppression/SuppressedByExplosion",
 		Suppressing =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Suppressing/Suppressing",
 		witnessDeath = 
@@ -523,6 +531,7 @@ function Create(self)
 		seriousDeath = 15,
 		Incapacitated = 12,
 		Suppressed = 34,
+		SuppressedByExplosion = 5,
 		Suppressing = 5,
 		witnessDeath = 8,
 		witnessGruesomeDeath = 5,
