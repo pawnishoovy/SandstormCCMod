@@ -34,7 +34,6 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 	if canOverridePriority == nil then
 		canOverridePriority = false;
 	end
-	print(effectName)
 	local usingPriority
 	if canOverridePriority == false then
 		usingPriority = priority - 1;
