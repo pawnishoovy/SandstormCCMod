@@ -58,6 +58,9 @@ function Update(self)
 				if dist.Magnitude < self.range then
 					local strSumCheck = SceneMan:CastStrengthSumRay(self.Pos, self.Pos + dist, 3, 0);
 					if strSumCheck < self.strength then
+						if IsActor(mo) and dist.Magnitude < (self.range * 0.6) then 
+							ToActor(mo):SetNumberValue("Sandstorm Shockwave", 1);
+						end
 						local massFactor = math.sqrt(1 + math.abs(mo.Mass));
 						local distFactor = 1 + dist.Magnitude * 0.1
 						local forceVector =	dist:SetMagnitude((self.strength - strSumCheck) /distFactor);

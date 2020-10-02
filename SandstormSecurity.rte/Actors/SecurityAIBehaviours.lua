@@ -34,6 +34,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 	if canOverridePriority == nil then
 		canOverridePriority = false;
 	end
+	print(effectName)
 	local usingPriority
 	if canOverridePriority == false then
 		usingPriority = priority - 1;
@@ -49,7 +50,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 					end
 					self.voiceSound:Stop();
 					self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-					self.lastPriority = usingPriority;
+					self.lastPriority = priority;
 					return true;
 				end
 			else
@@ -609,7 +610,7 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 	if self:NumberValueExists("Sandstorm Shockwave") then
 		self:RemoveNumberValue("Sandstorm Shockwave");
 		self.Suppression = self.Suppression + 60;
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 5, 2, false);
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 6, 2, false);
 	end
 	
 	if (suppressionTimerReady) then
