@@ -801,18 +801,25 @@ function SecurityAIBehaviours.handleVoicelines(self)
 			local Sounds = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSounds.witnessDeath or self.voiceSounds.witnessGruesomeDeath
 			local Vars = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSoundVariations.witnessDeath or self.voiceSoundVariations.witnessGruesomeDeath
 			
-			SecurityAIBehaviours.createVoiceSoundEffect(self, Sounds, Vars, 5, 4, true);		
+			SecurityAIBehaviours.createVoiceSoundEffect(self, Sounds, Vars, 4, 4, true);		
 			self.friendlyDownTimer:Reset();
 		end
 		self:RemoveNumberValue("Sandstorm Friendly Down")
 	end
 	
+	-- FLASH REACTION
+	
 	if self:NumberValueExists("Flashed") then
 		self:RemoveNumberValue("Flashed");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 4, true);
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 5, 4, true);
 	end
 		
+	-- SPOT FRAG GRENADE REACTION
 		
+	if self:NumberValueExists("Spotted Frag Grenade") then
+		self:RemoveNumberValue("Spotted Frag Grenade");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 4, true);
+	end
 
 end
 
