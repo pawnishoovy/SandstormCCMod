@@ -52,7 +52,7 @@ function Create(self)
 	self.sandRoll = {["Variations"] = 6,
 	["Path"] = dir.."Frag/Sand/RollSand"};]]
 	
-	self.sandHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
+	self.sandHit = {["IDs"] = {[8] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
 	self.sandHit.Hard = {["Variations"] = 8,
 	["Path"] = dir.."Flash/Dirt/HitHardDirt"};

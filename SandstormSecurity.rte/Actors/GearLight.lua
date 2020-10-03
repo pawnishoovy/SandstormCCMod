@@ -21,12 +21,28 @@ function Create(self)
 	Crouch = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crouch/Crouch",
 	Stand = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Stand/Stand",
 	Throw = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Throw/Throw",
+	throwStart = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/ThrowStart/ThrowStart",
 	Fall = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Fall/Fall",
 	walkPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Walk/Pre",
 	walkPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Walk/Post",
 	sprintPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Sprint/Pre",
 	sprintPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Sprint/Post",
 	Impact = 0,};
+	
+	self.movementSoundVariations = {Land = 5,
+	Jump = 5,
+	Impact = 5,
+	Crawl = 5,
+	Sprint = 5,
+	Crouch = 5,
+	Stand = 5,
+	Throw = 4,
+	throwStart = 4,
+	Fall = 5,
+	walkPre = 5,
+	walkPost = 5,
+	sprintPre = 5,
+	sprintPost = 5};	
 	
 	-- RANDOM ARMOR AND UNIFORM
 	local skin = self:GetNumberValue("SkinTone")

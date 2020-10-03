@@ -7,10 +7,10 @@ function Create(self)
 	["bigIndoors"] = nil};		
 	self.addSounds.Outdoors = {["Variations"] = 5,
 	["Path"] = dir.."/Specialty/Remote/Add"};
-	self.addSounds.Indoors = {["Variations"] = 10,
-	["Path"] = dir.."/Add/Indoors/AddIndoorsSmall"};
-	self.addSounds.bigIndoors = {["Variations"] = 10,
-	["Path"] = dir.."/Add/Indoors/AddIndoorsSmall"};
+	self.addSounds.Indoors = {["Variations"] = 5,
+	["Path"] = dir.."/Specialty/Remote/AddIndoors"};
+	self.addSounds.bigIndoors = {["Variations"] = 5,
+	["Path"] = dir.."/Specialty/Remote/AddIndoors"};
 	
 	self.ambienceSounds = {["Variations"] = 7,
 	["Path"] = dir.."/Ambience/AmbienceMedium"};
@@ -18,8 +18,8 @@ function Create(self)
 	self.reflectionSounds = {["Outdoors"] = nil,
 	["Indoors"] = nil,
 	["bigIndoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = dir.."/Specialty/Remote/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = {["Variations"] = 9,
+	["Path"] = dir.."/Reflection/Outdoors/ReflectionOutdoorsMedium"};
 	self.reflectionSounds.Indoors = {["Variations"] = 5,
 	["Path"] = dir.."/Reflection/Indoors/ReflectionIndoorsMedium"};
 	self.reflectionSounds.bigIndoors = {["Variations"] = 5,

@@ -190,20 +190,6 @@ function Create(self)
 	[178] =	5,
 	[182] =	5,};
 	
-	self.movementSoundVariations = {Land = 5,
-	Jump = 5,
-	Impact = 5,
-	Crawl = 5,
-	Sprint = 5,
-	Crouch = 5,
-	Stand = 5,
-	Throw = 4,
-	Fall = 5,
-	walkPre = 5,
-	walkPost = 5,
-	sprintPre = 5,
-	sprintPost = 5};
-	
 	self.miscSounds = {Impact = self.baseRTE.."/Actors/Shared/Sounds/ActorDamage/TerrainImpact/BoneBreak"};
 	
 	self.miscSoundVariations = {Impact = 5,};

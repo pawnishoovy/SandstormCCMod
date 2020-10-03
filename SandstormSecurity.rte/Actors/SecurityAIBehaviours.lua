@@ -673,44 +673,57 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 		-- RELOADING, SUPPRESSING
 
-		if (IsHDFirearm(self.EquippedItem) and self.EquippedItem:IsInGroup("Weapons")) then
-			local gun = ToHDFirearm(self.EquippedItem);
-			local reloading = gun:IsReloading();
+		if (IsHDFirearm(self.EquippedItem)) then
+			-- SPECIAL HANDLING FOR THROWING REMOTE BOMBS
+		
+			if ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Throw") then
+				ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Throw");
+				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
+			end
 			
-			if gun:IsActivated() then
-				if gun.FiredFrame then
-					self.gunShotCounter = self.gunShotCounter + 1;
-				end
-				if self.gunShotCounter > 30 then
-					self.Suppressing = true;
-				else
-					self.Suppressing = false;
-				end
-				if self.gunShotCounter > 60 and self.suppressingVoicelineTimer:IsPastSimMS(self.suppressingVoicelineDelay) then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 3, true);
-					self.suppressingVoicelineTimer:Reset();
-				end
-			else
-				self.gunShotCounter = 0;
-				self.Suppressing = false;
-			end			
-			
-			if (reloading) then
-				if (self.reloadVoicelinePlayed ~= true) then
-					if (self.Suppressed) then
-						if (math.random(1, 100) < 85) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedReload, self.voiceSoundVariations.suppressedReload, 5, 2, true);
-						end
-					elseif (math.random(1, 100) < 50) then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Reload, self.voiceSoundVariations.Reload, 4);
+			if ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Throwstart") then
+				ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Throwstart");
+				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
+			end
+			if self.EquippedItem:IsInGroup("Weapons") then
+				local gun = ToHDFirearm(self.EquippedItem);
+				local reloading = gun:IsReloading();
+				
+				if gun:IsActivated() then
+					if gun.FiredFrame then
+						self.gunShotCounter = self.gunShotCounter + 1;
 					end
-					self.reloadVoicelinePlayed = true;
+					if self.gunShotCounter > 30 then
+						self.Suppressing = true;
+					else
+						self.Suppressing = false;
+					end
+					if self.gunShotCounter > 60 and self.suppressingVoicelineTimer:IsPastSimMS(self.suppressingVoicelineDelay) then
+						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 3, true);
+						self.suppressingVoicelineTimer:Reset();
+					end
+				else
+					self.gunShotCounter = 0;
+					self.Suppressing = false;
+				end			
+				
+				if (reloading) then
+					if (self.reloadVoicelinePlayed ~= true) then
+						if (self.Suppressed) then
+							if (math.random(1, 100) < 85) then
+								SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedReload, self.voiceSoundVariations.suppressedReload, 5, 2, true);
+							end
+						elseif (math.random(1, 100) < 50) then
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Reload, self.voiceSoundVariations.Reload, 4);
+						end
+						self.reloadVoicelinePlayed = true;
+					end
+				else
+					self.reloadVoicelinePlayed = false;
 				end
 			else
 				self.reloadVoicelinePlayed = false;
 			end
-		else
-			self.reloadVoicelinePlayed = false;
 		end
 		
 		-- END RELOADING, SUPPRESSING
@@ -720,8 +733,11 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		if IsTDExplosive(self.EquippedItem) then
 			local activated = self:GetController():IsState(Controller.WEAPON_FIRE)
 			if (activated) then
-			
-				self.activatedExplosive = true;
+				
+				if self.activatedExplosive ~= true then
+					self.activatedExplosive = true;
+					SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
+				end
 			
 				-- very messy detection due to string.find being case sensitive
 				
@@ -798,6 +814,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		else
 			self.throwGrenadeVoicelinePlayed = false;
 		end
+		
 	end
 	-- DEATH REACTIONS
 	-- the dying actor actually lets us know whether to play a voiceline through 1-time detection and value-setting.

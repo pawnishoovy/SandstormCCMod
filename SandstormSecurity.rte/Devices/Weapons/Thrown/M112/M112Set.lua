@@ -24,7 +24,7 @@ function Create(self)
 	
 	--
 	
-	self.sandHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
+	self.sandHit = {["IDs"] = {[8] = "Exists"},
 	["Hit"] = nil};
 	self.sandHit.Hit = {["Variations"] = 3,
 	["Path"] = dir.."M112/ImpactSand"};

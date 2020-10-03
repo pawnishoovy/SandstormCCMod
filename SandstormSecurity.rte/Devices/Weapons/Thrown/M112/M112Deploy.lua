@@ -21,6 +21,38 @@ function Create(self)
 		
 		self.state = 0
 	end
+	
+	-- for planting sounds
+	-- impact sounds when thrown are done on M112Set.lua
+	
+	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Bomb/"
+	
+	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
+	["Hit"] = nil};
+	self.concreteHit.Hit = {["Variations"] = 3,
+	["Path"] = dir.."M112/ImpactConcrete"};
+	
+	--
+	
+	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
+	["Hit"] = nil};
+	self.dirtHit.Hit = {["Variations"] = 3,
+	["Path"] = dir.."M112/ImpactDirt"};
+	
+	--
+	
+	self.sandHit = {["IDs"] = {[8] = "Exists"},
+	["Hit"] = nil};
+	self.sandHit.Hit = {["Variations"] = 3,
+	["Path"] = dir.."M112/ImpactSand"};
+	
+	--
+	
+	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
+	["Hit"] = nil};
+	self.solidMetalHit.Hit = {["Variations"] = 3,
+	["Path"] = dir.."M112/ImpactSolidMetal"};	
+	
 end
 
 function Update(self)
@@ -71,12 +103,12 @@ function Update(self)
 					self.triggerVO = false
 				end
 				
-				
+				local hitLocation = Vector()
 				--local checkOrigin = self.parent.FGArm.Pos + Vector(self.StanceOffset.X, self.StanceOffset.Y - 2):RadRotate(self.RotAngle)
 				local checkOrigin = self.parent.FGArm.Pos + Vector(7 * self.FlipFactor, 2):RadRotate(self.RotAngle)
 				local checkVec = Vector(24 * self.FlipFactor, 0):RadRotate(self.RotAngle)
 				--local terrCheck = SceneMan:CastStrengthSumRay(checkOrigin, checkOrigin + checkVec, 2, 0);
-				local terrCheck = SceneMan:CastStrengthRay(checkOrigin, checkVec, 30, Vector(), 2, 0, SceneMan.SceneWrapsX)
+				local terrCheck = SceneMan:CastStrengthRay(checkOrigin, checkVec, 30, hitLocation, 2, 0, SceneMan.SceneWrapsX)
 				
 				local direction = self.RotAngle
 				
@@ -124,6 +156,7 @@ function Update(self)
 				
 				-- Stick
 				if terrCheck then
+					self.throwStartSet = false;
 					self.StanceOffset = Vector(6, 1)
 					self.SupportOffset = Vector(1, 1)
 					
@@ -133,8 +166,20 @@ function Update(self)
 					
 					if not activated then
 						self.state = 1
-						
-						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Attach.wav", self.Pos, -1, 0, 130, 1, 170, false)
+
+						local terrainID = SceneMan:GetTerrMatter(hitLocation.X, hitLocation.Y);
+						--AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Attach.wav", self.Pos, -1, 0, 130, 1, 170, false)
+						if self.dirtHit.IDs[terrainID] ~= nil then
+							self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+						elseif self.sandHit.IDs[terrainID] ~= nil then
+							self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+						elseif self.concreteHit.IDs[terrainID] ~= nil then
+							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+						elseif self.solidMetalHit.IDs[terrainID] ~= nil then
+							self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+						else -- default to concrete
+							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+						end
 						
 						local set = CreateMOSRotating(self.PresetName.." Active");
 						set.Pos = rayEndPos + Vector(2,0):RadRotate(direction);
@@ -149,10 +194,15 @@ function Update(self)
 					end
 				else
 				-- Throw
+					if self.throwStartSet ~= true then
+						self:SetNumberValue("Sandstorm Custom Throwstart", 1)
+						self.throwStartSet = true;
+					end
 					self.StanceOffset = Vector(-12, 3)
 					self.SupportOffset = Vector(90, 90)
 					
 					if not activated then
+						self:SetNumberValue("Sandstorm Custom Throw", 1)
 						self.state = 1
 						
 						local set = CreateMOSRotating(self.PresetName.." Active");
