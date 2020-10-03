@@ -14,8 +14,8 @@ function Create(self)
 	end
 	
 	self.movementSounds = {
-	Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Land/LandGear",
-	Jump = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Jump/JumpGear",
+	Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Land/Land",
+	Jump = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Jump/Jump",
 	Crawl = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Crawl/Crawl",
 	Sprint = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Prone/Prone",
 	Crouch = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Crouch/Crouch",
