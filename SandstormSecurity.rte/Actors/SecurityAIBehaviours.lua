@@ -717,7 +717,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		
 		-- THROWING GRENADES
 	
-		if (IsTDExplosive(self.EquippedItem)) then
+		if IsTDExplosive(self.EquippedItem) then
 			local activated = self:GetController():IsState(Controller.WEAPON_FIRE)
 			if (activated) then
 			
@@ -731,50 +731,50 @@ function SecurityAIBehaviours.handleVoicelines(self)
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFlashOut, self.voiceSoundVariations.suppressedFlashOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.flashOut, self.voiceSoundVariations.flashOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.flashOut, self.voiceSoundVariations.flashOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Frag")) or (string.find(self.EquippedItem.PresetName, "HE")) or (string.find(self.EquippedItem.PresetName, "frag")) or 
 					(ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Frag Grenade")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Incendiary")) or (string.find(self.EquippedItem.PresetName, "Flame")) or (string.find(self.EquippedItem.PresetName, "incendiary")) or (string.find(self.EquippedItem.PresetName, "flame")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Incendiary Grenade")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedIncendiaryOut, self.voiceSoundVariations.suppressedIncendiaryOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.incendiaryOut, self.voiceSoundVariations.incendiaryOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.incendiaryOut, self.voiceSoundVariations.incendiaryOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Mine")) or (string.find(self.EquippedItem.PresetName, "Claymore")) or (string.find(self.EquippedItem.PresetName, "mine")) or (string.find(self.EquippedItem.PresetName, "claymore")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Mine")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMineOut, self.voiceSoundVariations.suppressedMineOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.mineOut, self.voiceSoundVariations.mineOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.mineOut, self.voiceSoundVariations.mineOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Molotov")) or (string.find(self.EquippedItem.PresetName, "Bottle Bomb")) or (string.find(self.EquippedItem.PresetName, "molotov")) or (string.find(self.EquippedItem.PresetName, "bottle bomb")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Molotov")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMolotovOut, self.voiceSoundVariations.suppressedMolotovOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.molotovOut, self.voiceSoundVariations.molotovOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.molotovOut, self.voiceSoundVariations.molotovOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Remote")) or (string.find(self.EquippedItem.PresetName, "C4")) or (string.find(self.EquippedItem.PresetName, "Timed")) or (string.find(self.EquippedItem.PresetName, "remote")) or (string.find(self.EquippedItem.PresetName, "c4")) or (string.find(self.EquippedItem.PresetName, "timed")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Remote Bomb")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Smoke")) or (string.find(self.EquippedItem.PresetName, "smoke")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Smoke Grenade")) then
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedSmokeOut, self.voiceSoundVariations.suppressedSmokeOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.smokeOut, self.voiceSoundVariations.smokeOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.smokeOut, self.voiceSoundVariations.smokeOut, 5, 2);
 						end
 					else -- default frag nade
 						if (self.Suppressed) then
 							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5);
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
 						end
 					end
 					self.throwGrenadeVoicelinePlayed = true;
@@ -786,11 +786,19 @@ function SecurityAIBehaviours.handleVoicelines(self)
 					SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
 				end
 			end
+		elseif IsHDFirearm(self.EquippedItem) and ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Activation") then
+			if (string.find(self.EquippedItem.PresetName, "Remote")) or (string.find(self.EquippedItem.PresetName, "C4")) or (string.find(self.EquippedItem.PresetName, "Timed")) or (string.find(self.EquippedItem.PresetName, "remote")) or (string.find(self.EquippedItem.PresetName, "c4")) or (string.find(self.EquippedItem.PresetName, "timed")) or (ToHDFirearm(self.EquippedItem):IsInGroup("Sandstorm Remote Bomb")) then
+				if (self.Suppressed) then
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
+				else
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
+				end
+			end
+			ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Activation")
 		else
 			self.throwGrenadeVoicelinePlayed = false;
 		end
 	end
-	
 	-- DEATH REACTIONS
 	-- the dying actor actually lets us know whether to play a voiceline through 1-time detection and value-setting.
 	-- 0 = normal, 1 = gruesome
@@ -999,6 +1007,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 					self.voiceSound = nil;
 				end
 			end
+			--[[
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -1018,7 +1027,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 						end
 					end
 				end
-			end
+			end]]
 			self.voiceSound = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Death/HeadGib" ..math.random(1, 3) .. ".wav", self.Pos, -1, 0, 130, 1, 400, false);
 		end
 		if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then
