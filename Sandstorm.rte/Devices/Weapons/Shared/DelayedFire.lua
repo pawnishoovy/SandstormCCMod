@@ -8,6 +8,8 @@ function Create(self)
 	
 	self.lastAge = self.Age + 0
 	
+	self.fireDelayTimer = Timer()
+	
 	self.activated = false
 	
 	local ms = 1 / (self.RateOfFire / 60) * 1000
@@ -39,6 +41,10 @@ function Update(self)
 		end
 	end
 	self.lastAge = self.Age + 0
+	
+	if self:DoneReloading() then
+		self.fireDelayTimer:Reset()
+	end
 
 	if self.parent then
 		local fire = self:IsActivated()
@@ -46,14 +52,14 @@ function Update(self)
 		
 		--if self.parent:GetController():IsState(Controller.WEAPON_FIRE) and not self:IsReloading() then
 		if fire and not self:IsReloading() then
-			if not self.activated and not self.delayedFire then
+			if not self.activated and not self.delayedFire and (self.Chamber == nil or self.Chamber == false) and self.fireDelayTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
 				self.activated = true
 				
-				-- REPLACE WITH YOUR SOUND
 				if self.preSounds then
 					AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 				end
-				-- REPLACE WITH YOUR SOUND
+				
+				self.fireDelayTimer:Reset()
 				
 				self.delayedFire = true
 				self.delayedFireTimer:Reset()

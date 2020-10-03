@@ -13,7 +13,8 @@ function Create(self)
         limb.GibWoundLimit = limb.GibWoundLimit * woundLimitMultiplier
 	end
 	
-	self.movementSounds = {Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Land/Land",
+	self.movementSounds = {
+	Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Land/Land",
 	Jump = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Jump/Jump",
 	Crawl = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crawl/Crawl",
 	Sprint = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Light/Prone/Prone",
