@@ -213,15 +213,11 @@ function Update(self)
 		if self:IsReloading() then
 			self.Reloading = true;
 			self.reloadCycle = true;
-			if self.ammoCount == 0 then
-				self.reloadPhase = 0;
-			else
-				self.reloadPhase = 3;
-			end
 		end
 		self.reChamber = false;
 		self.Chamber = true;
 		self.Casing = true;
+		self.reloadPhase = 0;
 	end
 	
 	if self:IsReloading() and (not self.Chamber) then -- if we start reloading from "scratch"
@@ -487,6 +483,8 @@ function Update(self)
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 						
 					elseif self.reloadPhase == 3 then
@@ -499,6 +497,8 @@ function Update(self)
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 					
 					elseif self.reloadPhase == 4 then
@@ -510,11 +510,15 @@ function Update(self)
 								self.ReloadTime = 0;
 								self.reloadPhase = 0;
 								self.Chamber = false;
+								self.Reloading = false;
+								self.phaseOnStop = nil;
 							end
 						else
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 						
 					else
