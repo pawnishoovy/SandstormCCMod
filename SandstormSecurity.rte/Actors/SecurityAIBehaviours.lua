@@ -741,7 +741,8 @@ function SecurityAIBehaviours.handleVoicelines(self)
 			
 				-- very messy detection due to string.find being case sensitive
 				
-				if (self.throwGrenadeVoicelinePlayed ~= true) then
+				if (self.throwGrenadeVoicelinePlayed ~= true) and 
+				(not ToTDExplosive(self.EquippedItem):NumberValueExists("No Throw VO")) then
 					if (string.find(self.EquippedItem.PresetName, "Stun")) or (string.find(self.EquippedItem.PresetName, "Flash")) or (string.find(self.EquippedItem.PresetName, "stun")) or (string.find(self.EquippedItem.PresetName, "flash")) or
 					(ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Flashbang Grenade")) then
 						if (self.Suppressed) then
@@ -841,9 +842,17 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		
 	-- SPOT FRAG GRENADE REACTION
 		
-	if self:NumberValueExists("Spotted Frag Grenade") then
-		self:RemoveNumberValue("Spotted Frag Grenade");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 4, 4, true);
+	if self:NumberValueExists("Spotted Grenade") then
+		self:RemoveNumberValue("Spotted Grenade");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotGrenade, self.voiceSoundVariations.spotGrenade, 4, 4, false);
+		self.Suppression = self.Suppression + 40;
+	end
+	
+	-- PICK UP LIVE GRENADE REACTION
+	
+	if self:NumberValueExists("Tossback Grenade") then
+		self:RemoveNumberValue("Tossback Grenade");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Tossback, self.voiceSoundVariations.Tossback, 4, 4, false);
 	end
 
 end

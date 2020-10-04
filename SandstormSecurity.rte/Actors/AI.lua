@@ -286,7 +286,9 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Throw/SmokeOut",		
 			suppressedSmokeOut =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Throw/SuppressedSmokeOut",
-			spotFrag =
+			Tossback = 
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Tossback/Tossback",
+			spotGrenade =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotFrag"};			
 			
 			self.voiceSoundVariations = {Death = 19,
@@ -323,7 +325,8 @@ function Create(self)
 			suppressedRemoteOut = 5,	
 			smokeOut = 8,		
 			suppressedSmokeOut = 8,
-			spotFrag = 5};				
+			Tossback = 5,
+			spotGrenade = 5};				
 		else
 			skin = 0
 			self.baseHeadFrame = headFrames * math.random(6, 10);
@@ -399,7 +402,9 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Throw/SmokeOut",		
 			suppressedSmokeOut =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Throw/SuppressedSmokeOut",
-			spotFrag =
+			Tossback = 
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Tossback/Tossback",
+			spotGrenade =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotFrag"};
 			
 			self.voiceSoundVariations = {Death = 20,
@@ -436,7 +441,8 @@ function Create(self)
 			suppressedRemoteOut = 5,	
 			smokeOut = 8,		
 			suppressedSmokeOut = 8,
-			spotFrag = 5};	
+			Tossback = 5,
+			spotGrenade = 5};	
 		end
 	else	-- Female
 	
@@ -518,7 +524,9 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Throw/SmokeOut",		
 		suppressedSmokeOut =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Throw/SuppressedSmokeOut",
-		spotFrag =
+		Tossback = 
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Tossback/Tossback",
+		spotGrenade =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotFrag"};
 		
 		self.voiceSoundVariations = {Death = 20,
@@ -555,7 +563,8 @@ function Create(self)
 		suppressedRemoteOut = 5,	
 		smokeOut = 8,		
 		suppressedSmokeOut = 8,
-		spotFrag = 5};	
+		Tossback = 5,
+		spotGrenade = 5};	
 		
 	end
 	self:SetNumberValue("SkinTone", skin)
