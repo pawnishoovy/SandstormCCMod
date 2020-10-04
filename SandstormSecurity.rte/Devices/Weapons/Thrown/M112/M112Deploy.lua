@@ -60,6 +60,9 @@ function Update(self)
 	if self.ID == self.RootID then
 		self.parent = nil;
 		self.parentSet = false;
+		self:RemoveNumberValue("Sandstorm Custom Activation");
+		self:RemoveNumberValue("Sandstorm Custom Throw");
+		self:RemoveNumberValue("Sandstorm Custom Throwstart");
 	elseif self.parentSet == false then
 		local actor = MovableMan:GetMOFromID(self.RootID);
 		if actor and IsAHuman(actor) then
