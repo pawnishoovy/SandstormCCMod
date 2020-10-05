@@ -64,7 +64,7 @@ function Update(self)
 	self.ToSettle = false
 	self:NotResting()
 	
-	if self.Age > 30000 then
+	if self.Age > 90000 then
 		self.ToDelete = true
 	end
 	

@@ -83,6 +83,7 @@ function Create(self)
 end
 
 function Update(self)
+	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -224,7 +225,7 @@ function Update(self)
 					self.phaseOnStop = 1;
 					local fake
 					fake = CreateMOSRotating("Fake Magazine MOSRotating AUGA3");
-					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
+					fake.Pos = self.Pos + Vector(-10*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 0.5):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);

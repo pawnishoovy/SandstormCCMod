@@ -89,10 +89,10 @@ end
 
 function Update(self)
 
-	print("tube1: " .. self.tube1AmmoCount)
-	print("tube2: " .. self.tube2AmmoCount)
-	print("tube3: " .. self.tube3AmmoCount)
-	print(self.roundChambered)
+	--print("tube1: " .. self.tube1AmmoCount)
+	--print("tube2: " .. self.tube2AmmoCount)
+	--print("tube3: " .. self.tube3AmmoCount)
+	--print(self.roundChambered)
 
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 	
