@@ -100,6 +100,8 @@ function Update(self)
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 	if self.roundChambered then
 		self.Frame = 0;
+	else
+		self.Frame = 2;
 	end
 	
 	if self.ID == self.RootID then
@@ -388,11 +390,11 @@ function Update(self)
 						self.reChamber = false;
 					end
 					
-					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.25)) then
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*3.5)) then
 						self.Frame = 0;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
 						self.Frame = 1;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
 						self.Frame = 6;
 					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
 						self.Frame = 5;
@@ -400,9 +402,9 @@ function Update(self)
 					
 				elseif self.reloadPhase == 1 then			
 			
-					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
 						self.Frame = 0;
-					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
 						self.Frame = 4;
 					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
 						self.Frame = 3;
@@ -420,6 +422,7 @@ function Update(self)
 							self.afterSoundPlayed = false;
 							self.prepareSoundPlayed = false;
 						end
+						self.nextPhase = nil;
 					end
 					
 					if not self.shellInDone then
