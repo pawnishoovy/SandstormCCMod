@@ -843,7 +843,19 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	if self:NumberValueExists("Spotted Grenade") then
 		self:RemoveNumberValue("Spotted Grenade");
 		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotGrenade, self.voiceSoundVariations.spotGrenade, 4, 4, false);
-		self.Suppression = self.Suppression + 40;
+		if self.Suppression < 20 then
+			self.Suppression = self.Suppression + 15;
+		end
+	end
+	
+	-- SPOT REMOTE BOMB REACTION
+	
+	if self:NumberValueExists("Spotted Remote") then
+		self:RemoveNumberValue("Spotted Remote");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotRemote, self.voiceSoundVariations.spotRemote, 4, 4, false);
+		if self.Suppression < 20 then
+			self.Suppression = self.Suppression + 25;
+		end
 	end
 	
 	-- PICK UP LIVE GRENADE REACTION

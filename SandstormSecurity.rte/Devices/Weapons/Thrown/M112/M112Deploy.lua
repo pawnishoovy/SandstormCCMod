@@ -187,6 +187,7 @@ function Update(self)
 						local set = CreateMOSRotating(self.PresetName.." Active");
 						set.Pos = rayEndPos + Vector(2,0):RadRotate(direction);
 						set.PinStrength = 100
+						set:SetNumberValue("Set", 1);
 						set.RotAngle = direction + math.pi
 						set.Team = self.Team
 						set.IgnoresTeamHits = true

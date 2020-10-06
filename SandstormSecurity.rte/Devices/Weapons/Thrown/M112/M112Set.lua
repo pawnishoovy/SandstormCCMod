@@ -70,6 +70,14 @@ function Update(self)
 	
 	self.workingTravelImpulse = (self.Vel - self.lastVel) / TimerMan.DeltaTimeSecs * self.Vel.Magnitude * 0.1
 	self.lastVel = Vector(self.Vel.X, self.Vel.Y)
+	
+	if not self:NumberValueExists("Set") then
+		if self.lastVel.Magnitude > 3 then
+			self.Live = true;
+		else
+			self.Live = false;
+		end
+	end
 
 	if self.impactTimer:IsPastSimMS(self.impactCooldown) then
 		self.impactSoundAllowed = true;
