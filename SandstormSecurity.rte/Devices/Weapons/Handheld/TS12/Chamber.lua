@@ -95,6 +95,9 @@ function Update(self)
 	--print(self.roundChambered)
 
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
+	if self.roundChambered then
+		self.Frame = 0;
+	end
 	
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -130,6 +133,7 @@ function Update(self)
 	
 	if self.FiredFrame then
 		self.roundChambered = false;
+		self.Frame = 2;
 		self.horizontalAnim = self.horizontalAnim + 2
 		
 		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
@@ -370,7 +374,25 @@ function Update(self)
 						self.reChamber = false;
 					end
 					
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.25)) then
+						self.Frame = 0;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+						self.Frame = 1;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+						self.Frame = 6;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+						self.Frame = 5;
+					end
+					
 				elseif self.reloadPhase == 1 then			
+			
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+						self.Frame = 0;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+						self.Frame = 4;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+						self.Frame = 3;
+					end
 					
 				elseif self.reloadPhase == 2 then
 				
