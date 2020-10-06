@@ -195,11 +195,9 @@ function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 end
 
 function SecurityAIBehaviours.handleMovement(self)
-
-	local cont = self:GetController()
 	
-	local crouching = cont:IsState(Controller.BODY_CROUCH)
-	local moving = cont:IsState(Controller.MOVE_LEFT) or self:GetController():IsState(Controller.MOVE_RIGHT);
+	local crouching = self.controller:IsState(Controller.BODY_CROUCH)
+	local moving = self.controller:IsState(Controller.MOVE_LEFT) or self.controller:IsState(Controller.MOVE_RIGHT);
 	
 	-- Leg Collision Detection system
     --local i = 0
@@ -218,7 +216,7 @@ function SecurityAIBehaviours.handleMovement(self)
 			local mat = nil
 			local offsetY = foot.Radius * 0.7 - math.max(self.Vel.Y * GetPPM() * TimerMan.DeltaTimeSecs, 0) * 4
 			-- Walk mode (Precise)
-			if cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true then
+			if self.controller:IsState(Controller.MOVE_LEFT) == true or self.controller:IsState(Controller.MOVE_RIGHT) == true then
 				local maxi = 2
 				for i = 0, maxi do
 					local offsetX = 4
@@ -244,7 +242,7 @@ function SecurityAIBehaviours.handleMovement(self)
 				end
 			end
 			
-			local movement = (cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true or self.Vel.Magnitude > 3)
+			local movement = (self.controller:IsState(Controller.MOVE_LEFT) == true or self.controller:IsState(Controller.MOVE_RIGHT) == true or self.Vel.Magnitude > 3)
 			if not (crouching) then -- don't do any footstep sounds if we're crawling
 				if mat ~= nil then
 					--PrimitiveMan:DrawTextPrimitive(footPos, mat.PresetName, true, 0);
@@ -292,13 +290,13 @@ function SecurityAIBehaviours.handleMovement(self)
 	end
 	
 	-- Custom Jump
-	if cont:IsState(Controller.BODY_JUMPSTART) == true and cont:IsState(Controller.BODY_CROUCH) == false and self.jumpTimer:IsPastSimMS(self.jumpDelay) and not self.isJumping then
+	if self.controller:IsState(Controller.BODY_JUMPSTART) == true and self.controller:IsState(Controller.BODY_CROUCH) == false and self.jumpTimer:IsPastSimMS(self.jumpDelay) and not self.isJumping then
 		if self.feetContact[1] == true or self.feetContact[2] == true then
 			local jumpVec = Vector(0,-3.5)
 			local jumpWalkX = 3
-			if cont:IsState(Controller.MOVE_LEFT) == true then
+			if self.controller:IsState(Controller.MOVE_LEFT) == true then
 				jumpVec.X = -jumpWalkX
-			elseif cont:IsState(Controller.MOVE_RIGHT) == true then
+			elseif self.controller:IsState(Controller.MOVE_RIGHT) == true then
 				jumpVec.X = jumpWalkX
 			end
 			SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Jump, self.movementSoundVariations.Jump);
@@ -334,13 +332,13 @@ function SecurityAIBehaviours.handleMovement(self)
 				end
 			end
 		else
-			if cont:IsState(Controller.BODY_JUMP) == true and not self.jumpBoost:IsPastSimMS(200) then
+			if self.controller:IsState(Controller.BODY_JUMP) == true and not self.jumpBoost:IsPastSimMS(200) then
 				self.Vel = self.Vel - SceneMan.GlobalAcc * TimerMan.DeltaTimeSecs * 1.0 -- Stop the gravity
 			end
-			--cont:SetState(Controller.MOVE_LEFT,false);
-			--cont:SetState(Controller.MOVE_RIGHT,false);
-			--if cont:IsState(Controller.MOVE_LEFT) == false and cont:IsState(Controller.MOVE_LEFT) == false then
-			--	cont:SetState(Controller.BODY_CROUCH,true);
+			--self.controller:SetState(Controller.MOVE_LEFT,false);
+			--self.controller:SetState(Controller.MOVE_RIGHT,false);
+			--if self.controller:IsState(Controller.MOVE_LEFT) == false and self.controller:IsState(Controller.MOVE_LEFT) == false then
+			--	self.controller:SetState(Controller.BODY_CROUCH,true);
 			--end
 		end
 	end
@@ -350,7 +348,7 @@ function SecurityAIBehaviours.handleMovement(self)
 	--]]
 	
 	-- Sprint
-	local input = ((cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true) and not (cont:IsState(Controller.MOVE_LEFT) == true and cont:IsState(Controller.MOVE_RIGHT) == true))
+	local input = ((self.controller:IsState(Controller.MOVE_LEFT) == true or self.controller:IsState(Controller.MOVE_RIGHT) == true) and not (self.controller:IsState(Controller.MOVE_LEFT) == true and self.controller:IsState(Controller.MOVE_RIGHT) == true))
 	
 	-- Double Tap
 	if self.doubleTapState == 0 then
@@ -369,7 +367,7 @@ function SecurityAIBehaviours.handleMovement(self)
 	end
 	
 	--isSprinting
-	self.aiSprint = not self:IsPlayerControlled() and (cont:IsState(Controller.MOVE_LEFT) == true or cont:IsState(Controller.MOVE_RIGHT) == true)
+	self.aiSprint = not self:IsPlayerControlled() and (self.controller:IsState(Controller.MOVE_LEFT) == true or self.controller:IsState(Controller.MOVE_RIGHT) == true)
 	
 	--local movementMultiplier = 1
 	local movementMultiplier = 1 - (0.2 * (1 - (self.Stamina / 100)))
@@ -538,7 +536,7 @@ function SecurityAIBehaviours.handleHealth(self)
 			self:SwapNextInventory(item, true);
 		end
 		if math.random(1,2) < 2 then
-			self:GetController():SetState(Controller.WEAPON_DROP,true);
+			self.controller:SetState(Controller.WEAPON_DROP,true);
 		end
 	end
 		
@@ -731,7 +729,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		-- THROWING GRENADES
 	
 		if IsTDExplosive(self.EquippedItem) then
-			local activated = self:GetController():IsState(Controller.WEAPON_FIRE)
+			local activated = self.controller:IsState(Controller.WEAPON_FIRE)
 			if (activated) then
 				
 				if self.activatedExplosive ~= true then
@@ -859,7 +857,7 @@ end
 
 function SecurityAIBehaviours.handleDying(self)
 
-	self:GetController().Disabled = true;
+	self.controller.Disabled = true;
 	self.HUDVisible = false
 	if self.allowedToDie == false then
 		self.Health = 1;

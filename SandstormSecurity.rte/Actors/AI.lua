@@ -6,11 +6,16 @@ require("Actors/SecurityAIBehaviours")
 
 function Create(self)
 	self.AI = NativeHumanAI:Create(self)
-	self.RTE = "SandstormSecurity.rte";
-	self.baseRTE = "Sandstorm.rte";
+	--You can turn features on and off here
+	self.armSway = true;
+	self.automaticEquip = true;
+	self.alternativeGib = true;
+	self.visibleInventory = true;
 	
 	-- Start modded code --
 	
+	self.RTE = "SandstormSecurity.rte";
+	self.baseRTE = "Sandstorm.rte";	
 	
 	-- TERRAIN SOUNDS
 	
@@ -637,8 +642,7 @@ function Create(self)
 	self.isSprinting = false
 	self.doubleTapTimer = Timer();
 	self.doubleTapState = 0
-	
-	self.sprintMultiplier = 1.3 / 0.8
+
 	self.sprintPushForceDenominator = 1.2 / 0.8
 	
 	self.limbPathDefaultSpeed0 = self:GetLimbPathSpeed(0) * 0.8
@@ -717,10 +721,24 @@ function OnCollideWithTerrain(self, terrainID)
 	--end
 end
 
--- Start modded code--
-
 function Update(self)
 
+	self.controller = self:GetController();
+	
+	if self.alternativeGib then
+		HumanFunctions.DoAlternativeGib(self);
+	end
+	if self.automaticEquip then
+		HumanFunctions.DoAutomaticEquip(self);
+	end
+	if self.armSway then
+		HumanFunctions.DoArmSway(self, (self.Health/self.MaxHealth));	--Argument: shove strength
+	end
+	if self.visibleInventory then
+		HumanFunctions.DoVisibleInventory(self, false);	--Argument: whether to show all items
+	end
+	
+	-- Start modded code--
 	
 	if (UInputMan:KeyPressed(26)) and self:IsPlayerControlled() then
 		self.Health = self.Health -26

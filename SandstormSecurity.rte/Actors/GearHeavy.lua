@@ -42,7 +42,9 @@ function Create(self)
 	walkPre = 5,
 	walkPost = 5,
 	sprintPre = 5,
-	sprintPost = 5};	
+	sprintPost = 5};
+	
+	self.sprintMultiplier = 1.2;
 	
 	-- RANDOM ARMOR AND UNIFORM
 	local skin = self:GetNumberValue("SkinTone")
