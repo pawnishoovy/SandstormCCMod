@@ -389,7 +389,6 @@ function Update(self)
 				self.afterSoundPlayed = true;
 				if self.afterSoundPath then
 					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
-					print(self.afterSoundPath)
 				end
 			end
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
