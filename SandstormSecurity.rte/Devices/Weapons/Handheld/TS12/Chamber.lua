@@ -75,6 +75,8 @@ function Create(self)
 	self.boltBackAfterDelay = 400;
 	self.boltForwardPrepareDelay = 200;
 	self.boltForwardAfterDelay = 200;
+	self.switchSidePrepareDelay = 600;
+	self.switchSideAfterDelay = 500;
 	
 	-- phases:
 	-- 0 TurnChamber
@@ -82,6 +84,7 @@ function Create(self)
 	-- 2 ShellIn
 	-- 3 BoltBack
 	-- 4 BoltForward
+	-- 5 SwitchSide
 	
 	self.reloadPhase = 0;
 	
@@ -340,6 +343,17 @@ function Update(self)
 				self.afterSoundVars = 1;
 				
 				self.rotationTarget = -5
+			elseif self.reloadPhase == 5 then
+				self.reloadDelay = self.switchSidePrepareDelay;
+				self.afterDelay = self.switchSideAfterDelay;
+				self.prepareSoundPath = 
+				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/SwitchSidePrepare";
+				self.prepareSoundVars = 1;
+				self.afterSoundPath = 
+				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/SwitchSide";
+				self.afterSoundVars = 1;
+				
+				self.rotationTarget = 3;
 			end
 			
 			if self.prepareSoundPlayed ~= true then
@@ -414,6 +428,9 @@ function Update(self)
 						if not (self.tube1AmmoCount == 0 and self.tube2AmmoCount == 0 and self.tube3AmmoCount == 0) then
 							if self.tube2AmmoCount < 4 then
 								self.tube2AmmoCount = self.tube2AmmoCount + 1;
+								if self.tube2AmmoCount == 4 then
+									self.nextPhase = 5;
+								end
 							elseif self.tube1AmmoCount < 4 then
 								self.tube1AmmoCount = self.tube1AmmoCount + 1;
 								if self.tube1AmmoCount == 4 then
