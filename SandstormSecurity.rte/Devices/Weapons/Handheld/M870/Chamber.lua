@@ -489,6 +489,8 @@ function Update(self)
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 						
 					elseif self.reloadPhase == 3 then
@@ -501,6 +503,8 @@ function Update(self)
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 					
 					elseif self.reloadPhase == 4 then
@@ -512,11 +516,15 @@ function Update(self)
 								self.ReloadTime = 0;
 								self.reloadPhase = 0;
 								self.Chamber = false;
+								self.Reloading = false;
+								self.phaseOnStop = nil;
 							end
 						else
 							self.ReloadTime = 0;
 							self.reloadPhase = 0;
 							self.Chamber = false;
+							self.Reloading = false;
+							self.phaseOnStop = nil;
 						end
 						
 					else
