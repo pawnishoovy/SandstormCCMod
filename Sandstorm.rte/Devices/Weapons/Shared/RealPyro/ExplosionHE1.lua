@@ -25,6 +25,13 @@ function Create(self)
 	self.reflectionSounds.bigIndoors = {["Variations"] = 6,
 	["Path"] = dir.."/Reflection/BigIndoors/ReflectionBigIndoorsSmall"};
 	
+	self.debrisSounds = {["Indoors"] = nil,
+	["bigIndoors"] = nil};
+	self.debrisSounds.Indoors = {["Variations"] = 5,
+	["Path"] = dir.."/Debris/Indoors/DebrisIndoorsMedium"};
+	self.debrisSounds.bigIndoors = {["Variations"] = 5,
+	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsMedium"};
+	
 	local outdoorRays = 0;
 	
 	local indoorRays = 0;
@@ -58,6 +65,10 @@ function Create(self)
 	end
 	
 	-- DEBRIS
+	
+	if outdoorRays == 0 and indoorRays >= 3 then
+		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.Indoors.Path .. math.random(1, self.debrisSounds.Indoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+	end
 	
 	if outdoorRays >= 2 then
 		self.addSound = AudioMan:PlaySound(self.addSounds.Outdoors.Path .. math.random(1, self.addSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
