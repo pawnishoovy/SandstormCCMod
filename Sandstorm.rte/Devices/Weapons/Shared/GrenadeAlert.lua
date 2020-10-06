@@ -5,7 +5,7 @@ function Create(self)
 	-- self.Live should be true once the nade has been activated AND thrown.
 	
 	self.grenadeAlertTimer = Timer();
-	self.grenadeAlertDelay = 600;
+	self.grenadeAlertDelay = 1500; -- initial
 	
 	self.attemptAlert = true;
 	
@@ -22,6 +22,7 @@ function Update(self)
 			self.parentSet = false;
 			self.parent = nil;
 			if self.attemptAlert == true and self.grenadeAlertTimer:IsPastSimMS(self.grenadeAlertDelay) then
+				self.grenadeAlertDelay = 600;
 				self.grenadeAlertTimer:Reset();
 				for actor in MovableMan.Actors do
 					if actor.Team ~= self.Team then
