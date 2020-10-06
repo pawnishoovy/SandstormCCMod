@@ -389,6 +389,7 @@ function Update(self)
 				self.afterSoundPlayed = true;
 				if self.afterSoundPath then
 					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+					print(self.afterSoundPath)
 				end
 			end
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
@@ -464,6 +465,7 @@ function Update(self)
 		if self.Magazine then
 			if self.Magazine.RoundCount <= 0 then
 				self.reloadPhase = 0;
+				self.beltLeft = false;
 			else
 				self.reloadPhase = 2;
 				self.beltLeft = true;
