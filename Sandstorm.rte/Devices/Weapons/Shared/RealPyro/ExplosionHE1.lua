@@ -13,7 +13,7 @@ function Create(self)
 	["Path"] = dir.."/Add/Indoors/AddIndoorsSmall"};
 	
 	self.ambienceSounds = {["Variations"] = 7,
-	["Path"] = dir.."/Ambience/AmbienceSmall"};
+	["Path"] = dir.."/Ambience/AmbienceMedium"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil,
 	["Indoors"] = nil,
