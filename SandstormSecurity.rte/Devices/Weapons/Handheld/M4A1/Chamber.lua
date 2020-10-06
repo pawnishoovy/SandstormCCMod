@@ -359,6 +359,7 @@ function Update(self)
 		local bigIndoorRays = 0;
 
 		if self.parent:IsPlayerControlled() then
+			self.rayThreshold = 2; -- this is the first ray check to decide whether we play outdoors
 			local Vector2 = Vector(0,-700); -- straight up
 			local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
 			local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
@@ -375,6 +376,7 @@ function Update(self)
 			
 			self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
 		else
+			self.rayThreshold = 1; -- has to be different for AI
 			local Vector2 = Vector(0,-700); -- straight up
 			local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
 			local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
@@ -395,7 +397,7 @@ function Update(self)
 		
 		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 		
-		if outdoorRays >= 2 then
+		if outdoorRays >= self.rayThreshold then
 			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.Loop.Path .. math.random(1, self.noiseSounds.Outdoors.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
