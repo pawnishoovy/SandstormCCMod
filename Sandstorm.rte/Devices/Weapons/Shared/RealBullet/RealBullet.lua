@@ -111,8 +111,8 @@ function Update(self)
 				end
 			end
 			
-			local s = self.UniqueID % 7 + 1
-			PrimitiveMan:DrawCirclePrimitive(cameraPos, s, 5)
+			--local s = self.UniqueID % 7 + 1
+			--PrimitiveMan:DrawCirclePrimitive(cameraPos, s, 5)
 		end
 		
 		-- Tracer Trail
