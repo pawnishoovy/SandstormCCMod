@@ -80,33 +80,43 @@ function Update(self)
 		
 		-- Flyby sound (epic haxx)
 		if self.flyby and self.flybyTimer:IsPastSimMS(80) and self.Vel.Magnitude > 40 then
-			local cameraPos = Vector(SceneMan:GetScrollTarget(0).X, SceneMan:GetScrollTarget(0).Y)
+			--local cameraPos = Vector(SceneMan:GetScrollTarget(0).X, SceneMan:GetScrollTarget(0).Y)
 			
-			local distA = SceneMan:ShortestDistance(self.Pos,cameraPos,SceneMan.SceneWrapsX).Magnitude
-			local distAMin = math.random(50,100)
-			if distA < distAMin then
-				self.flyby = false
+			local controlledActor = ActivityMan:GetActivity():GetControlledActor(0);
+			
+			if controlledActor then
+	
+			
+				local distA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
+				local vectorA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX)
+				local distAMin = math.random(50,100)		
 				
-				PrimitiveMan:DrawCirclePrimitive(self.Pos, distAMin, 13)
-				
-				if math.random(1,3) < 2 then
-					AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".wav", self.Pos, -1, 0, 90, 1, distAMin, false);
-				else
-					AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".wav", self.Pos, -1, 0, 90, 1, distAMin, false);
-				end
-			else
-				local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
-				local distB = SceneMan:ShortestDistance(self.Pos + offset,cameraPos,SceneMan.SceneWrapsX).Magnitude
-				local distBMin = math.random(30,50)
-				if distB < distBMin then
+				if distA < distAMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
 					self.flyby = false
 					
-					PrimitiveMan:DrawCirclePrimitive(self.Pos + offset, distBMin, 122)
-					
 					if math.random(1,3) < 2 then
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".wav", self.Pos, -1, 0, 90, 1, distBMin, false);
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".wav", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
 					else
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".wav", self.Pos, -1, 0, 90, 1, distBMin, false);
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".wav", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
+					end
+					
+					ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+					
+				else
+					local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
+					local distB = SceneMan:ShortestDistance(self.Pos + offset,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
+					local distBMin = math.random(30,50)
+					if distB < distBMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
+						self.flyby = false
+						
+						if math.random(1,3) < 2 then
+							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".wav", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
+						else
+							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".wav", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
+						end
+						
+						ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+						
 					end
 				end
 			end

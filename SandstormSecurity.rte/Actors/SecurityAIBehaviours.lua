@@ -610,6 +610,11 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 6, 2, false);
 	end
 	
+	if self:NumberValueExists("Sandstorm Bullet Suppressed") then
+		self:RemoveNumberValue("Sandstorm Bullet Suppressed");
+		self.Suppression = self.Suppression + 15;
+	end
+	
 	if (suppressionTimerReady) then
 		if self.Suppression > 50 then
 			if self.Suppression > 99 and self.suppressedVoicelineTimer:IsPastSimMS(self.suppressedVoicelineDelay) then
