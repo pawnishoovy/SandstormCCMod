@@ -27,6 +27,9 @@ function Create(self)
 	self.ricochetCount = 0
 	self.ricochetCountMax = 1
 	
+	self.flyby = true
+	self.flybyTimer = Timer()
+	
 	self.tracer = 3 * math.random(0,1)
 	self.smoke = false
 	
@@ -74,6 +77,43 @@ function Update(self)
 		self.ray = SceneMan:CastObstacleRay(self.Pos, travelVel, Vector(0, 0), endPos, 0 , self.Team, 0, 2)
 		
 		travel = SceneMan:ShortestDistance(self.Pos,endPos,SceneMan.SceneWrapsX)
+		
+		-- Flyby sound (epic haxx)
+		if self.flyby and self.flybyTimer:IsPastSimMS(80) and self.Vel.Magnitude > 40 then
+			local cameraPos = Vector(SceneMan:GetScrollTarget(0).X, SceneMan:GetScrollTarget(0).Y)
+			
+			local distA = SceneMan:ShortestDistance(self.Pos,cameraPos,SceneMan.SceneWrapsX).Magnitude
+			local distAMin = math.random(50,100)
+			if distA < distAMin then
+				self.flyby = false
+				
+				PrimitiveMan:DrawCirclePrimitive(self.Pos, distAMin, 13)
+				
+				if math.random(1,3) < 2 then
+					AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".wav", self.Pos, -1, 0, 90, 1, distAMin, false);
+				else
+					AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".wav", self.Pos, -1, 0, 90, 1, distAMin, false);
+				end
+			else
+				local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
+				local distB = SceneMan:ShortestDistance(self.Pos + offset,cameraPos,SceneMan.SceneWrapsX).Magnitude
+				local distBMin = math.random(30,50)
+				if distB < distBMin then
+					self.flyby = false
+					
+					PrimitiveMan:DrawCirclePrimitive(self.Pos + offset, distBMin, 122)
+					
+					if math.random(1,3) < 2 then
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".wav", self.Pos, -1, 0, 90, 1, distBMin, false);
+					else
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".wav", self.Pos, -1, 0, 90, 1, distBMin, false);
+					end
+				end
+			end
+			
+			local s = self.UniqueID % 7 + 1
+			PrimitiveMan:DrawCirclePrimitive(cameraPos, s, 5)
+		end
 		
 		-- Tracer Trail
 		
@@ -265,13 +305,14 @@ function Update(self)
 						end
 					end
 				end
+				--[[
 				if self.MOHit then
 					print("hitmo: " .. tostring(self.MOHit))
 				end
 				print("armorsystem: " .. tostring(self.useArmorSystem))
 				print("blunt: " .. tostring(self.bluntDamage))
 				print("modified damage: " .. tostring(self.modifiedDamage))
-				print("modified wounds: " .. tostring(self.modifiedWounds))
+				print("modified wounds: " .. tostring(self.modifiedWounds))]]
 				
 				local effect = CreateMOSRotating(hitGFXType == 0 and "Real Bullet Hit Effect Default" or hitGFX[hitGFXType]);
 				if effect then
