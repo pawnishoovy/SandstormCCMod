@@ -5,41 +5,43 @@ function Create(self)
 	-- Sounds --
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
 	self.addSounds.Start = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/AddStart"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/AddStart"};
 	self.addSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/Add"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/Add"};
 	
-	self.bassSounds = {["Loop"] = nil};
+	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.bassSounds.Start = {["Variations"] = 4,
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/BassStart"};
 	self.bassSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/Bass"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/Bass"};
 	
 	self.mechSounds = {["Start"] = nil, ["Loop"] = nil, ["End"] = nil};
 	self.mechSounds.Start = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/MechStart"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/MechStart"};
 	self.mechSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/Mech"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/Mech"};
 	self.mechSounds.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/MechEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/MechEnd"};
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
 	self.noiseSounds.Outdoors.Loop = {["Variations"] = 13,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseOutdoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseOutdoors"};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseOutdoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseOutdoorsEnd"};
 	self.noiseSounds.Indoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseIndoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseIndoors"};
 	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseIndoorsEnd"};
 	self.noiseSounds.bigIndoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseBigIndoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseBigIndoors"};
 	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/NoiseBigIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/CompliSoundV2/ReflectionOutdoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/CompliSoundV2/ReflectionOutdoors"};
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(math.abs(self.SharpStanceOffset.X), self.SharpStanceOffset.Y)
@@ -66,18 +68,18 @@ function Create(self)
 	self.boltBackAfterDelay = 100;
 	self.boltForwardPrepareDelay = 200;
 	self.boltForwardAfterDelay = 400;
-	self.coverUpPrepareDelay = 1200;
+	self.coverUpPrepareDelay = 1400;
 	self.coverUpAfterDelay = 500;
 	self.magOutPrepareDelay = 1200;
 	self.magOutAfterDelay = 500;
 	self.magInPrepareDelay = 1400;
 	self.magInAfterDelay = 500;
-	self.beltOnPrepareDelay = 700;
-	self.beltOnAfterDelay = 500;
+	self.beltOnPrepareDelay = 800;
+	self.beltOnAfterDelay = 600;
 	self.coverDownPrepareDelay = 1100;
 	self.coverDownAfterDelay = 500;
 	self.shoulderPrepareDelay = 800;
-	self.shoulderAfterDelay = 300;
+	self.shoulderAfterDelay = 400;
 	
 	-- phases:
 	-- 0 boltback
@@ -192,9 +194,9 @@ function Update(self)
 			self.afterDelay = self.boltBackAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/BoltBackPrepare";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/BoltBackPrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/BoltBack";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/BoltBack";
 			
 			self.rotationTarget = 5
 		elseif self.reloadPhase == 1 then
@@ -204,7 +206,7 @@ function Update(self)
 			
 			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/BoltForward";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/BoltForward";
 			
 			self.rotationTarget = -5
 		elseif self.reloadPhase == 2 then
@@ -212,9 +214,9 @@ function Update(self)
 			self.afterDelay = self.coverUpAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/CoverOpenPrepare";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/CoverOpenPrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/CoverOpen";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/CoverOpen";
 			
 			self.rotationTarget = 0
 		elseif self.reloadPhase == 3 then
@@ -222,14 +224,9 @@ function Update(self)
 			self.afterDelay = self.magOutAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/MagOutPrepare";
-			if self.beltLeft then
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/MagOutFull";
-			else
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/MagOutEmpty";
-			end
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/MagOutPrepare";
+			self.afterSoundPath = 
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/MagOut";
 			
 			self.rotationTarget = -5
 		elseif self.reloadPhase == 4 then
@@ -237,18 +234,18 @@ function Update(self)
 			self.reloadDelay = self.magInPrepareDelay;
 			self.afterDelay = self.magInAfterDelay;
 			
-			self.prepareSoundPath = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/MagInPrepare";
+			self.prepareSoundPath = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/MagInPrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/MagIn";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/MagIn";
 			
 			self.rotationTarget = 5
 		elseif self.reloadPhase == 5 then
 			self.reloadDelay = self.beltOnPrepareDelay;
 			self.afterDelay = self.beltOnAfterDelay;
 			
-			self.prepareSoundPath = "SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/BeltOnPrepare";
+			self.prepareSoundPath = "SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/BeltOnPrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/BeltOn";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/BeltOn";
 			
 			self.rotationTarget = -5
 		elseif self.reloadPhase == 6 then
@@ -256,9 +253,9 @@ function Update(self)
 			self.afterDelay = self.coverDownAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/CoverClosePrepare";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/CoverClosePrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/CoverClose";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/CoverClose";
 			
 			self.rotationTarget = 5
 		elseif self.reloadPhase == 7 then
@@ -266,9 +263,9 @@ function Update(self)
 			self.afterDelay = self.shoulderAfterDelay;
 			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/ShoulderPrepare";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/ShoulderPrepare";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M240B/Sounds/Shoulder";	
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/PKM/Sounds/Shoulder";	
 			
 			self.rotationTarget = 0
 		end
@@ -374,7 +371,7 @@ function Update(self)
 				elseif self.reloadPhase == 3 then
 					local fake
 					-- TODO: add box mag mosrotating with a little belt sticking out for reloading when not empty
-					fake = CreateMOSRotating("Fake Magazine MOSRotating M240B");
+					fake = CreateMOSRotating("Fake Magazine MOSRotating PKM");
 					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
@@ -456,7 +453,7 @@ function Update(self)
 		self.Frame = 1;
 		
 		local chain
-		chain = CreateMOSParticle("Belt Connection M240B");
+		chain = CreateMOSParticle("Belt Connection PKM");
 		chain.Pos = self.Pos+Vector(0,-3):RadRotate(self.RotAngle);
 		chain.Vel = self.Vel+Vector(-math.random(2,4)*self.FlipFactor,-math.random(3,4)):RadRotate(self.RotAngle);
 		MovableMan:AddParticle(chain);
@@ -551,8 +548,6 @@ function Update(self)
 			end
 		end
 		
-		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		
 		if outdoorRays >= self.rayThreshold then
 			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.Loop.Path .. math.random(1, self.noiseSounds.Outdoors.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
@@ -568,9 +563,13 @@ function Update(self)
 		if self.firstShot == true then
 			self.firstShot = false;
 			
+			
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Start.Path .. math.random(1, self.bassSounds.Start.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.mechSound = AudioMan:PlaySound(self.mechSounds.Start.Path .. math.random(1, self.mechSounds.Start.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Start.Path .. math.random(1, self.addSounds.Start.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 		else
+		
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);		
 			self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
 		end
