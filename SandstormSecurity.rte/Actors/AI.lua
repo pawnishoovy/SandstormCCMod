@@ -296,7 +296,13 @@ function Create(self)
 			spotGrenade =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotFrag",
 			spotRemote =
-			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotRemote"};			
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotRemote",
+			spotEnemy =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotEnemy",
+			spotEnemyFar =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotEnemyFar",
+			spotEnemyClose =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Spot/SpotEnemyClose"};			
 			
 			self.voiceSoundVariations = {Death = 19,
 			seriousDeath = 15,
@@ -334,7 +340,10 @@ function Create(self)
 			suppressedSmokeOut = 8,
 			Tossback = 5,
 			spotGrenade = 5,
-			spotRemote = 5};				
+			spotRemote = 5,
+			spotEnemy = 10,
+			spotEnemyFar = 8,
+			spotEnemyClose = 8};				
 		else
 			skin = 0
 			self.baseHeadFrame = headFrames * math.random(6, 10);
@@ -415,7 +424,13 @@ function Create(self)
 			spotGrenade =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotFrag",
 			spotRemote =
-			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotRemote"};
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotRemote",
+			spotEnemy =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotEnemy",
+			spotEnemyFar =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotEnemyFar",
+			spotEnemyClose =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Spot/SpotEnemyClose"};
 			
 			self.voiceSoundVariations = {Death = 20,
 			seriousDeath = 18,
@@ -453,7 +468,10 @@ function Create(self)
 			suppressedSmokeOut = 8,
 			Tossback = 5,
 			spotGrenade = 5,
-			spotRemote = 5};	
+			spotRemote = 5,
+			spotEnemy = 10,
+			spotEnemyFar = 8,
+			spotEnemyClose = 8};	
 		end
 	else	-- Female
 	
@@ -540,7 +558,13 @@ function Create(self)
 		spotGrenade =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotFrag",
 		spotRemote =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotRemote"};
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotRemote",
+		spotEnemy =
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotEnemy",
+		spotEnemyFar =
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotEnemyFar",
+		spotEnemyClose =
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Spot/SpotEnemyClose"};
 		
 		self.voiceSoundVariations = {Death = 20,
 		seriousDeath = 15,
@@ -578,7 +602,10 @@ function Create(self)
 		suppressedSmokeOut = 8,
 		Tossback = 5,
 		spotGrenade = 5,
-		spotRemote = 5};	
+		spotRemote = 5,
+		spotEnemy = 10,
+		spotEnemyFar = 8,
+		spotEnemyClose = 8};	
 		
 	end
 	self:SetNumberValue("SkinTone", skin)
