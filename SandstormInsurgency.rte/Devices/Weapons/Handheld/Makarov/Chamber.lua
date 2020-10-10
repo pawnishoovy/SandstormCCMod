@@ -110,7 +110,7 @@ function Update(self)
 	if self.FiredFrame then
 		self.FireTimer:Reset();
 	
-		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
+		self.angVel = self.angVel + RangeRand(0.7,1.1) * 15
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()

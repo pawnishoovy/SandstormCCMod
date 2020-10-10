@@ -78,20 +78,25 @@ function Create(self)
 	end
 	
 	if self.Head then
-		local mask = math.random(1, 100) < 50;
+		local mask = math.random(1, 10) < 5;
 		if mask then
 			local headAttachable = CreateAttachable("Sandstorm Security Heavy Helmet Mask", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
 		end
 		
-		local glasses = math.random(1, 100) < 70;
+		local glasses = math.random(1, 10) < 7;
 		if glasses then
 			local headAttachable = CreateAttachable("Sandstorm Security Heavy Helmet Visor", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
 		end
-		local headAttachable = (math.random(1, 100) < 70 and CreateAttachable("Sandstorm Security Heavy Helmet", "SandstormSecurity.rte") or CreateAttachable("Sandstorm Security Light Helmet", "SandstormSecurity.rte"))
+		local headAttachable = (math.random(1, 10) < 7 and CreateAttachable("Sandstorm Security Heavy Helmet", "SandstormSecurity.rte") or CreateAttachable("Sandstorm Security Light Helmet", "SandstormSecurity.rte"))
 		headAttachable.Frame = self.Frame
 		self.Head:AddAttachable(headAttachable);
+		
+		if headAttachable and math.random(1,3) < 2 then
+			local helmetAttachable = CreateAttachable("Sandstorm Security Helmet Detail", "SandstormSecurity.rte");
+			headAttachable:AddAttachable(helmetAttachable);
+		end
 	end
 	
 	local backpack = CreateAttachable("Sandstorm Security Backpack", "SandstormSecurity.rte")

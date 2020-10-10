@@ -832,6 +832,23 @@ end
 
 function UpdateAI(self)
 	self.AI:Update(self)
+	if not self.LastTargetID then
+		self.LastTargetID = -1
+	end
+	
+	if self.AI.Target then
+		if self.LastTargetID == -1 then
+			self.LastTargetID = self.AI.Target.UniqueID
+			-- target spotted
+			print("TARGET SPOTTED!")
+		end
+	else
+		if self.LastTargetID ~= -1 then
+			self.LastTargetID = -1
+			-- target lost
+			print("TARGET LOST!")
+		end
+	end
 end
 
 function Destroy(self)
@@ -845,13 +862,14 @@ function Destroy(self)
 										  -- it is possible Void Wanderers switches activities without pausing. thus this may not work and induce a crash	
 	
 		if not self.ToSettle then -- we have been gibbed
-			--[[
+			
 			if (self.voiceSound) then
 				if (self.voiceSound:IsBeingPlayed()) then
 					self.voiceSound:Stop(-1);
 					self.voiceSound = nil;
 				end
-			end]]
+			end
+			--[[
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -871,7 +889,7 @@ function Destroy(self)
 						end
 					end
 				end
-			end
+			end]]
 		end
 		if self.headGibSound then
 			if self.headGibSound:IsBeingPlayed() then

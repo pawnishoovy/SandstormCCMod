@@ -76,7 +76,7 @@ function Create(self)
 	
 	--	self.Frame = math.random(0, self.FrameCount - 1);
 	
-	if math.random(1, 100) < 50 then
+	if math.random(1, 10) < 5 then
 		local torsoAttachable = CreateAttachable("Sandstorm Security Light Vest", "SandstormSecurity.rte");
 		self:AddAttachable(torsoAttachable);
 	else
@@ -90,9 +90,9 @@ function Create(self)
 
 	
 	if self.Head then
-		local glasses = math.random(1, 100) < 50;
-		local hat = math.random(1, 100) < 50;
-		local headBand = math.random(1, 100) < 50;
+		local glasses = math.random(1, 10) < 5;
+		local hat = math.random(1, 10) < 5;
+		local headBand = math.random(1, 10) < 5;
 		if glasses then
 			local headAttachable = CreateAttachable("Sandstorm Security Light Glasses", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
@@ -105,16 +105,27 @@ function Create(self)
 				headAttachable.Frame = math.random(6, 7)
 			end
 			self.Head:AddAttachable(headAttachable);
+			
+			if headAttachable and math.random(1,3) < 2 then
+				local helmetAttachable = CreateAttachable("Sandstorm Security Helmet Detail", "SandstormSecurity.rte");
+				headAttachable:AddAttachable(helmetAttachable);
+			end
 		elseif hat then
-			local headAttachable = CreateAttachable("Sandstorm Security Light Hat", "SandstormSecurity.rte");
-			self.Head:AddAttachable(headAttachable);
+			if math.random(1,2) < 2 then
+				local headAttachable = CreateAttachable("Sandstorm Security Light Hat Camo", "SandstormSecurity.rte");
+				headAttachable.Frame = legsSkin
+				self.Head:AddAttachable(headAttachable);
+			else
+				local headAttachable = CreateAttachable("Sandstorm Security Light Hat", "SandstormSecurity.rte");
+				self.Head:AddAttachable(headAttachable);
+			end
 		elseif headBand then
 			local headAttachable = CreateAttachable("Sandstorm Security Light Head Band", "SandstormSecurity.rte");
 			self.Head:AddAttachable(headAttachable);
 		end
 	end
 	
-	if camo and math.random(1, 100) < 40 then
+	if camo and math.random(1, 10) < 4 then
 		local backpack = CreateAttachable("Sandstorm Security Backpack", "SandstormSecurity.rte")
 		self:AddAttachable(backpack);
 		backpack.Frame = 0 + ((rn == 1 or rn == 2) and 3 or 0)

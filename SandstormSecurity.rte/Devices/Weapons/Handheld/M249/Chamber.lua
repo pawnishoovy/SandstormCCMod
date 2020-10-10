@@ -445,11 +445,13 @@ function Update(self)
 		self.smokeTimer:Reset()
 		self.recoilTimer:Reset()
 		
+		local postureMultiplier = (self.parent and self.parent:GetController():IsState(Controller.BODY_CROUCH) and 1.0 or 2.0)
+		
 		self.horizontalAnim = self.horizontalAnim + 0.3
 		--self.recoilStr = self.recoilStr + 1.0
-		self.recoilStr = self.recoilStr + math.random(1,3) * 0.5
-		self.angVel = self.angVel + RangeRand(-1,1) * 3
-		self.Frame = 1;
+		self.recoilStr = self.recoilStr + math.random(1,3) * 0.5 * postureMultiplier
+		self.angVel = self.angVel + RangeRand(-1,1) * 3 * postureMultiplier
+		self.Frame = 1
 		
 		local chain
 		chain = CreateMOSParticle("Belt Connection M249");
