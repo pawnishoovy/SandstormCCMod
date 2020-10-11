@@ -1048,7 +1048,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 					self.voiceSound = nil;
 				end
 			end
-			--[[
+			
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -1068,7 +1068,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 						end
 					end
 				end
-			end]]
+			end
 			self.voiceSound = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Death/HeadGib" ..math.random(1, 3) .. ".wav", self.Pos, -1, 0, 130, 1, 400, false);
 		end
 		if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then

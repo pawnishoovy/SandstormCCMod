@@ -100,8 +100,9 @@ function Update(self)
 						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".wav", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
 					end
 					
-					ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
-					
+					if ToActor(controlledActor).Team ~= self.Team then
+						ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+					end
 				else
 					local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
 					local distB = SceneMan:ShortestDistance(self.Pos + offset,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
@@ -115,8 +116,9 @@ function Update(self)
 							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".wav", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
 						end
 						
-						ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
-						
+						if ToActor(controlledActor).Team ~= self.Team then
+							ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+						end
 					end
 				end
 			end

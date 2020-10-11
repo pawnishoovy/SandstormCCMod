@@ -106,6 +106,16 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
+	if not self.originalRateOfFire then
+		self.originalRateOfFire = self.RateOfFire
+	else
+		if self.parent and self.parent:IsPlayerControlled() then
+			self.RateOfFire = self.originalRateOfFire
+		else
+			self.RateOfFire = self.originalRateOfFire * 0.5
+		end
+	end
+	
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self:IsReloading() then
 	
