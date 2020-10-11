@@ -653,6 +653,22 @@ function Create(self)
 	self.friendlyDownTimer = Timer();
 	self.friendlyDownDelay = 5000;
 	
+	self.spotVoiceLineTimer = Timer();
+	self.spotVoiceLineDelay = 15000;
+	
+	 -- in pixels
+	self.spotDistanceClose = 120;
+	self.spotDistanceMid = 360;
+	--spotDistanceFar -- anything further than distanceMid
+	
+	 -- in MS
+	self.spotDelayMin = 4000;
+	self.spotDelayMax = 8000;
+	
+	 -- in percent
+	self.spotIgnoreDelayChance = 10;
+	self.spotNoVoicelineChance = 15;
+	
 	
 	-- experimental method for enhanced dying - don't let the actor actually die until we want him to.
 	-- reason for this is because when the actor IsDead he will really want to settle and there's not much we can do about it.
@@ -859,83 +875,7 @@ end
 
 function UpdateAI(self)
 	self.AI:Update(self)
-	if not self.LastTargetID then
-		self.LastTargetID = -1
-	end
-	
-	--spotEnemy
-	--spotEnemyFar
-	--spotEnemyClose
-	
-	if self.AI.Target and IsAHuman(self.AI.Target) then
-		
-		 -- in pixels
-		local spotDistanceClose = 201
-		local spotDistanceMid = 461
-		--local spotDistanceFar -- anything further than distanceMid
-		
-		 -- in MS
-		local spotDelayMin = 1500
-		local spotDelayMax = 3000
-		
-		 -- in percent
-		local spotIgnoreDelayChance = 10
-		
-		
-		-- DEBUG spot distance
-		---
-		--[[
-		local dif = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
-		local maxi = math.floor(dif.Magnitude / 10)
-		for i = 1, maxi do
-			local vec = dif * i / maxi
-			local pos = self.Pos + vec
-			local color = 162
-			if vec.Magnitude < spotDistanceClose then
-				color = 13
-			elseif vec.Magnitude < spotDistanceMid then
-				color = 122
-			end
-			PrimitiveMan:DrawLinePrimitive(pos, pos, color);
-		end]]
-		---
-		
-		if self.LastTargetID == -1 then
-			self.LastTargetID = self.AI.Target.UniqueID
-			-- Target spotted
-			local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
-			local distance = posDifference.Magnitude
-			
-			if not self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") or -- If no timer exists
-			self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Age") < (self.AI.Target.Age - self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Delay")) or -- If the timer runs out of time limit
-			math.random(0,100) < spotIgnoreDelayChance -- Small chance to ignore timers, to spice things up
-			then
-				-- Setup the delay timer
-				self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
-				self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Delay", math.random(spotDelayMin, spotDelayMax))
-				
-				if distance < spotDistanceClose then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyClose, self.voiceSoundVariations.spotEnemyClose, 3, 4, false);
-				elseif distance < spotDistanceMid then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemy, self.voiceSoundVariations.spotEnemy, 3, 3, false);
-				else
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyFar, self.voiceSoundVariations.spotEnemyFar, 3, 2, false);
-				end
-				
-			end
-		else
-			-- Refresh the delay timer
-			if self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") then
-				self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
-			end
-		end
-	else
-		if self.LastTargetID ~= -1 then
-			self.LastTargetID = -1
-			-- Target lost
-			--print("TARGET LOST!")
-		end
-	end
+
 end
 
 function Destroy(self)
