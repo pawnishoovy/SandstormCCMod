@@ -77,6 +77,12 @@ function Create(self)
 	
 	self.ReloadTime = 9999;
 
+	-- Progressive Recoil System 
+	self.recoilAcc = 0 -- for sinous
+	self.recoilStr = 0 -- for accumulator
+	self.recoilStrength = 5
+	self.recoilDamping = 0.7
+	-- Progressive Recoil System 
 end
 
 function Update(self)
@@ -136,8 +142,8 @@ function Update(self)
 			local lastVecA = Vector(0, 0)
 			local lastVecB = Vector(0, 0)
 			
-			local bend = 0
-			local step = 1.5
+			local bend = math.rad(9)
+			local step = 2.5
 			local width = 2
 			
 			position = position + Vector(0, step * maxi * -0.5)
@@ -315,7 +321,7 @@ function Update(self)
 	
 	if self.FiredFrame then
 		self.Frame = 3;
-		self.angVel = self.angVel - RangeRand(0.7,1.1) * 15
+		self.angVel = self.angVel - RangeRand(0.7,1.1) * 5
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()
@@ -409,6 +415,21 @@ function Update(self)
 		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
 		
 		self.rotationTarget = self.rotationTarget - (self.angVel * 4)
+		
+		-- Progressive Recoil Update
+		if self.FiredFrame then
+			self.recoilStr = self.recoilStr + math.random(1,3) * 0.5 * self.recoilStrength
+		end
+		
+		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0 * self.recoilDamping) * 1000) / 1000
+		self.recoilAcc = (self.recoilAcc + self.recoilStr * TimerMan.DeltaTimeSecs) % (math.pi * 4)
+		
+		local recoilA = (math.sin(self.recoilAcc) * self.recoilStr) * 0.05 * self.recoilStr
+		local recoilB = (math.sin(self.recoilAcc * 0.5) * self.recoilStr) * 0.01 * self.recoilStr
+		local recoilC = (math.sin(self.recoilAcc * 0.25) * self.recoilStr) * 0.05 * self.recoilStr
+		self.rotationTarget = self.rotationTarget + recoilA + recoilB + recoilC -- apply the recoil
+		-- Progressive Recoil Update
+		
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		

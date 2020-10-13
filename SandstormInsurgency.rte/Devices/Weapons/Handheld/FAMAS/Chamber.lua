@@ -86,6 +86,12 @@ function Create(self)
 		self.parent = ToAHuman(actor);
 	end
 	
+	-- Progressive Recoil System 
+	self.recoilAcc = 0 -- for sinous
+	self.recoilStr = 0 -- for accumulator
+	self.recoilStrength = 5
+	self.recoilDamping = 1.0
+	
 end
 
 function Update(self)
@@ -257,8 +263,8 @@ function Update(self)
 					self.phaseOnStop = 1;
 					local fake
 					fake = CreateMOSRotating("Fake Magazine MOSRotating FAMAS");
-					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
-					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
+					fake.Pos = self.Pos + Vector(-6 * self.FlipFactor, 2):RadRotate(self.RotAngle);
+					fake.Vel = self.Vel + Vector(2*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
 					fake.HFlipped = self.HFlipped;
@@ -457,6 +463,22 @@ function Update(self)
 		stance = stance + Vector(0,6) * self.verticalAnim -- Vertical animation
 		
 		self.rotationTarget = self.rotationTarget + (self.angVel * 3)
+		
+		-- Progressive Recoil Update
+		if self.FiredFrame then
+			self.recoilStr = self.recoilStr + math.random(1,3) * 0.5 * self.recoilStrength
+		end
+		
+		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0 * self.recoilDamping) * 1000) / 1000
+		self.recoilAcc = (self.recoilAcc + self.recoilStr * TimerMan.DeltaTimeSecs) % (math.pi * 4)
+		
+		local recoilA = (math.sin(self.recoilAcc) * self.recoilStr) * 0.05 * self.recoilStr
+		local recoilB = (math.sin(self.recoilAcc * 0.5) * self.recoilStr) * 0.01 * self.recoilStr
+		local recoilC = (math.sin(self.recoilAcc * 0.25) * self.recoilStr) * 0.05 * self.recoilStr
+		self.rotationTarget = self.rotationTarget + recoilA + recoilB + recoilC -- apply the recoil
+		-- Progressive Recoil Update
+		
+		
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
 		local total = math.rad(self.rotation) * self.FlipFactor
 		

@@ -1016,10 +1016,11 @@ function SecurityAIBehaviours.handleDying(self)
 				self.dyingSoundPlayed = true;
 				if (math.random(1, 100) < 10) then
 					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Incapacitated, self.voiceSoundVariations.Incapacitated, 14)
+					self.incapacitated = true
 				end
 			end
 		end
-		if (self.dyingSoundPlayed and self.Vel.Magnitude < 1) then
+		if self.incapacitated and (self.dyingSoundPlayed and self.Vel.Magnitude < 1) then
 			self.Vel = self.Vel + Vector(RangeRand(-2, 2), RangeRand(-0.5, 0.5)) * TimerMan.DeltaTimeSecs * 62.5
 		end
 		
@@ -1057,6 +1058,9 @@ function SecurityAIBehaviours.handleRagdoll(self)
 	end
 	
 	local str = math.max(1 - math.abs(result / math.pi * 2.0), 0)
+	--local normal = Vector(0,0)
+	--local slide = false
+	
 	-- Trip on the ground
 	for j = 0, 1 do
 		local pos = self.Pos + Vector(0, -3):RadRotate(self.RotAngle)
@@ -1073,11 +1077,24 @@ function SecurityAIBehaviours.handleRagdoll(self)
 			if checkPix > 0 then
 				self.Vel = self.Vel - Vector(checkVec.X, checkVec.Y):SetMagnitude(30 * str) * TimerMan.DeltaTimeSecs
 				self.AngularVel = self.AngularVel + (self.AngularVel / math.abs(self.AngularVel)) * str * 20 * TimerMan.DeltaTimeSecs
+				
+				--normal = normal + checkVec
+				--slide = true
 			end
 		end
 		
 	end
-	
+	--[[
+	normal = (normal / 12):SetMagnitude(1)
+	if slide then
+		local slideAngle = normal.AbsRadAngle + math.pi * 0.5
+		
+		local newVel = Vector(self.Vel.X, self.Vel.Y)
+		newVel:RadRotate(slideAngle)
+		newVel = Vector(newVel.X, -math.abs(-newVel.Y))
+		newVel:RadRotate(-slideAngle)
+		self.Vel = self.Vel * str + newVel * (1 - str)
+	end]]
 	-- SOUNDS
 	
 	local mat = self.HitWhatTerrMaterial
