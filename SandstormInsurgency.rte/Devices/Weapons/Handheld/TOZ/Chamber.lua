@@ -83,6 +83,7 @@ end
 
 function Update(self)
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
+		self.delayedFireEnabled = true -- IMPORTANT
 	
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -243,6 +244,7 @@ function Update(self)
 			self.afterReloadTimer:Reset();
 		elseif not self.afterReloadTimer:IsPastSimMS(self.afterReloadDelay) then
 			self:Deactivate();
+			self.delayedFireEnabled = false -- IMPORTANT
 		end
 			
 		

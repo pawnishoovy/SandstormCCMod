@@ -5,6 +5,7 @@ function Create(self)
 	self.delayedFire = false
 	self.delayedFireTimer = Timer();
 	self.delayedFireTimeMS = 50
+	self.delayedFireEnabled = true
 	
 	self.lastAge = self.Age + 0
 	
@@ -52,7 +53,10 @@ function Update(self)
 		
 		--if self.parent:GetController():IsState(Controller.WEAPON_FIRE) and not self:IsReloading() then
 		if fire and not self:IsReloading() then
-			if not self.activated and not self.delayedFire and (self.Chamber == nil or self.Chamber == false) and self.fireDelayTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
+			if not self.Magazine or self.Magazine.RoundCount < 1 then
+				--self:Reload()
+				self:Activate()
+			elseif not self.activated and not self.delayedFire and (self.Chamber == nil or self.Chamber == false) and self.fireDelayTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
 				self.activated = true
 				
 				if self.preSounds then
