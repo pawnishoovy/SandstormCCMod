@@ -63,7 +63,13 @@ function Create(self)
 	self.boltForwardPrepareDelay = 150;
 	self.boltForwardAfterDelay = 100;
 	self.boltDownPrepareDelay = 100;
-	self.boltDownAfterDelay = 1500;
+	self.boltDownAfterDelay = 250;
+	self.stripperClipOnPrepareDelay = 450;
+	self.stripperClipOnAfterDelay = 450;
+	self.stripperClipInPrepareDelay = 450;
+	self.stripperClipInAfterDelay = 450;
+	self.stripperClipOffPrepareDelay = 450;
+	self.stripperClipOffAfterDelay = 450;
 	
 	-- phases:
 	-- 0: bolt up
@@ -71,6 +77,9 @@ function Create(self)
 	-- 2: special repeating reload phase
 	-- 3: bolt forward
 	-- 4: bolt down
+	-- 5: stripper clip on
+	-- 6: stripper clip in
+	-- 7: stripper clip off
 	
 	self.reloadPhase = 0;
 	self.ReloadTime = 19999;
@@ -240,13 +249,43 @@ function Update(self)
 				self.afterSoundVars = 1;
 				
 			elseif self.reloadPhase == 4 then
-				self.Frame = 4;
+				self.Frame = 2;
 				self.reloadDelay = self.boltDownPrepareDelay;
-				self.afterDelay = self.boltForwardAfterDelay;
+				self.afterDelay = self.boltDownAfterDelay;
 				self.prepareSoundPath = nil;
 				self.prepareSoundVars = 1;
 				self.afterSoundPath = 
 				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Mosin/Sounds/BoltDown";
+				self.afterSoundVars = 1;
+				
+			elseif self.reloadPhase == 5 then
+				self.Frame = 5;
+				self.reloadDelay = self.stripperClipOnPrepareDelay;
+				self.afterDelay = self.stripperClipOnAfterDelay;
+				self.prepareSoundPath = nil;
+				self.prepareSoundVars = 1;
+				self.afterSoundPath = 
+				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Mosin/Sounds/ClipOn";
+				self.afterSoundVars = 1;
+				
+			elseif self.reloadPhase == 6 then
+				self.Frame = 10;
+				self.reloadDelay = self.stripperClipInPrepareDelay;
+				self.afterDelay = self.stripperClipInAfterDelay;
+				self.prepareSoundPath = nil;
+				self.prepareSoundVars = 1;
+				self.afterSoundPath = 
+				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Mosin/Sounds/ClipIn";
+				self.afterSoundVars = 1;
+				
+			elseif self.reloadPhase == 7 then
+				self.Frame = 13;
+				self.reloadDelay = self.stripperClipOffPrepareDelay;
+				self.afterDelay = self.stripperClipOffAfterDelay;
+				self.prepareSoundPath = nil;
+				self.prepareSoundVars = 1;
+				self.afterSoundPath = 
+				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Mosin/Sounds/ClipOff";
 				self.afterSoundVars = 1;
 				
 			end
@@ -336,6 +375,30 @@ function Update(self)
 					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 						self.Frame = 2;
 					end
+					
+				elseif self.reloadPhase == 5 then
+					
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+						self.Frame = 10;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+						self.Frame = 9;
+					end
+					
+				elseif self.reloadPhase == 6 then
+					
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+						self.Frame = 13;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+						self.Frame = 12;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+						self.Frame = 11;
+					end
+					
+				elseif self.reloadPhase == 7 then
+					
+					self.Frame = 5;
+					
+					self.ammoCount = 5;
 
 				end
 				
@@ -347,6 +410,8 @@ function Update(self)
 
 						if not self:IsReloading() then
 							self.reloadPhase = 3;
+						elseif self.ammoCount == 0 then
+							self.reloadPhase = 5;
 						else
 							self.reloadPhase = self.reloadPhase + 1;
 						end
@@ -377,6 +442,10 @@ function Update(self)
 						self.reloadPhase = 0;
 						self.Chamber = false;
 						
+					elseif self.reloadPhase == 7 then
+					
+						self.reloadPhase = 3;
+						
 					else
 						self.reloadPhase = self.reloadPhase + 1;
 					end
@@ -397,8 +466,11 @@ function Update(self)
 		if self.Reloading then
 			self.resumeReload = true;
 		end
-		if self.reloadPhase == 2 then
+		if self.reloadPhase == 2 or self.reloadPhase == 5 or self.reloadPhase == 6 or self.reloadPhase == 7 then
 			self.Frame = 5;
+		end
+		if self.reloadPhase == 6 or self.reloadPhase == 7 then
+			self.reloadPhase = 5;
 		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
