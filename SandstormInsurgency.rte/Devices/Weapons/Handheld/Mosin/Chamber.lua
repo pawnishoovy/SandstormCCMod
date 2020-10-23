@@ -502,7 +502,7 @@ function Update(self)
 	-- Animation
 	if self.parent then
 		local chamberOffset = self.Frame ~= 0 and Vector(-self.originalSupportOffset.X, -self.originalSupportOffset.Y) or Vector(0,0)
-		local chamberAnim = {Vector(0, 0), Vector(-4, -1), Vector(-4, -2), Vector(-5, -2), Vector(-6, -2), Vector(-7, -2), Vector(-2, -2), Vector(-2, -2), Vector(-2, -2)}
+		local chamberAnim = {Vector(0, 0), Vector(-5, -1), Vector(-5, -2), Vector(-6, -2), Vector(-7, -2), Vector(-8, -2), Vector(-3, -2), Vector(-3, -2), Vector(-3, -2)}
 		chamberOffset = chamberOffset + chamberAnim[self.Frame + 1]
 		
 		self.rotationTarget = self.rotationTarget - (self.angVel * 5.5) -- aim sway/smoothing
