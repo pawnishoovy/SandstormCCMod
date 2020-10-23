@@ -230,7 +230,7 @@ function Update(self)
 				self.afterSoundVars = 1;
 				
 			elseif self.reloadPhase == 4 then
-				self.Frame = 4;
+				self.Frame = 2;
 				self.reloadDelay = self.boltDownPrepareDelay;
 				self.afterDelay = self.boltForwardAfterDelay;
 				self.prepareSoundPath = nil;
