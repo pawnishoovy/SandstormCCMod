@@ -55,13 +55,13 @@ function Create(self)
 	self.reloadTimer = Timer();
 	
 	self.boltUpPrepareDelay = 700;
-	self.boltUpAfterDelay = 50;
-	self.boltBackPrepareDelay = 100;
-	self.boltBackAfterDelay = 150;
+	self.boltUpAfterDelay = 80;
+	self.boltBackPrepareDelay = 150;
+	self.boltBackAfterDelay = 250;
 	self.shellInPrepareDelay = 500;
 	self.shellInAfterDelay = 500;
-	self.boltForwardPrepareDelay = 150;
-	self.boltForwardAfterDelay = 100;
+	self.boltForwardPrepareDelay = 200;
+	self.boltForwardAfterDelay = 150;
 	self.boltDownPrepareDelay = 100;
 	self.boltDownAfterDelay = 250;
 	self.stripperClipOnPrepareDelay = 450;
