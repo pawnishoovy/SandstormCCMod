@@ -46,15 +46,15 @@ function OnCollideWithTerrain(self, terrainID)
 		self.impactSoundAllowed = false;
 		if self.workingTravelImpulse.Magnitude > 5 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			end
 		end
 	end

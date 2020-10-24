@@ -202,19 +202,19 @@ function Update(self)
 	if not self.mainImpact and (impactCount + self.lastImpactCount) >= (self.pelletCount * 0.4) then
 		self.mainImpact = true
 		if hitGFXType <= 2 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Soft/ImpactSoft"..math.random(1,14)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Soft/ImpactSoft"..math.random(1,14)..".ogg", impactPos);
 		elseif hitGFXType == 3 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Hard/ImpactHard"..math.random(1,14)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Hard/ImpactHard"..math.random(1,14)..".ogg", impactPos);
 		elseif hitGFXType == 4 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Metal/ImpactMetal"..math.random(1,12)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Metal/ImpactMetal"..math.random(1,12)..".ogg", impactPos);
 		end
 	elseif impactCount > 0 and self.lastImpactCount < 1 then
 		if hitGFXType <= 2 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Soft/ImpactSoft"..math.random(1,5)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Soft/ImpactSoft"..math.random(1,5)..".ogg", impactPos);
 		elseif hitGFXType == 3 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Hard/ImpactHard"..math.random(1,5)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Hard/ImpactHard"..math.random(1,5)..".ogg", impactPos);
 		elseif hitGFXType == 4 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Metal/ImpactMetal"..math.random(1,5)..".wav", impactPos);
+			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Metal/ImpactMetal"..math.random(1,5)..".ogg", impactPos);
 		end
 	end
 	

@@ -40,7 +40,7 @@ end
 
 function OnCollideWithTerrain(self, terrainID)
 	if self.playSound then
-		AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Bleeding/Bleed"..math.random(10)..".wav", self.Pos)
+		AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Bleeding/Bleed"..math.random(10)..".ogg", self.Pos)
 		self.playSound = false
 		if self.Vel.Magnitude > (20+math.random(0,9)) and math.random(1,2) < 2 then
 			self.ToDelete = true
@@ -65,7 +65,7 @@ function OnCollideWithTerrain(self, terrainID)
 				end
 			end
 			
-			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Wounds/LimbImpact"..math.random(7)..".wav", self.Pos)
+			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Wounds/LimbImpact"..math.random(7)..".ogg", self.Pos)
 		end
 	end
 end

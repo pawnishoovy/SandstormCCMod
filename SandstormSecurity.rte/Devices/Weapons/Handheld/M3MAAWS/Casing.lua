@@ -14,7 +14,7 @@ function OnCollideWithTerrain(self, terrainID)
 	
 		self.playSound = false;
 	
-		self.hitSound = AudioMan:PlaySound(self.Hit.Path .. math.random(1, self.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+		self.hitSound = AudioMan:PlaySound(self.Hit.Path .. math.random(1, self.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 
 	end
 

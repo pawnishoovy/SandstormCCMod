@@ -60,7 +60,7 @@ function Update(self)
 				self.activated = true
 				
 				if self.preSounds then
-					AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+					AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 				end
 				
 				self.fireDelayTimer:Reset()

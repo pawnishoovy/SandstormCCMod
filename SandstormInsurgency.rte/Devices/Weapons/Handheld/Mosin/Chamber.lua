@@ -172,16 +172,22 @@ function Update(self)
 			
 			if self:IsReloading() then
 				-- Fancy Reload Progress GUI
+				
 				if not (not self.reloadCycle and self.parent:GetController():IsState(Controller.WEAPON_FIRE)) and self.parent:IsPlayerControlled() then
+					local color = 120
+					local spacing = 4
 					for i = 1, self.ammoCount do
-						local color = 120
-						local spacing = 4
 						local offset = Vector(0 - spacing * 0.5 + spacing * (i) - spacing * self.ammoCount / 2, (self.ammoCountRaised and i == self.ammoCount) and 35 or 36)
 						local position = self.parent.AboveHUDPos + offset
 						PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-2), 1, color);
 						PrimitiveMan:DrawLinePrimitive(position + Vector(1,-2), position + Vector(1,3), color);
 						PrimitiveMan:DrawLinePrimitive(position + Vector(-1,-2), position + Vector(-1,3), color);
 						PrimitiveMan:DrawLinePrimitive(position + Vector(1,3), position + Vector(-1,3), color);
+					end
+					if self.reloadPhase >= 6 then
+						local offset = Vector(0, 41)
+						local position = self.parent.AboveHUDPos + offset
+						PrimitiveMan:DrawLinePrimitive(position + Vector(-spacing * 2.5 + 1, 0), position + Vector(spacing * 2.5 - 1, 0), color);
 					end
 				end
 				
@@ -394,6 +400,14 @@ function Update(self)
 						self.Frame = 11;
 					end
 					
+					local clipTimeMin = self.reloadDelay + ((self.afterDelay/5)*1)
+					local clipTimeMax = self.reloadDelay + ((self.afterDelay/5)*2)
+					local clipAmmoCountMax = 5
+					local clipFac = math.min(math.max(self.reloadTimer.ElapsedSimTimeMS - clipTimeMin, 1) / clipTimeMax * 2.0, 1)
+					--PrimitiveMan:DrawTextPrimitive(screen, self.parent.AboveHUDPos + Vector(0, 30), "clipFac: "..(math.floor(clipFac * 1000) / 1000), true, 1);
+					
+					self.ammoCount = math.floor(clipFac * clipAmmoCountMax + 0.5)
+					
 				elseif self.reloadPhase == 7 then
 					
 					self.Frame = 5;
@@ -575,7 +589,7 @@ function Update(self)
 	if self.parent then
 		local chamberOffset = self.Frame ~= 0 and Vector(-self.originalSupportOffset.X, -self.originalSupportOffset.Y) or Vector(0,0)
 		local chamberAnim = {Vector(0, 0), Vector(-5, -1), Vector(-5, -2), Vector(-6, -2), Vector(-7, -2), Vector(-8, -2), Vector(-3, -2), Vector(-3, -2), Vector(-3, -2)}
-		chamberOffset = chamberOffset + chamberAnim[self.Frame + 1]
+		chamberOffset = chamberOffset + chamberAnim[math.min(self.Frame + 1, 9)]
 		
 		self.rotationTarget = self.rotationTarget - (self.angVel * 5.5) -- aim sway/smoothing
 		
@@ -633,6 +647,7 @@ function Update(self)
 	end
 	
 	-- Strap
+
 	local posA = Vector(self.Pos.X, self.Pos.Y) + Vector(self.beltStartPoint.X * self.FlipFactor, self.beltStartPoint.Y):RadRotate(self.RotAngle)
 	local posB = Vector(self.Pos.X, self.Pos.Y) + Vector(self.beltEndPoint.X * self.FlipFactor, self.beltEndPoint.Y):RadRotate(self.RotAngle)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + self.beltPointA, 5);
@@ -700,4 +715,5 @@ function Update(self)
 			self.beltPointPosX = self.beltPointPosX + SceneMan.SceneWidth
 		end
 	end
+	--]]
 end

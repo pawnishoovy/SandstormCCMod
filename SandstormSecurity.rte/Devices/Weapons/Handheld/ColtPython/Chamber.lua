@@ -172,7 +172,7 @@ function Update(self)
 			else
 				if self.cockTimer:IsPastSimMS(self.cockDelay) then
 					if not self.cocked then
-						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/PrecisionPre"..math.random(1,4)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/PrecisionPre"..math.random(1,4)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 						self.cocked = true
 						self.angVel = self.angVel - RangeRand(0.7,1.1) * 5
 						self.swayAcc = 0
@@ -219,7 +219,7 @@ function Update(self)
 		self.delayedFireTimer:Reset()
 		
 		if not self.cocked then
-			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Pre"..math.random(1,6)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Pre"..math.random(1,6)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 			self.Frame = 1;
 		end
 		
@@ -303,7 +303,7 @@ function Update(self)
 		if self.prepareSoundPlayed ~= true then
 			self.prepareSoundPlayed = true;
 			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 			end
 		end
 	
@@ -380,7 +380,7 @@ function Update(self)
 			
 				self.afterSoundPlayed = true;
 				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 				end
 			end
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
@@ -550,16 +550,16 @@ function Update(self)
 			end
 			
 			if outdoorRays >= self.rayThreshold then
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-				self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+				self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			else -- bigIndoor
-				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			end
 
 		
-			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			
 			local bullet = CreateMOSRotating("Bullet ColtPython");
 			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);

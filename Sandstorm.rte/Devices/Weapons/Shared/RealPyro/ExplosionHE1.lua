@@ -67,19 +67,19 @@ function Create(self)
 	-- DEBRIS
 	
 	if outdoorRays == 0 and indoorRays >= 3 then
-		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.Indoors.Path .. math.random(1, self.debrisSounds.Indoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.Indoors.Path .. math.random(1, self.debrisSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	end
 	
 	if outdoorRays >= 2 then
-		self.addSound = AudioMan:PlaySound(self.addSounds.Outdoors.Path .. math.random(1, self.addSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		self.ambienceSound = AudioMan:PlaySound(self.ambienceSounds.Path .. math.random(1, self.ambienceSounds.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSound = AudioMan:PlaySound(self.addSounds.Outdoors.Path .. math.random(1, self.addSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.ambienceSound = AudioMan:PlaySound(self.ambienceSounds.Path .. math.random(1, self.ambienceSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-		self.addSound = AudioMan:PlaySound(self.addSounds.Indoors.Path .. math.random(1, self.addSounds.Indoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Indoors.Path .. math.random(1, self.reflectionSounds.Indoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSound = AudioMan:PlaySound(self.addSounds.Indoors.Path .. math.random(1, self.addSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Indoors.Path .. math.random(1, self.reflectionSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	else -- bigIndoor
-		self.addSound = AudioMan:PlaySound(self.addSounds.bigIndoors.Path .. math.random(1, self.addSounds.bigIndoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.bigIndoors.Path .. math.random(1, self.reflectionSounds.bigIndoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSound = AudioMan:PlaySound(self.addSounds.bigIndoors.Path .. math.random(1, self.addSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.bigIndoors.Path .. math.random(1, self.reflectionSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	end
 	
 	self:GibThis();

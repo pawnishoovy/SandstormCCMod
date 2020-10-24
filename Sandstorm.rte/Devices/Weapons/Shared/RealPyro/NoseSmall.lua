@@ -5,7 +5,7 @@ function Create(self)
 	self.noseSounds = {["Variations"] = 4,
 	["Path"] = dir.."/Nose/NoseSmall"};
 	
-	AudioMan:PlaySound(self.noseSounds.Path .. math.random(1, self.noseSounds.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+	AudioMan:PlaySound(self.noseSounds.Path .. math.random(1, self.noseSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	
 	self:GibThis();
 end

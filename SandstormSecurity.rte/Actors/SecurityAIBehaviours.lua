@@ -2,7 +2,7 @@ SecurityAIBehaviours = {};
 
 function SecurityAIBehaviours.createSoundEffect(self, effectName, variations)
 	if effectName ~= nil then
-		self.soundEffect = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".wav", self.Pos, -1, 0, 130, 1, 400, false);	
+		self.soundEffect = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 400, false);	
 	end
 end
 
@@ -48,7 +48,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 						SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 					end
 					self.voiceSound:Stop();
-					self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+					self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 					self.lastPriority = priority;
 					return true;
 				end
@@ -56,7 +56,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 				if emotion then
 					SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 				end
-				self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 				self.lastPriority = priority;
 				return true;
 			end
@@ -64,7 +64,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 			if emotion then
 				SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 			end
-			self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.lastPriority = priority;
 			return true;
 		end
@@ -95,11 +95,11 @@ function SecurityAIBehaviours.createExertionSoundEffect(self)
 		if (self.Head) then
 			if self.voiceSound then
 				if not self.voiceSound:IsBeingPlayed()then
-					self.voiceSound = AudioMan:PlaySound(self.exertionSound .. math.random(1, self.exertionSoundVar) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+					self.voiceSound = AudioMan:PlaySound(self.exertionSound .. math.random(1, self.exertionSoundVar) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 					self.lastPriority = 0;
 				end
 			else
-				self.voiceSound = AudioMan:PlaySound(self.exertionSound .. math.random(1, self.exertionSoundVar) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+				self.voiceSound = AudioMan:PlaySound(self.exertionSound .. math.random(1, self.exertionSoundVar) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 				self.lastPriority = 0;
 			end
 		end
@@ -110,7 +110,7 @@ function SecurityAIBehaviours.handleDeadAirAndFalling(self)
 	-- self.altitude = SceneMan:FindAltitude(self.Pos, 100, 3);
 	
 	-- if (self.TravelImpulse.Magnitude > self.ImpulseDamageThreshold/3) then
-		-- self.impactSound = AudioMan:PlaySound("SandstormSecurity.rte/Actors/Sounds/DeathBodyImpact" .. math.random(1, 5) .. ".wav", self.Pos);
+		-- self.impactSound = AudioMan:PlaySound("SandstormSecurity.rte/Actors/Sounds/DeathBodyImpact" .. math.random(1, 5) .. ".ogg", self.Pos);
 		-- SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.bodyImpactGrunt, self.voiceSoundVariations.bodyImpactGrunt, 2)
 	-- end
 	
@@ -1119,7 +1119,7 @@ function SecurityAIBehaviours.handleRagdoll(self)
 			self.ragdollTerrainImpactDelay = math.random(200, 500)
 			self.ragdollTerrainImpactTimer:Reset()
 		elseif self.TravelImpulse.Magnitude > 230 then
-			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crawl/Crawl"..math.random(1,5)..".wav", self.Pos)
+			AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorMovement/Gear/Light/Crawl/Crawl"..math.random(1,5)..".ogg", self.Pos)
 		end
 	end
 end
@@ -1162,7 +1162,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 					end
 				end
 			end
-			self.voiceSound = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Death/HeadGib" ..math.random(1, 3) .. ".wav", self.Pos, -1, 0, 130, 1, 400, false);
+			self.voiceSound = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Death/HeadGib" ..math.random(1, 3) .. ".ogg", self.Pos, -1, 0, 130, 1, 400, false);
 		end
 		if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then
 			-- all of the below MAY WORK. i dont know

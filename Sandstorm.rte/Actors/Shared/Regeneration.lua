@@ -1,5 +1,5 @@
 function Create(self)
-	self.healAmount = 6;
+	self.healAmount = 3;
 	self.regenDelay = 500;
 	self.regenTimer = Timer();
 

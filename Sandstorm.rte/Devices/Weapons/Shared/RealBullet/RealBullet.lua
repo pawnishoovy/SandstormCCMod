@@ -52,9 +52,9 @@ function Create(self)
 	self.TrailWavenessSpeed = 0.5; -- Wave modulation controller speed
 	--end
 	
-	--self.soundLoop = math.random(0,100) < 50 and AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop"..math.random(2,4)..".wav", self.Pos, 0, -1, 100, 1, 500, false) or nil
-	local light = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop3.wav"
-	local deep = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop4.wav"
+	--self.soundLoop = math.random(0,100) < 50 and AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop"..math.random(2,4)..".ogg", self.Pos, 0, -1, 100, 1, 500, false) or nil
+	local light = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop3.ogg"
+	local deep = "Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Flyby/Loop4.ogg"
 	--self.soundLoop = math.random(0,100) < 70 and AudioMan:PlaySound(math.random(0,100) < 20 and light or deep, self.Pos, 0, -1, 100, 1, 500, false) or nil
 	self.soundLoop = nil -- Pawnis didn't like it >:-(
 	self.soundPitch = RangeRand(0.8,1.2)
@@ -95,9 +95,9 @@ function Update(self)
 					self.flyby = false
 					
 					if math.random(1,3) < 2 then
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".wav", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
 					else
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".wav", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
+						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
 					end
 					
 					if ToActor(controlledActor).Team ~= self.Team then
@@ -111,9 +111,9 @@ function Update(self)
 						self.flyby = false
 						
 						if math.random(1,3) < 2 then
-							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".wav", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
+							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
 						else
-							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".wav", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
+							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
 						end
 						
 						if ToActor(controlledActor).Team ~= self.Team then
@@ -169,6 +169,8 @@ function Update(self)
 					local woundName = MO:GetEntryWoundPresetName()
 					local woundNameExit = MO:GetExitWoundPresetName()
 					hitMO = true
+					local woundOffset = (SceneMan:ShortestDistance(MO.Pos, checkOrigin + Vector(self.Vel.X, self.Vel.Y):SetMagnitude(1), SceneMan.SceneWrapsX)):RadRotate(MO.RotAngle * -1.0)
+					
 					
 					-- epic pawnis armorpen
 					if MO:NumberValueExists("ArmorRHA") then -- if we have hit an MO that has this value, it has our armor system
@@ -201,6 +203,16 @@ function Update(self)
 					
 					if string.find(MO.Material.PresetName,"Flesh") or (woundName and string.find(woundName,"Flesh")) or (woundNameExit and string.find(woundNameExit,"Flesh")) then
 						hitGFXType = 1
+						local maxi = 1
+						if self:NumberValueExists("Wounds") then
+							maxi = self:GetNumberValue("Wounds");
+						end
+						if self.modifiedWounds then
+							maxi = self.modifiedWounds;
+						end
+						if math.random(1,4) <= maxi then
+							MO:AddWound(CreateAEmitter("Sandstorm Blood Taint"), woundOffset, true)
+						end
 					elseif string.find(MO.Material.PresetName,"Metal") or (woundName and string.find(woundName,"Dent")) or (woundNameExit and string.find(woundNameExit,"Dent")) then
 						hitGFXType = 5
 					end
@@ -271,7 +283,7 @@ function Update(self)
 						else
 							canDamage = true
 							if diff.Magnitude < 1.7 and ((self.smoke and math.random(1,4) <= 2) or self.alwaysTracer) then
-								AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Ricochet/Ricochet"..math.random(1,10)..".wav", self.Pos);
+								AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Ricochet/Ricochet"..math.random(1,10)..".ogg", self.Pos);
 							end
 						end
 					else

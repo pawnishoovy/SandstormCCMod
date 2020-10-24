@@ -171,17 +171,17 @@ function Update(self)
 						self.state = 1
 
 						local terrainID = SceneMan:GetTerrMatter(hitLocation.X, hitLocation.Y);
-						--AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Attach.wav", self.Pos, -1, 0, 130, 1, 170, false)
+						--AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Attach.ogg", self.Pos, -1, 0, 130, 1, 170, false)
 						if self.dirtHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+							self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 						elseif self.sandHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+							self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 						elseif self.concreteHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 						elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+							self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 						else -- default to concrete
-							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 						end
 						
 						local set = CreateMOSRotating(self.PresetName.." Active");
@@ -272,7 +272,7 @@ function Update(self)
 			if charge then
 				ToMOSRotating(charge):SetNumberValue("Fuse", 1)
 			end
-			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Detonate.wav", self.Pos, -1, 0, 130, 1, 170, false);
+			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Detonate.ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			self.destroy = true
 			self.destroyTimer:Reset()
 			

@@ -89,52 +89,52 @@ function OnCollideWithTerrain(self, terrainID)
 		self.impactSoundAllowed = false;
 		if self.workingTravelImpulse.Magnitude > 40 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hard.Path .. math.random(1, self.dirtHit.Hard.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hard.Path .. math.random(1, self.dirtHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Hard.Path .. math.random(1, self.sandHit.Hard.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.sandHit.Hard.Path .. math.random(1, self.sandHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hard.Path .. math.random(1, self.solidMetalHit.Hard.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hard.Path .. math.random(1, self.solidMetalHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			end
 		elseif self.workingTravelImpulse.Magnitude > 20 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Medium.Path .. math.random(1, self.dirtHit.Medium.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.dirtHit.Medium.Path .. math.random(1, self.dirtHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Medium.Path .. math.random(1, self.sandHit.Medium.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.sandHit.Medium.Path .. math.random(1, self.sandHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Medium.Path .. math.random(1, self.solidMetalHit.Medium.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Medium.Path .. math.random(1, self.solidMetalHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			end
 		elseif self.workingTravelImpulse.Magnitude > 5 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Soft.Path .. math.random(1, self.dirtHit.Soft.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.dirtHit.Soft.Path .. math.random(1, self.dirtHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Soft.Path .. math.random(1, self.sandHit.Soft.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.sandHit.Soft.Path .. math.random(1, self.sandHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Soft.Path .. math.random(1, self.solidMetalHit.Soft.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Soft.Path .. math.random(1, self.solidMetalHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			end
 		elseif self.Rolls < 2 then-- roll
 			self.Rolls = self.Rolls + 1;
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.dirtRoll.Path .. math.random(1, self.dirtRoll.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.rollSound = AudioMan:PlaySound(self.dirtRoll.Path .. math.random(1, self.dirtRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.sandRoll.Path .. math.random(1, self.sandRoll.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.rollSound = AudioMan:PlaySound(self.sandRoll.Path .. math.random(1, self.sandRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.solidMetalRoll.Path .. math.random(1, self.solidMetalRoll.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.rollSound = AudioMan:PlaySound(self.solidMetalRoll.Path .. math.random(1, self.solidMetalRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			else -- default to concrete
-				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 170, false);
+				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
 			end
 		end
 	end
@@ -162,7 +162,7 @@ function Update(self)
 			
 			self.frm = 2
 			
-			self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/SpoonEject" .. math.random(1,4) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);			
+			self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/SpoonEject" .. math.random(1,4) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);			
 		end
 	end
 
@@ -177,7 +177,7 @@ function Update(self)
 		
 		self.frm = 1
 		
-		self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/PullPin" .. math.random(1,3) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.pinSound = AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M84/Sounds/PullPin" .. math.random(1,3) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	end	
 	
 	if self.Live and self.lifeTimer:IsPastSimMS(self.fuseTime) then

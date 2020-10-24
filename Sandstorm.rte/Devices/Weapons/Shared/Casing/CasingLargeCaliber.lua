@@ -50,11 +50,11 @@ function OnCollideWithTerrain(self, terrainID)
 	
 	if self.impulse.Magnitude > 25 then
 		playSound = true
-		--AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/Rifle/Dirt/HitDirt"..math.random(1,10)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+		--AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/Rifle/Dirt/HitDirt"..math.random(1,10)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 	elseif self.impulse.Magnitude > 11 then
 		playSound = true
 		roll = true
-		--AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/Rifle/Dirt/RollDirt"..math.random(1,10)..".wav", self.Pos, -1, 0, 130, 1, 250, false);
+		--AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/Rifle/Dirt/RollDirt"..math.random(1,10)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 	end
 	
 	if playSound then
@@ -69,7 +69,7 @@ function OnCollideWithTerrain(self, terrainID)
 			sound = (roll and self.SolidMetalRoll or self.SolidMetalHit)
 		end
 		
-		AudioMan:PlaySound(sound.Path .. math.random(1, sound.Variations) .. ".wav", self.Pos, -1, 0, 15, 1, 200, false);
+		AudioMan:PlaySound(sound.Path .. math.random(1, sound.Variations) .. ".ogg", self.Pos, -1, 0, 15, 1, 200, false);
 	end
 	--print(self.impulse.Magnitude)
 end
