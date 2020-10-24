@@ -512,9 +512,17 @@ function SecurityAIBehaviours.handleHealth(self)
 					end
 				end
 				self.Dying = true;
-				self.headWounds = self.Head.WoundCount
+				if self.Head.WoundCount > self.headWounds then
+					self.deathSoundPlayed = true;
+					self.dyingSoundPlayed = true;
+					if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then
+						self.voiceSound:Stop(-1);
+					end
+					self.allowedToDie = true;
+				end
 			end
 		end
+		self.headWounds = self.Head.WoundCount
 	end
 	
 	--experimental dying
