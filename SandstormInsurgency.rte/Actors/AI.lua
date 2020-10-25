@@ -1,8 +1,8 @@
 
 dofile("Base.rte/Constants.lua")
 require("AI/NativeHumanAI")  --dofile("Base.rte/AI/NativeHumanAI.lua")
-package.path = package.path .. ";SandstormSecurity.rte/?.lua";
-require("Actors/SecurityAIBehaviours")
+package.path = package.path .. ";SandstormInsurgency.rte/?.lua";
+require("Actors/InsurgencyAIBehaviours")
 
 function Create(self)
 	self.AI = NativeHumanAI:Create(self)
@@ -14,7 +14,7 @@ function Create(self)
 	
 	-- Start modded code --
 	
-	self.RTE = "SandstormSecurity.rte";
+	self.RTE = "SandstormInsurgency.rte";
 	self.baseRTE = "Sandstorm.rte";	
 	
 	-- TERRAIN SOUNDS
@@ -217,7 +217,7 @@ function Create(self)
 	
 	if self.Nationality == 1 then -- Arab
 		if math.random(1, 2) == 1 then		-- arab1
-			skin = 1
+			skin = 0
 			self.baseHeadFrame = headFrames * math.random(0, 5);
 			if self.Head then
 				self.Head.Frame = self.baseHeadFrame;
@@ -343,7 +343,7 @@ function Create(self)
 			spotEnemyClose = 8};				
 		else
 			skin = 0
-			self.baseHeadFrame = headFrames * math.random(6, 10);
+			self.baseHeadFrame = headFrames * math.random(0, 5);
 			if self.Head then
 				self.Head.Frame = self.baseHeadFrame;
 			end
@@ -469,15 +469,12 @@ function Create(self)
 		end
 	else	-- Russian
 	
-		self.baseHeadFrame = headFrames * math.random(11, 14);
+		-- blyat
+		self.baseHeadFrame = headFrames * math.random(7, 9);
 		if self.Head then
 			self.Head.Frame = self.baseHeadFrame;
 		end
-		if self.baseHeadFrame == 70 then -- EXCEPTION, LIGHTER SKIN TONE HEAD SKIN
-			skin = 1
-		else -- REGULAR
-			skin = 0
-		end
+		skin = 1
 	
 		self.voiceSounds = {Death = 
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/Death",
@@ -760,7 +757,7 @@ function OnCollideWithTerrain(self, terrainID)
 	self.terrainCollided = true;
 	self.terrainCollidedWith = terrainID;
 	--if self.Dying or self.Status == Actor.DEAD or self.Status == Actor.DYING then
-	--	SecurityAIBehaviours.handleRagdoll(self)
+	--	InsurgencyAIBehaviours.handleRagdoll(self)
 	--end
 end
 
@@ -829,32 +826,32 @@ function Update(self)
 	
 	if (self.Dying ~= true) then
 		
-		SecurityAIBehaviours.handleLiveAirAndFalling(self);
+		InsurgencyAIBehaviours.handleLiveAirAndFalling(self);
 		
-		SecurityAIBehaviours.handleMovement(self);
+		InsurgencyAIBehaviours.handleMovement(self);
 		
-		SecurityAIBehaviours.handleHealth(self);
+		InsurgencyAIBehaviours.handleHealth(self);
 		
-		SecurityAIBehaviours.handleStaminaAndSuppression(self);
+		InsurgencyAIBehaviours.handleStaminaAndSuppression(self);
 		
-		SecurityAIBehaviours.handleVoicelines(self);
+		InsurgencyAIBehaviours.handleVoicelines(self);
 		
-		SecurityAIBehaviours.handleHeadFrames(self);
+		InsurgencyAIBehaviours.handleHeadFrames(self);
 
 	else
 	
-		SecurityAIBehaviours.handleMovement(self);
+		InsurgencyAIBehaviours.handleMovement(self);
 	
-		SecurityAIBehaviours.handleHeadLoss(self);
+		InsurgencyAIBehaviours.handleHeadLoss(self);
 		
-		--SecurityAIBehaviours.handleDeadAirAndFalling(self);
+		--InsurgencyAIBehaviours.handleDeadAirAndFalling(self);
 		
-		SecurityAIBehaviours.handleDying(self);
+		InsurgencyAIBehaviours.handleDying(self);
 		
 	end
 	
 	if self.Status == 1 or self.Dying then
-		SecurityAIBehaviours.handleRagdoll(self)
+		InsurgencyAIBehaviours.handleRagdoll(self)
 	end
 	
 	-- clear terrain stuff after we did everything that used em

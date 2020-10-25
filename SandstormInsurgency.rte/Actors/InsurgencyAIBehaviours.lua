@@ -1,12 +1,12 @@
-SecurityAIBehaviours = {};
+InsurgencyAIBehaviours = {};
 
-function SecurityAIBehaviours.createSoundEffect(self, effectName, variations)
+function InsurgencyAIBehaviours.createSoundEffect(self, effectName, variations)
 	if effectName ~= nil then
 		self.soundEffect = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 400, false);	
 	end
 end
 
-function SecurityAIBehaviours.createEmotion(self, emotion, priority, duration, canOverridePriority)
+function InsurgencyAIBehaviours.createEmotion(self, emotion, priority, duration, canOverridePriority)
 	if canOverridePriority == nil then
 		canOverridePriority = false;
 	end
@@ -30,7 +30,7 @@ function SecurityAIBehaviours.createEmotion(self, emotion, priority, duration, c
 	end
 end
 
-function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variations, priority, emotion, canOverridePriority)
+function InsurgencyAIBehaviours.createVoiceSoundEffect(self, effectName, variations, priority, emotion, canOverridePriority)
 	if canOverridePriority == nil then
 		canOverridePriority = false;
 	end
@@ -45,7 +45,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 			if self.voiceSound:IsBeingPlayed() then
 				if self.lastPriority <= usingPriority then
 					if emotion then
-						SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
+						InsurgencyAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 					end
 					self.voiceSound:Stop();
 					self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
@@ -54,7 +54,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 				end
 			else
 				if emotion then
-					SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
+					InsurgencyAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 				end
 				self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 				self.lastPriority = priority;
@@ -62,7 +62,7 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 			end
 		else
 			if emotion then
-				SecurityAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
+				InsurgencyAIBehaviours.createEmotion(self, emotion, priority, 0, canOverridePriority);
 			end
 			self.voiceSound = AudioMan:PlaySound(effectName .. math.random(1, variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.lastPriority = priority;
@@ -71,20 +71,20 @@ function SecurityAIBehaviours.createVoiceSoundEffect(self, effectName, variation
 	end
 end
 
-function SecurityAIBehaviours.createExertionSoundEffect(self)
+function InsurgencyAIBehaviours.createExertionSoundEffect(self)
 	if self.Stamina < 20 then
 		self.exertionSound = self.voiceSounds.Exertion
 		self.exertionSoundVar = self.voiceSoundVariations.Exertion
 		
 		-- experimental
-		SecurityAIBehaviours.createEmotion(self, 2, 1, 700);
+		InsurgencyAIBehaviours.createEmotion(self, 2, 1, 700);
 	elseif self.Stamina < 65 then
 		self.exertionSound = self.voiceSounds.Exertion
 		self.exertionSoundVar = self.voiceSoundVariations.Exertion
 		
 		-- experimental
 		if math.random(1,4) < 2 then
-			SecurityAIBehaviours.createEmotion(self, 2, 1, 600);
+			InsurgencyAIBehaviours.createEmotion(self, 2, 1, 600);
 		end
 	else
 		self.exertionSound = nil
@@ -106,12 +106,12 @@ function SecurityAIBehaviours.createExertionSoundEffect(self)
 	end
 end
 
-function SecurityAIBehaviours.handleDeadAirAndFalling(self)
+function InsurgencyAIBehaviours.handleDeadAirAndFalling(self)
 	-- self.altitude = SceneMan:FindAltitude(self.Pos, 100, 3);
 	
 	-- if (self.TravelImpulse.Magnitude > self.ImpulseDamageThreshold/3) then
 		-- self.impactSound = AudioMan:PlaySound("SandstormSecurity.rte/Actors/Sounds/DeathBodyImpact" .. math.random(1, 5) .. ".ogg", self.Pos);
-		-- SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.bodyImpactGrunt, self.voiceSoundVariations.bodyImpactGrunt, 2)
+		-- InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.bodyImpactGrunt, self.voiceSoundVariations.bodyImpactGrunt, 2)
 	-- end
 	
 	-- if (self.wasInAir and self.altitude < 25) then
@@ -120,9 +120,9 @@ function SecurityAIBehaviours.handleDeadAirAndFalling(self)
 		-- if self.voiceSound and self.voiceSound:IsBeingPlayed() then
 			-- self.voiceSound:Stop(-1);
 		-- end
-		-- SecurityAIBehaviours.createVoiceSoundEffect(self, "SandstormSecurity.rte/Actors/Sounds/DeathImpact", 10, 2)
+		-- InsurgencyAIBehaviours.createVoiceSoundEffect(self, "SandstormSecurity.rte/Actors/Sounds/DeathImpact", 10, 2)
 	-- elseif (self.wasInAir) then
-		-- if SecurityAIBehaviours.createVoiceSoundEffect(self, "SandstormSecurity.rte/Actors/Sounds/DeathFalling", 10, 2) then
+		-- if InsurgencyAIBehaviours.createVoiceSoundEffect(self, "SandstormSecurity.rte/Actors/Sounds/DeathFalling", 10, 2) then
 			-- self.fallingScreamCount = self.fallingScreamCount + 1;
 		-- end
 		-- -- if we scream two times in the same fall to completion, we're probably stuck somewhere.
@@ -138,22 +138,22 @@ function SecurityAIBehaviours.handleDeadAirAndFalling(self)
 	-- end
 end
 
-function SecurityAIBehaviours.handleLiveAirAndFalling(self)
+function InsurgencyAIBehaviours.handleLiveAirAndFalling(self)
 	--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "vel = ".. math.floor(self.Vel.Y), true, 0);
 	-- Lose balance while falling
 	if self.Vel.Y > 14.5 and self.Status == 0 then
 		self.Status = 1
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 5, 2, true)
-		SecurityAIBehaviours.createEmotion(self, 4, 4, 1000);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 5, 2, true)
+		InsurgencyAIBehaviours.createEmotion(self, 4, 4, 1000);
 		--HitWhatTerrMaterial
 	end
 
 	if (self.TravelImpulse.Magnitude > self.ImpulseDamageThreshold) then
-		SecurityAIBehaviours.createSoundEffect(self, self.miscSounds.Impact, self.miscSoundVariations.Impact);
+		InsurgencyAIBehaviours.createSoundEffect(self, self.miscSounds.Impact, self.miscSoundVariations.Impact);
 		local damage = (self.TravelImpulse.Magnitude - self.ImpulseDamageThreshold) / 50
 		--print(damage)
 		self.Health = self.Health - damage
-		SecurityAIBehaviours.createEmotion(self, 4, 4, 1000);
+		InsurgencyAIBehaviours.createEmotion(self, 4, 4, 1000);
 	end
 	
 	if (self.wasInAir and self.Vel.Y < 10) then
@@ -161,27 +161,27 @@ function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 		if self.altitude < 25 then
 			--self.wasInAir = false;
 			if self.Status == 0 then
-				-- SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
+				-- InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
 				-- if self.footPixel ~= 0 then
 					-- if self.terrainProneSounds[self.footPixel] ~= nil then
-						-- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
+						-- InsurgencyAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
 					-- else
-						-- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
+						-- InsurgencyAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
 					-- end
 				-- end
-				-- SecurityAIBehaviours.createExertionSoundEffect(self);
+				-- InsurgencyAIBehaviours.createExertionSoundEffect(self);
 				-- self.Stamina = self.Stamina - 6;
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Fall, self.movementSoundVariations.Fall);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Fall, self.movementSoundVariations.Fall);
 				if self.terrainCollided then
 					if self.terrainImpactLightSounds[self.terrainCollidedWith] ~= nil then
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
+						InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
 					else
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
+						InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
 					end
 					self.terrainCollided = false;
 				end
-				SecurityAIBehaviours.createExertionSoundEffect(self);
+				InsurgencyAIBehaviours.createExertionSoundEffect(self);
 				self.Stamina = self.Stamina - 15;
 			end
 		end
@@ -194,7 +194,7 @@ function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 	end
 end
 
-function SecurityAIBehaviours.handleMovement(self)
+function InsurgencyAIBehaviours.handleMovement(self)
 	
 	local crouching = self.controller:IsState(Controller.BODY_CROUCH)
 	local moving = self.controller:IsState(Controller.MOVE_LEFT) or self.controller:IsState(Controller.MOVE_RIGHT);
@@ -261,7 +261,7 @@ function SecurityAIBehaviours.handleMovement(self)
 							}
 							};
 							for _, soundEffect in pairs(sprintOrWalkSoundEffects [self.isSprinting]) do
-							  SecurityAIBehaviours.createSoundEffect(self, soundEffect[1], soundEffect[2]);
+							  InsurgencyAIBehaviours.createSoundEffect(self, soundEffect[1], soundEffect[2]);
 							end							
 							
 							self.feetTimers[i]:Reset()
@@ -272,9 +272,9 @@ function SecurityAIBehaviours.handleMovement(self)
 						self.feetContact[i] = false
 						if self.feetTimers[i]:IsPastSimMS(self.footstepTime) and movement then
 							if self.isSprinting == true then
-								SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.sprintPre, self.movementSoundVariations.sprintPre); -- messy, but we put it here to save on isSprinting check
+								InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.sprintPre, self.movementSoundVariations.sprintPre); -- messy, but we put it here to save on isSprinting check
 							else
-								SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.walkPre, self.movementSoundVariations.walkPre); -- messy, but we put it here to save on isSprinting check
+								InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.walkPre, self.movementSoundVariations.walkPre); -- messy, but we put it here to save on isSprinting check
 							end
 							self.feetTimers[i]:Reset()
 						end
@@ -299,14 +299,14 @@ function SecurityAIBehaviours.handleMovement(self)
 			elseif self.controller:IsState(Controller.MOVE_RIGHT) == true then
 				jumpVec.X = jumpWalkX
 			end
-			SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Jump, self.movementSoundVariations.Jump);
+			InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Jump, self.movementSoundVariations.Jump);
 			if self.terrainJumpSounds[self.footPixel] ~= nil then
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainJumpSounds[self.footPixel], self.terrainJumpSoundVariations[self.footPixel]);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainJumpSounds[self.footPixel], self.terrainJumpSoundVariations[self.footPixel]);
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainJumpSounds[12], self.terrainJumpSoundVariations[12]); -- default concrete
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainJumpSounds[12], self.terrainJumpSoundVariations[12]); -- default concrete
 			end
 			if math.random(0, 100) < 80 then
-				SecurityAIBehaviours.createExertionSoundEffect(self);
+				InsurgencyAIBehaviours.createExertionSoundEffect(self);
 			end
 			self.Stamina = self.Stamina - 10;
 			--self.Vel = self.Vel + Vector(0 ,-5)
@@ -324,11 +324,11 @@ function SecurityAIBehaviours.handleMovement(self)
 		if (self.feetContact[1] == true or self.feetContact[2] == true) and self.jumpStop:IsPastSimMS(100) then
 			self.isJumping = false
 			if self.Vel.Y > 0 then
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
 				if self.terrainProneSounds[self.footPixel] ~= nil then
-					SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
+					InsurgencyAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
 				else
-					SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
+					InsurgencyAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
 				end
 			end
 		else
@@ -407,19 +407,19 @@ function SecurityAIBehaviours.handleMovement(self)
 		if (moving) then
 			if self.terrainCollided == true and self.proneTerrainPlayed == false then
 				if self.terrainProneSounds[self.terrainCollidedWith] ~= nil then
-					SecurityAIBehaviours.createSoundEffect(self, self.terrainProneSounds[self.terrainCollidedWith], self.terrainProneSoundVariations[self.terrainCollidedWith]);
+					InsurgencyAIBehaviours.createSoundEffect(self, self.terrainProneSounds[self.terrainCollidedWith], self.terrainProneSoundVariations[self.terrainCollidedWith]);
 				else
-					SecurityAIBehaviours.createSoundEffect(self, self.terrainProneSounds[12], self.terrainProneSoundVariations[12]); -- default concrete
+					InsurgencyAIBehaviours.createSoundEffect(self, self.terrainProneSounds[12], self.terrainProneSoundVariations[12]); -- default concrete
 				end
 				self.proneTerrainPlayed = true;
 			end
 			if (self.moveSoundWalkTimer:IsPastSimMS(700)) then
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Crawl, self.movementSoundVariations.Crawl);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Crawl, self.movementSoundVariations.Crawl);
 				if self.footPixel ~= 0 then
 					if self.terrainCrawlSounds[self.footPixel] ~= nil then
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainCrawlSounds[self.footPixel], self.terrainCrawlSoundVariations[self.footPixel]);
+						InsurgencyAIBehaviours.createSoundEffect(self, self.terrainCrawlSounds[self.footPixel], self.terrainCrawlSoundVariations[self.footPixel]);
 					else
-						SecurityAIBehaviours.createSoundEffect(self, self.terrainCrawlSounds[12], self.terrainCrawlSoundVariations[12]); -- default concrete
+						InsurgencyAIBehaviours.createSoundEffect(self, self.terrainCrawlSounds[12], self.terrainCrawlSoundVariations[12]); -- default concrete
 					end
 				end
 				self.moveSoundWalkTimer:Reset();
@@ -427,22 +427,22 @@ function SecurityAIBehaviours.handleMovement(self)
 		end
 		if (not self.wasCrouching and self.moveSoundTimer:IsPastSimMS(800)) then
 			if (moving) then
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Sprint, self.movementSoundVariations.Sprint);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Sprint, self.movementSoundVariations.Sprint);
 				if math.random(0, 100) < 80 then
-					SecurityAIBehaviours.createExertionSoundEffect(self);
+					InsurgencyAIBehaviours.createExertionSoundEffect(self);
 				end
 				self.proneTerrainPlayed = false;
 				self.Stamina = self.Stamina - 6;
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Crouch, self.movementSoundVariations.Crouch);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Crouch, self.movementSoundVariations.Crouch);
 			end
 		end
 	else
 		if (self.wasCrouching and self.moveSoundTimer:IsPastSimMS(800)) then
-			SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Stand, self.movementSoundVariations.Stand);
+			InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Stand, self.movementSoundVariations.Stand);
 			self.moveSoundTimer:Reset();
 			if math.random(0, 100) < 40 then
-				SecurityAIBehaviours.createExertionSoundEffect(self);
+				InsurgencyAIBehaviours.createExertionSoundEffect(self);
 				self.Stamina = self.Stamina - 2;
 			end
 		end
@@ -457,7 +457,7 @@ function SecurityAIBehaviours.handleMovement(self)
 	self.wasMoving = moving;
 end
 
-function SecurityAIBehaviours.handleHealth(self)
+function InsurgencyAIBehaviours.handleHealth(self)
 
 	local healthTimerReady = self.healthUpdateTimer:IsPastSimMS(750);
 	local wasLightlyInjured = self.Health < (self.oldHealth - 5);
@@ -474,7 +474,7 @@ function SecurityAIBehaviours.handleHealth(self)
 		elseif wasInjured then
 			self.Suppression = self.Suppression + 60;
 		elseif wasLightlyInjured then
-			SecurityAIBehaviours.createEmotion(self, 2, 4, 500);
+			InsurgencyAIBehaviours.createEmotion(self, 2, 4, 500);
 			self.Suppression = self.Suppression + math.random(9,13);
 		end
 		
@@ -485,10 +485,10 @@ function SecurityAIBehaviours.handleHealth(self)
 			self:RemoveNumberValue("Sandstorm Shockwave");
 			
 			if self.Health > 0 then
-				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
+				InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Pain, self.voiceSoundVariations.Pain, 5, 2, true)
 				self.Stamina = self.Stamina - 25;
 			else
-				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.seriousDeath, self.voiceSoundVariations.seriousDeath, 10, 4)
+				InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.seriousDeath, self.voiceSoundVariations.seriousDeath, 10, 4)
 				self.seriousDeath = true;
 				self.deathSoundPlayed = true;
 				for actor in MovableMan.Actors do
@@ -552,7 +552,7 @@ function SecurityAIBehaviours.handleHealth(self)
 	
 end
 
-function SecurityAIBehaviours.handleStaminaAndSuppression(self)
+function InsurgencyAIBehaviours.handleStaminaAndSuppression(self)
 	
 	local blinkTimerReady = self.blinkTimer:IsPastSimMS(self.blinkDelay);
 	local staminaTimerReady = self.staminaUpdateTimer:IsPastSimMS(700);
@@ -560,7 +560,7 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 	
 	if (blinkTimerReady) and (not self.Suppressed) and self.Head then
 		if self.Head.Frame == self.baseHeadFrame then
-			SecurityAIBehaviours.createEmotion(self, 1, 0, 100);
+			InsurgencyAIBehaviours.createEmotion(self, 1, 0, 100);
 			self.blinkTimer:Reset();
 			self.blinkDelay = math.random(5000, 11000);
 		end
@@ -571,30 +571,30 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 		if self:IsPlayerControlled() then
 			if self.Stamina < 20 then
 				if self.Inhale then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleHeavy, self.voiceSoundVariations.inhaleHeavy, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleHeavy, self.voiceSoundVariations.inhaleHeavy, 0);
 					self.Inhale = false;
 				else
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleHeavy, self.voiceSoundVariations.exhaleHeavy, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleHeavy, self.voiceSoundVariations.exhaleHeavy, 0);
 					self.Inhale = true;
 					-- experimental
-					SecurityAIBehaviours.createEmotion(self, 1, 0, 300);
+					InsurgencyAIBehaviours.createEmotion(self, 1, 0, 300);
 				end		
 			elseif self.Stamina < 50 then	
 				if self.Inhale then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleMedium, self.voiceSoundVariations.inhaleMedium, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleMedium, self.voiceSoundVariations.inhaleMedium, 0);
 					self.Inhale = false;
 				else
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleMedium, self.voiceSoundVariations.exhaleMedium, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleMedium, self.voiceSoundVariations.exhaleMedium, 0);
 					self.Inhale = true;
 					-- experimental
-					SecurityAIBehaviours.createEmotion(self, 1, 0, 200);
+					InsurgencyAIBehaviours.createEmotion(self, 1, 0, 200);
 				end		
 			elseif self.Stamina < 70 then	
 				if self.Inhale then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleLight, self.voiceSoundVariations.inhaleLight, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.inhaleLight, self.voiceSoundVariations.inhaleLight, 0);
 					self.Inhale = false;
 				else
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleLight, self.voiceSoundVariations.exhaleLight, 0);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.exhaleLight, self.voiceSoundVariations.exhaleLight, 0);
 					self.Inhale = true;
 				end
 			end
@@ -615,7 +615,7 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 	if self:NumberValueExists("Sandstorm Shockwave") then
 		self:RemoveNumberValue("Sandstorm Shockwave");
 		self.Suppression = self.Suppression + 60;
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 6, 2, false);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.SuppressedByExplosion, self.voiceSoundVariations.SuppressedByExplosion, 6, 2, false);
 	end
 	
 	if self:NumberValueExists("Sandstorm Bullet Suppressed") then
@@ -627,11 +627,11 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 		if self.Suppression > 50 then
 			if self.Suppression > 99 and self.suppressedVoicelineTimer:IsPastSimMS(self.suppressedVoicelineDelay) then
 				-- keep playing voicelines if we keep being suppressed to the max
-				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
+				InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
 				self.suppressedVoicelineTimer:Reset();
 			end
 			if self.Suppressed == false then -- initial voiceline
-				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
+				InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressed, self.voiceSoundVariations.Suppressed, 4, 2, true);
 			end
 			self.Suppressed = true;
 		else
@@ -648,7 +648,7 @@ function SecurityAIBehaviours.handleStaminaAndSuppression(self)
 	end
 end
 
-function SecurityAIBehaviours.handleHeadFrames(self)
+function InsurgencyAIBehaviours.handleHeadFrames(self)
 	if not self.Head then return end
 	if self.Emotion and self.emotionApplied ~= true and self.Head then
 		self.Head.Frame = self.baseHeadFrame + self.Emotion;
@@ -674,7 +674,7 @@ function SecurityAIBehaviours.handleHeadFrames(self)
 end
 
 
-function SecurityAIBehaviours.handleVoicelines(self)
+function InsurgencyAIBehaviours.handleVoicelines(self)
 
 	-- this is the bigun
 	
@@ -689,12 +689,12 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		
 			if ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Throw") then
 				ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Throw");
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
 			end
 			
 			if ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Throwstart") then
 				ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Throwstart");
-				SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
 			end
 			if self.EquippedItem:IsInGroup("Weapons") then
 				local gun = ToHDFirearm(self.EquippedItem);
@@ -710,7 +710,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 						self.Suppressing = false;
 					end
 					if self.gunShotCounter > 60 and self.suppressingVoicelineTimer:IsPastSimMS(self.suppressingVoicelineDelay) then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 3, true);
+						InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Suppressing, self.voiceSoundVariations.Suppressing, 6, 3, true);
 						self.suppressingVoicelineTimer:Reset();
 					end
 				else
@@ -722,10 +722,10 @@ function SecurityAIBehaviours.handleVoicelines(self)
 					if (self.reloadVoicelinePlayed ~= true) then
 						if (self.Suppressed) then
 							if (math.random(1, 100) < 85) then
-								SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedReload, self.voiceSoundVariations.suppressedReload, 5, 2, true);
+								InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedReload, self.voiceSoundVariations.suppressedReload, 5, 2, true);
 							end
 						elseif (math.random(1, 100) < 50) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Reload, self.voiceSoundVariations.Reload, 4);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Reload, self.voiceSoundVariations.Reload, 4);
 						end
 						self.reloadVoicelinePlayed = true;
 					end
@@ -747,7 +747,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 				
 				if self.activatedExplosive ~= true then
 					self.activatedExplosive = true;
-					SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
+					InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.throwStart, self.movementSoundVariations.throwStart);
 				end
 			
 				-- very messy detection due to string.find being case sensitive
@@ -757,52 +757,52 @@ function SecurityAIBehaviours.handleVoicelines(self)
 					if (string.find(self.EquippedItem.PresetName, "Stun")) or (string.find(self.EquippedItem.PresetName, "Flash")) or (string.find(self.EquippedItem.PresetName, "stun")) or (string.find(self.EquippedItem.PresetName, "flash")) or
 					(ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Flashbang Grenade")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFlashOut, self.voiceSoundVariations.suppressedFlashOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFlashOut, self.voiceSoundVariations.suppressedFlashOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.flashOut, self.voiceSoundVariations.flashOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.flashOut, self.voiceSoundVariations.flashOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Frag")) or (string.find(self.EquippedItem.PresetName, "HE")) or (string.find(self.EquippedItem.PresetName, "frag")) or 
 					(ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Frag Grenade")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Incendiary")) or (string.find(self.EquippedItem.PresetName, "Flame")) or (string.find(self.EquippedItem.PresetName, "incendiary")) or (string.find(self.EquippedItem.PresetName, "flame")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Incendiary Grenade")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedIncendiaryOut, self.voiceSoundVariations.suppressedIncendiaryOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedIncendiaryOut, self.voiceSoundVariations.suppressedIncendiaryOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.incendiaryOut, self.voiceSoundVariations.incendiaryOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.incendiaryOut, self.voiceSoundVariations.incendiaryOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Mine")) or (string.find(self.EquippedItem.PresetName, "Claymore")) or (string.find(self.EquippedItem.PresetName, "mine")) or (string.find(self.EquippedItem.PresetName, "claymore")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Mine")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMineOut, self.voiceSoundVariations.suppressedMineOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMineOut, self.voiceSoundVariations.suppressedMineOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.mineOut, self.voiceSoundVariations.mineOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.mineOut, self.voiceSoundVariations.mineOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Molotov")) or (string.find(self.EquippedItem.PresetName, "Bottle Bomb")) or (string.find(self.EquippedItem.PresetName, "molotov")) or (string.find(self.EquippedItem.PresetName, "bottle bomb")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Molotov")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMolotovOut, self.voiceSoundVariations.suppressedMolotovOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMolotovOut, self.voiceSoundVariations.suppressedMolotovOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.molotovOut, self.voiceSoundVariations.molotovOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.molotovOut, self.voiceSoundVariations.molotovOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Remote")) or (string.find(self.EquippedItem.PresetName, "C4")) or (string.find(self.EquippedItem.PresetName, "Timed")) or (string.find(self.EquippedItem.PresetName, "remote")) or (string.find(self.EquippedItem.PresetName, "c4")) or (string.find(self.EquippedItem.PresetName, "timed")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Remote Bomb")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
 						end
 					elseif (string.find(self.EquippedItem.PresetName, "Smoke")) or (string.find(self.EquippedItem.PresetName, "smoke")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Smoke Grenade")) then
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedSmokeOut, self.voiceSoundVariations.suppressedSmokeOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedSmokeOut, self.voiceSoundVariations.suppressedSmokeOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.smokeOut, self.voiceSoundVariations.smokeOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.smokeOut, self.voiceSoundVariations.smokeOut, 5, 2);
 						end
 					else -- default frag nade
 						if (self.Suppressed) then
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedFragOut, self.voiceSoundVariations.suppressedFragOut, 5, 3);
 						else
-							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
+							InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.fragOut, self.voiceSoundVariations.fragOut, 5, 2);
 						end
 					end
 					self.throwGrenadeVoicelinePlayed = true;
@@ -811,15 +811,15 @@ function SecurityAIBehaviours.handleVoicelines(self)
 				self.throwGrenadeVoicelinePlayed = false;
 				if self.activatedExplosive then
 					self.activatedExplosive = false;
-					SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
+					InsurgencyAIBehaviours.createSoundEffect(self, self.movementSounds.Throw, self.movementSoundVariations.Throw);
 				end
 			end
 		elseif IsHDFirearm(self.EquippedItem) and ToHDFirearm(self.EquippedItem):NumberValueExists("Sandstorm Custom Activation") then
 			if (string.find(self.EquippedItem.PresetName, "Remote")) or (string.find(self.EquippedItem.PresetName, "C4")) or (string.find(self.EquippedItem.PresetName, "Timed")) or (string.find(self.EquippedItem.PresetName, "remote")) or (string.find(self.EquippedItem.PresetName, "c4")) or (string.find(self.EquippedItem.PresetName, "timed")) or (ToHDFirearm(self.EquippedItem):IsInGroup("Sandstorm Remote Bomb")) then
 				if (self.Suppressed) then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedRemoteOut, self.voiceSoundVariations.suppressedRemoteOut, 5, 3);
 				else
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
 				end
 			end
 			ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Activation")
@@ -838,7 +838,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 			local Sounds = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSounds.witnessDeath or self.voiceSounds.witnessGruesomeDeath
 			local Vars = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSoundVariations.witnessDeath or self.voiceSoundVariations.witnessGruesomeDeath
 			
-			SecurityAIBehaviours.createVoiceSoundEffect(self, Sounds, Vars, 4, 4, true);		
+			InsurgencyAIBehaviours.createVoiceSoundEffect(self, Sounds, Vars, 4, 4, true);		
 			self.friendlyDownTimer:Reset();
 		end
 		self:RemoveNumberValue("Sandstorm Friendly Down")
@@ -894,11 +894,11 @@ function SecurityAIBehaviours.handleVoicelines(self)
 					self.spotAllowed = false;
 					
 					if distance < self.spotDistanceClose then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyClose, self.voiceSoundVariations.spotEnemyClose, 3, 4, false);
+						InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyClose, self.voiceSoundVariations.spotEnemyClose, 3, 4, false);
 					elseif distance < self.spotDistanceMid then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemy, self.voiceSoundVariations.spotEnemy, 3, 3, false);
+						InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemy, self.voiceSoundVariations.spotEnemy, 3, 3, false);
 					else
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyFar, self.voiceSoundVariations.spotEnemyFar, 3, 2, false);
+						InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyFar, self.voiceSoundVariations.spotEnemyFar, 3, 2, false);
 					end
 				end
 			else
@@ -924,14 +924,14 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if self:NumberValueExists("Flashed") then
 		self:RemoveNumberValue("Flashed");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 5, 4, true);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, self.voiceSoundVariations.Flashed, 5, 4, true);
 	end
 		
 	-- SPOT FRAG GRENADE REACTION
 		
 	if self:NumberValueExists("Spotted Grenade") then
 		self:RemoveNumberValue("Spotted Grenade");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotGrenade, self.voiceSoundVariations.spotGrenade, 4, 4, false);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotGrenade, self.voiceSoundVariations.spotGrenade, 4, 4, false);
 		if self.Suppression < 20 then
 			self.Suppression = self.Suppression + 15;
 		end
@@ -941,7 +941,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if self:NumberValueExists("Spotted Remote") then
 		self:RemoveNumberValue("Spotted Remote");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotRemote, self.voiceSoundVariations.spotRemote, 4, 4, false);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotRemote, self.voiceSoundVariations.spotRemote, 4, 4, false);
 		if self.Suppression < 20 then
 			self.Suppression = self.Suppression + 25;
 		end
@@ -951,12 +951,12 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if self:NumberValueExists("Tossback Grenade") then
 		self:RemoveNumberValue("Tossback Grenade");
-		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Tossback, self.voiceSoundVariations.Tossback, 4, 4, false);
+		InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Tossback, self.voiceSoundVariations.Tossback, 4, 4, false);
 	end
 
 end
 
-function SecurityAIBehaviours.handleDying(self)
+function InsurgencyAIBehaviours.handleDying(self)
 
 	self.controller.Disabled = true;
 	self.HUDVisible = false
@@ -990,7 +990,7 @@ function SecurityAIBehaviours.handleDying(self)
 			--self.AngularVel = self.AngularVel + RangeRand(-5,5)
 			
 			self.deathSoundPlayed = true;
-			SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Death, self.voiceSoundVariations.Death, 15, 3)
+			InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Death, self.voiceSoundVariations.Death, 15, 3)
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -1023,7 +1023,7 @@ function SecurityAIBehaviours.handleDying(self)
 				self.RestThreshold = -1;
 				self.dyingSoundPlayed = true;
 				if (math.random(1, 100) < 10) then
-					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Incapacitated, self.voiceSoundVariations.Incapacitated, 14)
+					InsurgencyAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Incapacitated, self.voiceSoundVariations.Incapacitated, 14)
 					self.incapacitated = true
 				end
 			end
@@ -1046,7 +1046,7 @@ function SecurityAIBehaviours.handleDying(self)
 	end
 end
 
-function SecurityAIBehaviours.handleRagdoll(self)
+function InsurgencyAIBehaviours.handleRagdoll(self)
 	-- EXPERIMENTAL BETTER RAGDOLL
 	local radius = self.Radius * 0.9
 	
@@ -1112,17 +1112,17 @@ function SecurityAIBehaviours.handleRagdoll(self)
 	if mat ~= 0 then
 		if self.TravelImpulse.Magnitude > 700 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
 			if self.terrainImpactHeavySounds[self.terrainCollidedWith] ~= nil then
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[self.terrainCollidedWith], self.terrainImpactHeavySoundVariations[self.terrainCollidedWith]);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[self.terrainCollidedWith], self.terrainImpactHeavySoundVariations[self.terrainCollidedWith]);
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[12], self.terrainImpactHeavySoundVariations[12]); -- default concrete
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactHeavySounds[12], self.terrainImpactHeavySoundVariations[12]); -- default concrete
 			end
 			self.ragdollTerrainImpactDelay = math.random(200, 500)
 			self.ragdollTerrainImpactTimer:Reset()
 		elseif self.TravelImpulse.Magnitude > 400 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
 			if self.terrainImpactLightSounds[self.terrainCollidedWith] ~= nil then
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[self.terrainCollidedWith], self.terrainImpactLightSoundVariations[self.terrainCollidedWith]);
 			else
-				SecurityAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
+				InsurgencyAIBehaviours.createSoundEffect(self, self.terrainImpactLightSounds[12], self.terrainImpactLightSoundVariations[12]); -- default concrete
 			end
 			self.ragdollTerrainImpactDelay = math.random(200, 500)
 			self.ragdollTerrainImpactTimer:Reset()
@@ -1137,7 +1137,7 @@ end
 --    Prop HitWhatTerrMaterial, r/o
 --    Prop HitWhatParticleUniqueID, r/o
 
-function SecurityAIBehaviours.handleHeadLoss(self)
+function InsurgencyAIBehaviours.handleHeadLoss(self)
 	if not (self.Head) then
 		self.allowedToDie = true;
 		self.voiceSounds = {};
