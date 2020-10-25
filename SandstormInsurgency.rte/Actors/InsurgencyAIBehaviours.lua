@@ -519,6 +519,7 @@ function InsurgencyAIBehaviours.handleHealth(self)
 						self.voiceSound:Stop(-1);
 					end
 					self.allowedToDie = true;
+					self.voiceSounds = {};
 				end
 			end
 		end

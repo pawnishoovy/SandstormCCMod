@@ -240,17 +240,17 @@ function Create(self)
 			witnessGruesomeDeath = 
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/DeathReactions/FriendlyGibbed",
 			inhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/InhaleLight",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleLight",
 			inhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/InhaleMedium",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleMedium",
 			inhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/InhaleHeavy",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleHeavy",
 			exhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/ExhaleLight",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleLight",
 			exhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/ExhaleMedium",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleMedium",
 			exhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/ExhaleHeavy",
+			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleHeavy",
 			Exertion = 
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/Exertion",
 			Pain =
@@ -493,17 +493,17 @@ function Create(self)
 		witnessGruesomeDeath = 
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/DeathReactions/FriendlyGibbed",
 		inhaleLight =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleLight",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleLight",
 		inhaleMedium =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleMedium",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleMedium",
 		inhaleHeavy =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleHeavy",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleHeavy",
 		exhaleLight =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleLight",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleLight",
 		exhaleMedium =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleMedium",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleMedium",
 		exhaleHeavy =
-		self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleHeavy",
+		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleHeavy",
 		Exertion =
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Exertion/Exertion",
 		Pain =
