@@ -512,7 +512,8 @@ function InsurgencyAIBehaviours.handleHealth(self)
 					end
 				end
 				self.Dying = true;
-				if self.Head.WoundCount > self.headWounds then
+				if (wasHeavilyInjured) and (self.Head.WoundCount > (self.headWounds + 1)) then
+					-- insta death only on big headshots
 					self.deathSoundPlayed = true;
 					self.dyingSoundPlayed = true;
 					if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then
@@ -523,7 +524,9 @@ function InsurgencyAIBehaviours.handleHealth(self)
 				end
 			end
 		end
-		self.headWounds = self.Head.WoundCount
+		if self.Head then
+			self.headWounds = self.Head.WoundCount
+		end
 	end
 	
 	--experimental dying
