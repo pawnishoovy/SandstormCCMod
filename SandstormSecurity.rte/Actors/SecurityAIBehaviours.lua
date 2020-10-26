@@ -979,7 +979,7 @@ function SecurityAIBehaviours.handleDying(self)
 	if self.Head then
 		--self.Head.CollidesWithTerrainWhenAttached = false
 		
-		if self.Head.WoundCount > self.headWounds then
+		if self.headWounds and self.Head.WoundCount > self.headWounds then
 			self.deathSoundPlayed = true;
 			self.dyingSoundPlayed = true;
 			if (self.voiceSound) and (self.voiceSound:IsBeingPlayed()) then

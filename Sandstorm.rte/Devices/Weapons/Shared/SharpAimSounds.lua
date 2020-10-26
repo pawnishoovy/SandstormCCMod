@@ -45,14 +45,16 @@ function Update(self)
 		end
 	end
 	
-	if self.sharpAimTimer:IsPastSimMS(self.sharpAimDelay) then
+	if self.sharpAimSounds and self.sharpAimTimer:IsPastSimMS(self.sharpAimDelay) then
 		if self.parent and self.parent:IsPlayerControlled() then
 			local controller = self.parent:GetController();
-			if controller:IsState(Controller.AIM_SHARP) and self.sharpAiming == false then
+			local sharpAim = controller:IsState(Controller.AIM_SHARP) and not controller:IsState(Controller.MOVE_LEFT) and not controller:IsState(Controller.MOVE_RIGHT)
+			
+			if sharpAim and self.sharpAiming == false then
 				self.sharpAiming = true;
 				self.sharpAimTimer:Reset();
 				self.sharpAimSound = AudioMan:PlaySound(self.sharpAimSounds.In.Path .. math.random(1, self.sharpAimSounds.In.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
-			elseif (not controller:IsState(Controller.AIM_SHARP)) and self.sharpAiming == true then
+			elseif (not sharpAim) and self.sharpAiming == true then
 				self.sharpAiming = false;
 				self.sharpAimTimer:Reset();
 				self.sharpAimSound = AudioMan:PlaySound(self.sharpAimSounds.Out.Path .. math.random(1, self.sharpAimSounds.Out.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
