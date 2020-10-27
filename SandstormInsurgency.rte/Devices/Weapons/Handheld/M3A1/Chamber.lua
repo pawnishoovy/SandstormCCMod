@@ -91,18 +91,6 @@ function Create(self)
 	self.recoilDamping = 1.0
 	-- Progressive Recoil System
 	
-	-- delayed fire by fil, inherent to this gun due to open bolt
-	self.delayedFire = false;
-	self.delayedFireTimer = Timer();
-	self.delayedFireTimeMS = 45;
-	self.delayedFireEnabled = true;
-	
-	self.lastAge = self.Age + 0;
-	
-	self.fireDelayTimer = Timer();
-	
-	self.activated = false;
-	
 end
 
 function Update(self)
@@ -118,7 +106,7 @@ function Update(self)
 		end
 	end
 	
-	if (not self.activated) and (not self.backFrame) and self.Magazine and self.Magazine.RoundCount > 0 then
+	if (not self.backFrame) and self.Magazine and self.Magazine.RoundCount > 0 then
 		self.Frame = 3;
 	end
 	
@@ -307,19 +295,16 @@ function Update(self)
 		self.ReloadTime = 9999;
 	end
 	
-	if self:DoneReloading() == true and self.chamberOnReload then
-		self.fireDelayTimer:Reset()
-		self.Magazine.RoundCount = 30;
-		self.chamberOnReload = false;
-	elseif self:DoneReloading() then
-		self.fireDelayTimer:Reset()
-		self.Magazine.RoundCount = 31;
+	if self:DoneReloading() == true then
 		self.chamberOnReload = false;
 	end
 	
-	if self.FiredFrame then
-		self.activated = false; -- tell us we're not currently in "delayed fire" anymore
+	if self.backFrame == true then
+		self.backFrame = false;
+		self.Frame = 1;
+	end
 	
+	if self.FiredFrame then
 		self.canSmoke = true
 		self.smokeTimer:Reset()
 		
@@ -327,25 +312,24 @@ function Update(self)
 		self.angVel = self.angVel + RangeRand(0,1) * 3
 		self.Frame = 0;
 		
+		if self.mechEndSound then
+			if self.mechEndSound:IsBeingPlayed() then
+				self.mechEndSound:Stop(-1)
+			end
+		end
+		
 		if self.Magazine then
 			if self.Magazine.RoundCount > 0 then
 				self.backFrame = true;
-				self.toMechEnd = true;
+				self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			else
 				self.chamberOnReload = true;
-				self.toMechEnd = false;
 			end
 		end
 		
 		if self.noiseEndSound then
 			if self.noiseEndSound:IsBeingPlayed() then
 				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.mechEndSound then
-			if self.mechEndSound:IsBeingPlayed() then
-				self.mechEndSound:Stop(-1)
 			end
 		end
 		
@@ -423,51 +407,9 @@ function Update(self)
 		end
 
 	end
-	
+
 	if not self:IsActivated() then
 		self.firstShot = true;
-		if self.toMechEnd then
-			self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.toMechEnd = false;
-		end
-	end	
-	
-	-- delayed fire
-	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
-		if self.delayedFire then
-			self.delayedFire = false
-		end
-	end
-	self.lastAge = self.Age + 0
-	
-	if self.firstShot then
-		local fire = self:IsActivated()
-		self:Deactivate()
-		
-		--if self.parent:GetController():IsState(Controller.WEAPON_FIRE) and not self:IsReloading() then
-		if fire and not self:IsReloading() then
-			if not self.Magazine or self.Magazine.RoundCount < 1 then
-				--self:Reload()
-				self:Activate()
-			elseif not self.activated and not self.delayedFire and self.fireDelayTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
-				self.activated = true
-				self.Frame = 1;
-				
-				if self.preSounds then
-					AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-				end
-				
-				self.fireDelayTimer:Reset()
-				
-				self.delayedFire = true
-				self.delayedFireTimer:Reset()
-			end
-		end
-		if self.delayedFire and self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) then
-			self:Activate()
-		end
-	elseif not self:IsActivated() then
-		self.delayedFire = false;
 	end
 	
 	-- Animation
@@ -512,11 +454,6 @@ function Update(self)
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
 	end
 	
-	if self.delayedFire and self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) then
-		self:Activate()
-		self.delayedFire = false
-	end
-	
 	if self.canSmoke and not self.smokeTimer:IsPastSimMS(1500) then
 		--[[
 		local poof = CreateMOPixel("Real Bullet Micro Smoke Ball "..math.random(1,4), "Sandstorm.rte");
@@ -547,9 +484,5 @@ function Update(self)
 				self.smokeDelayTimer:Reset()
 			end]]
 		end
-	end
-	if self.smokeTimer:IsPastSimMS(66) and self.backFrame == true then -- filthy reusage
-		self.backFrame = false;
-		self.Frame = 1;
 	end
 end
