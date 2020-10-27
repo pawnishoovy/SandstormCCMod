@@ -2,7 +2,7 @@ function Create(self)
 
 	self.parentSet = false;
 	
-	self.Frame = 3;
+	self.Frame = 5;
 
 	-- Sounds --
 	self.preSounds = {["Variations"] = 1,
@@ -96,12 +96,15 @@ function Create(self)
 	self.delayedFireDelay = 45;
 	self.triggerPulled = false;
 	
+	self.boltAnimTimer = Timer();
+	
 end
 
 function Update(self)
 
 	if self.boltFire then
 		self:Activate();
+		self.firingAnim = true;
 	end
 
 	if self.ID == self.RootID then
@@ -115,8 +118,12 @@ function Update(self)
 		end
 	end
 	
-	if (not self.backFrame) and (not self.boltFire) and (not self.delayedFiring) and (not self:IsReloading()) then
-		self.Frame = 3;
+	if (not self.backFrame) and (not self.delayedFiring) and (not self.firingAnim) and (not self:IsReloading()) then
+		if self.boltFire == true then
+			self.firingAnim = true;
+		else
+			self.Frame = 5;
+		end
 	end
 	
 	-- Smoothing
@@ -144,7 +151,6 @@ function Update(self)
 	if self:IsReloading() then
 	
 		if self.boltFire then
-			self.Frame = 0;
 			self.boltFire = false;
 			if self.mechEndSound then
 				if self.mechEndSound:IsBeingPlayed() then
@@ -156,15 +162,16 @@ function Update(self)
 			self.chamberOnReload = true;
 		end
 		
-		if (not self.chamberOnReload) and (not self.firstShot) and self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then
-			self.Frame = 1;
+		if (not self.chamberOnReload) and (not self.firstShot) and (not self.boltFire) and self:IsActivated() and self.smokeTimer:IsPastSimMS(66) then
+			self.firingAnim = true;
+			self.boltAnimTimer:Reset();
 			self.boltFire = true;
 		end
 		
-		if self.chamberOnReload then
-			self.Frame = 0;
+		if self.chamberOnReload and (not self.firingAnim) then
+			self.Frame = 1;
 		else
-			self.Frame = 3;
+			self.Frame = 5;
 		end
 		
 		if self.parent then
@@ -257,14 +264,17 @@ function Update(self)
 			elseif self.reloadPhase == 1 then
 				self:RemoveNumberValue("MagRemoved");
 			elseif self.reloadPhase == 2 then
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-					self.Frame = 3;
-					self.rotationTarget = -15
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.Frame = 2;
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
+					self.Frame = 5;
 					self.rotationTarget = -10
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+					self.Frame = 4;
+					self.rotationTarget = -5
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 3;
+					self.rotationTarget = -5
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 1;
+					self.Frame = 2;
 					self.rotationTarget = -5
 				end
 			end
@@ -335,7 +345,6 @@ function Update(self)
 	
 	-- delayed fire
 	if self.delayedFiring == true then
-		self.Frame = 1;
 		if self.delayedFireTimer:IsPastSimMS(self.delayedFireDelay) then   
 			self:Activate();    
 			self.delayedFiring = false;
@@ -348,6 +357,8 @@ function Update(self)
 			self.delayedFiring = true;        
 			self.triggerPulled = true;      
 			self.delayedFireTimer:Reset();    
+			self.firingAnim = true;
+			self.boltAnimTimer:Reset();
 			self.preSound = AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		end
 	else    
@@ -355,8 +366,19 @@ function Update(self)
 	end
 	
 	if self.backFrame == true then
-		self.backFrame = false;
-		self.Frame = 1;
+		self.firingAnim = false;
+		if self.boltAnimTimer:IsPastSimMS((133/20)*6) then
+			self.Frame = 6;
+			self.backFrame = false;
+		elseif self.boltAnimTimer:IsPastSimMS((133/20)*4) then
+			self.Frame = 7;
+		elseif self.boltAnimTimer:IsPastSimMS((133/20)*3) then
+			self.Frame = 6;
+		elseif self.boltAnimTimer:IsPastSimMS((133/20)*2) then
+			self.Frame = 4;
+		elseif self.boltAnimTimer:IsPastSimMS((133/20)*1) then
+			self.Frame = 2;
+		end
 	end
 	
 	if self.FiredFrame then
@@ -367,7 +389,8 @@ function Update(self)
 		self.angVel = self.angVel + RangeRand(0,1) * 3
 		
 		self.boltFire = false;
-		self.Frame = 0;
+		self.Frame = 1;
+		self.boltAnimTimer:Reset();
 		
 		if self.mechEndSound then
 			if self.mechEndSound:IsBeingPlayed() then
@@ -471,9 +494,21 @@ function Update(self)
 			self.toMechEnd = false;
 			self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		end
-	elseif (not self.chamberOnReload) and (not self.firstShot) and self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then
-		self.Frame = 1;
+	elseif (not self.chamberOnReload) and (not self.firstShot) and (not self.boltFire) and self:IsActivated() and self.smokeTimer:IsPastSimMS(66) then
 		self.boltFire = true;
+		self.firingAnim = true;
+		self.boltAnimTimer:Reset();
+	end
+	
+	if self.firingAnim == true and (not self.backFrame) then
+		if self.boltAnimTimer:IsPastSimMS((133/7)*3) then
+			self.Frame = 2;
+			self.firingAnim = false;
+		elseif self.boltAnimTimer:IsPastSimMS((133/7)*2) then
+			self.Frame = 3;
+		elseif self.boltAnimTimer:IsPastSimMS((133/7)*1) then
+			self.Frame = 4;
+		end
 	end
 	
 	-- Animation
