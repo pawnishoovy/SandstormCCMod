@@ -91,9 +91,18 @@ function Create(self)
 	self.recoilDamping = 1.0
 	-- Progressive Recoil System
 	
+	self.delayedFiring = false;
+	self.delayedFireTimer = Timer();
+	self.delayedFireDelay = 45;
+	self.triggerPulled = false;
+	
 end
 
 function Update(self)
+
+	if self.boltFire then
+		self:Activate();
+	end
 
 	if self.ID == self.RootID then
 		self.parent = nil;
@@ -106,7 +115,7 @@ function Update(self)
 		end
 	end
 	
-	if (not self.backFrame) and self.Magazine and self.Magazine.RoundCount > 0 then
+	if (not self.backFrame) and (not self.boltFire) and (not self.delayedFiring) and (not self:IsReloading()) then
 		self.Frame = 3;
 	end
 	
@@ -133,6 +142,31 @@ function Update(self)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
 	
 	if self:IsReloading() then
+	
+		if self.boltFire then
+			self.Frame = 0;
+			self.boltFire = false;
+			if self.mechEndSound then
+				if self.mechEndSound:IsBeingPlayed() then
+					self.mechEndSound:Stop(-1)
+				end
+			end
+			self.toMechEnd = false;
+			self.mechEndSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Handheld/M3A1/Sounds/BoltDrop.ogg", self.Pos, -1, 0, 130, 1, 350, false);
+			self.chamberOnReload = true;
+		end
+		
+		if (not self.chamberOnReload) and (not self.firstShot) and self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then
+			self.Frame = 1;
+			self.boltFire = true;
+		end
+		
+		if self.chamberOnReload then
+			self.Frame = 0;
+		else
+			self.Frame = 3;
+		end
+		
 		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
 		end
@@ -299,6 +333,27 @@ function Update(self)
 		self.chamberOnReload = false;
 	end
 	
+	-- delayed fire
+	if self.delayedFiring == true then
+		self.Frame = 1;
+		if self.delayedFireTimer:IsPastSimMS(self.delayedFireDelay) then   
+			self:Activate();    
+			self.delayedFiring = false;
+		else            
+			self:Deactivate(); 
+		end
+	elseif self.Magazine and self.Magazine.RoundCount > 0 and self:IsActivated() and (not self:IsReloading()) and self.firstShot == true then      
+		if self.triggerPulled == false then        
+			self:Deactivate();          
+			self.delayedFiring = true;        
+			self.triggerPulled = true;      
+			self.delayedFireTimer:Reset();    
+			self.preSound = AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		end
+	else    
+		self.triggerPulled = false;
+	end
+	
 	if self.backFrame == true then
 		self.backFrame = false;
 		self.Frame = 1;
@@ -310,6 +365,8 @@ function Update(self)
 		
 		self.horizontalAnim = self.horizontalAnim + 0.2
 		self.angVel = self.angVel + RangeRand(0,1) * 3
+		
+		self.boltFire = false;
 		self.Frame = 0;
 		
 		if self.mechEndSound then
@@ -318,20 +375,15 @@ function Update(self)
 			end
 		end
 		
-		if self.Magazine then
-			if self.Magazine.RoundCount > 0 then
-				self.backFrame = true;
-				self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			else
-				self.chamberOnReload = true;
-			end
-		end
+		self.backFrame = true;
 		
 		if self.noiseEndSound then
 			if self.noiseEndSound:IsBeingPlayed() then
 				self.noiseEndSound:Stop(-1)
 			end
 		end
+		
+		self.toMechEnd = true;
 		
 		--local Effect = CreateMOSParticle("Tiny Smoke Ball 1", "Base.rte")
 		--Effect.Pos = self.MuzzlePos;
@@ -407,9 +459,21 @@ function Update(self)
 		end
 
 	end
+	
+	if self.toMechEnd == true and (not self:IsActivated()) then
+		self.toMechEnd = false;
+		self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+	end
 
-	if not self:IsActivated() then
+	if not self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then -- reused timer
 		self.firstShot = true;
+		if self.toMechEnd == true then
+			self.toMechEnd = false;
+			self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		end
+	elseif (not self.chamberOnReload) and (not self.firstShot) and self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then
+		self.Frame = 1;
+		self.boltFire = true;
 	end
 	
 	-- Animation
