@@ -40,6 +40,7 @@ function Update(self)
 		if self.delayedFire then
 			self.delayedFire = false
 		end
+		self.fireDelayTimer:Reset()
 	end
 	self.lastAge = self.Age + 0
 	
