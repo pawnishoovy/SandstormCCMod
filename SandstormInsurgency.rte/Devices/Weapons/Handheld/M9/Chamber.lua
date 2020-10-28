@@ -5,29 +5,29 @@ function Create(self)
 	-- Sounds --
 	self.addSounds = {["Loop"] = nil};
 	self.addSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Add"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Add"};
 	
 	self.bassSounds = {["Loop"] = nil};
 	self.bassSounds.Loop = {["Variations"] = 2,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Bass"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Bass"};
 	
 	self.mechSounds = {["Loop"] = nil};
 	self.mechSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Mech"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/Mech"};
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseOutdoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseOutdoorsEnd"};
 	self.noiseSounds.Indoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseIndoorsEnd"};
 	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseBigIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/ReflectionOutdoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/CompliSoundV2/ReflectionOutdoors"};
 	
 	self.FireTimer = Timer();
 	
@@ -195,17 +195,17 @@ function Update(self)
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M9/Sounds/MagOutPrepare1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/Sounds/MagOutPrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M9/Sounds/MagOut1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/Sounds/MagOut1";
 			
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.magInPrepareDelay;
 			self.afterDelay = self.magInAfterDelay;
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M9/Sounds/MagInPrepare1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/Sounds/MagInPrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M9/Sounds/MagIn1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/Sounds/MagIn1";
 			
 		elseif self.reloadPhase == 2 then
 			self.Frame = 2;
@@ -213,7 +213,7 @@ function Update(self)
 			self.afterDelay = self.boltForwardAfterDelay;
 			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M9/Sounds/BoltForward1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/M9/Sounds/BoltForward1";
 			
 		end
 		
