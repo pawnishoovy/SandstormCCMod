@@ -108,6 +108,12 @@ function Update(self)
 		end
 	end
 	
+	if self.boltLockedBack == true then
+		self.Frame = 4;
+	else
+		self.Frame = 0;
+	end
+	
 	-- Smoothing
 	local min_value = -math.pi;
 	local max_value = math.pi;
@@ -175,6 +181,7 @@ function Update(self)
 		end
 	
 		if self.reloadPhase == 0 then
+			self.Frame = 0;
 			self.reloadDelay = self.boltUnlockPrepareDelay;
 			self.afterDelay = self.boltUnlockAfterDelay;
 			
@@ -195,6 +202,7 @@ function Update(self)
 			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 
 		elseif self.reloadPhase == 2 then
+			self.Frame = 4;
 			self.reloadDelay = self.boltLockPrepareDelay;
 			self.afterDelay = self.boltLockAfterDelay;
 			
@@ -250,23 +258,37 @@ function Update(self)
 			if self.reloadPhase == 0 then
 				self.phaseOnStop = 0;
 			elseif self.reloadPhase == 1 then
-				self.Frame = 1;
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*4.75)) then
+					self.Frame = 4;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*3)) then
+					self.Frame = 3;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.25)) then
+					self.Frame = 2;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 1;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+					self.Frame = 0;
+				end
 				self.phaseOnStop = 0;
 			elseif self.reloadPhase == 2 then
-				self.Frame = 2;
-				self.phaseOnStop = 0;
+				self.phaseOnStop = 3;
+				self.boltLockedBack = true;
 			elseif self.reloadPhase == 3 then
 				self.phaseOnStop = nil;
 				self:SetNumberValue("MagRemoved", 1);
 			elseif self.reloadPhase == 4 then
 				self:RemoveNumberValue("MagRemoved");
 			elseif self.reloadPhase == 5 then
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
 					self.Frame = 0;
-					self.rotationTarget = -10
-				else
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
 					self.Frame = 1;
-					self.rotationTarget = -15
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+					self.Frame = 2;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					self.Frame = 3;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+					self.Frame = 4;
 				end
 			end
 			
@@ -296,9 +318,9 @@ function Update(self)
 				end
 				
 				if self.reloadPhase == 1 then
-					self.horizontalAnim = self.horizontalAnim + 1
+					self.horizontalAnim = self.horizontalAnim + 0.2
 				elseif self.reloadPhase == 5 then
-					self.horizontalAnim = self.horizontalAnim - 1
+					self.horizontalAnim = self.horizontalAnim - 0.5
 				end
 			
 				self.afterSoundPlayed = true;
@@ -310,12 +332,17 @@ function Update(self)
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
-				if self.chamberOnReload and self.reloadPhase == 5 then
+				if self.reloadPhase == 2 then
+					self.boltLockedBack = true;
+					self.reloadPhase = self.reloadPhase + 1;
+				elseif self.chamberOnReload and self.reloadPhase == 5 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 3;
+					self.boltLockedBack = false;
 				elseif (not self.chamberOnReload) and self.reloadPhase == 4 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 3;
+					self.boltLockedBack = false;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
@@ -326,7 +353,7 @@ function Update(self)
 		if self.phaseOnStop then
 			self.reloadPhase = self.phaseOnStop;
 			self.phaseOnStop = nil;
-		end		
+		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
@@ -347,6 +374,8 @@ function Update(self)
 		
 		self.horizontalAnim = self.horizontalAnim + 0.2
 		self.angVel = self.angVel + RangeRand(0,1) * 3
+		
+		self.Frame = 4;
 		
 		if self.Magazine then
 			if self.Magazine.RoundCount > 0 then	
