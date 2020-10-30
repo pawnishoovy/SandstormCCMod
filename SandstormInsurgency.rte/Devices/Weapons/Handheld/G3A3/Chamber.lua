@@ -208,7 +208,8 @@ function Update(self)
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;
 			
-			self.prepareSoundPath = nil;
+			self.prepareSoundPath = 
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/Sounds/MagOutPrepare";
 			self.afterSoundPath = 
 			"SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/Sounds/MagOut";
 			
@@ -246,7 +247,9 @@ function Update(self)
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 		
-			if self.reloadPhase == 1 then
+			if self.reloadPhase == 0 then
+				self.phaseOnStop = 0;
+			elseif self.reloadPhase == 1 then
 				self.Frame = 1;
 				self.phaseOnStop = 0;
 			elseif self.reloadPhase == 2 then
