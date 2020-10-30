@@ -235,8 +235,14 @@ function Update(self)
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 					self.Frame = 0;
 					self.rotationTarget = -5
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.75)) then
+					self.Frame = 1;
+					self.rotationTarget = -10
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
 					self.Frame = 2;
+					self.rotationTarget = -10
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.25)) then
+					self.Frame = 3;
 					self.rotationTarget = -10
 				else
 					self.Frame = 4;
