@@ -276,7 +276,7 @@ function Update(self)
 					self.phaseOnStop = 1;
 					local fake
 					fake = CreateMOSRotating("Fake Magazine MOSRotating RPK74");
-					fake.Pos = self.Pos + Vector(0, 2):RadRotate(self.RotAngle);
+					fake.Pos = self.Pos + Vector(0, 4):RadRotate(self.RotAngle);
 					fake.Vel = self.Vel + Vector(0.5*self.FlipFactor, 3):RadRotate(self.RotAngle);
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
