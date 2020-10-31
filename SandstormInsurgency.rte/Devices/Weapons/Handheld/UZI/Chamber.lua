@@ -43,6 +43,10 @@ function Create(self)
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseBigIndoors"};
 	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseBigIndoorsEnd"};
+	
+	self.reflectionSounds = {["Outdoors"] = nil};
+	self.reflectionSounds.Outdoors = {["Variations"] = 3,
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/ReflectionOutdoors"};
 
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
@@ -422,6 +426,12 @@ function Update(self)
 			end
 		end
 		
+		if self.reflectionSound then
+			if self.reflectionSound:IsBeingPlayed() then
+				self.reflectionSound:Stop(-1)
+			end
+		end
+		
 		self.toMechEnd = true;
 		
 		--local Effect = CreateMOSParticle("Tiny Smoke Ball 1", "Base.rte")
@@ -477,6 +487,7 @@ function Update(self)
 		if outdoorRays >= self.rayThreshold then
 			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.Loop.Path .. math.random(1, self.noiseSounds.Outdoors.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
 			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Indoors.Loop.Path .. math.random(1, self.noiseSounds.Indoors.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
