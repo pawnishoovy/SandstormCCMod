@@ -24,7 +24,7 @@ function Create(self)
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/CompliSoundV2/NoiseOutdoors"};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.Loop = {["Variations"] = 6,
+	self.noiseSounds.Indoors.Loop = {["Variations"] = 5,
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/CompliSoundV2/NoiseIndoors"};
 	self.noiseSounds.Indoors.End = {["Variations"] = 4,
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/G3A3/CompliSoundV2/NoiseIndoorsEnd"};
