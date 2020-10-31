@@ -478,6 +478,29 @@ function InsurgencyAIBehaviours.handleHealth(self)
 			self.Suppression = self.Suppression + math.random(9,13);
 		end
 		
+		-- blood taint on the head
+		if self.Head then
+			local headTaint = nil
+			for attachment in self.Attachables do
+				if attachment.PresetName == "Sandstorm Head Blood Taint" then
+					headTaint = attachment
+				end
+			end
+			
+			if headTaint ~= nil then
+				if self.Health > 80 then
+					headTaint.ToDelete = true
+				else
+					headTaint.Frame = math.floor((1 - ((math.min(self.Health, 100) + 20) / 100)) * 5 + 0.5)
+				end
+			else
+				if self.Health <= 80 then
+					local taint = CreateAttachable("Sandstorm Head Blood Taint", "Sandstorm.rte");
+					self.Head:AddAttachable(taint);
+				end
+			end
+		end
+		
 		if (wasInjured or wasHeavilyInjured) and self.Head then
 		
 			-- remove the shockwave value, so we don't care about it if we were close enough

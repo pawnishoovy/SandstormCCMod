@@ -306,7 +306,7 @@ function Update(self)
 				if self.bluntDamage then
 					if self.modifiedDamage > 0 then
 						local actor = ToActor(self.MOHit:GetRootParent());
-						actor.Health = actor.Health - self.modifiedDamage;
+						--actor.Health = actor.Health - self.modifiedDamage;
 					end
 				else
 					for i = 1, maxi do
