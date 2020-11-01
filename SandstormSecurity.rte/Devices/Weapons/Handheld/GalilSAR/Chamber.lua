@@ -9,7 +9,9 @@ function Create(self)
 	self.addSounds.Loop = {["Variations"] = 14,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/GalilSAR/CompliSoundV2/Add"};
 	
-	self.bassSounds = {["Loop"] = nil};
+	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.bassSounds.Start = {["Variations"] = 4,
+	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/GalilSAR/CompliSoundV2/Bass"};
 	self.bassSounds.Loop = {["Variations"] = 15,
 	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/GalilSAR/CompliSoundV2/Bass"};
 	
@@ -428,9 +430,11 @@ function Update(self)
 			
 			self.mechSound = AudioMan:PlaySound(self.mechSounds.Start.Path .. math.random(1, self.mechSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Start.Path .. math.random(1, self.addSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Start.Path .. math.random(1, self.bassSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		else
 			self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		end
 		
 		self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
