@@ -848,6 +848,12 @@ function SecurityAIBehaviours.handleVoicelines(self)
 				else
 					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.remoteOut, self.voiceSoundVariations.remoteOut, 5, 2);
 				end
+			elseif (string.find(self.EquippedItem.PresetName, "Mine")) or (string.find(self.EquippedItem.PresetName, "Claymore")) or (string.find(self.EquippedItem.PresetName, "mine")) or (string.find(self.EquippedItem.PresetName, "claymore")) or (ToTDExplosive(self.EquippedItem):IsInGroup("Sandstorm Mine")) then
+				if (self.Suppressed) then
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.suppressedMineOut, self.voiceSoundVariations.suppressedMineOut, 5, 3);
+				else
+					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.mineOut, self.voiceSoundVariations.mineOut, 5, 2);
+				end
 			end
 			ToHDFirearm(self.EquippedItem):RemoveNumberValue("Sandstorm Custom Activation")
 		else
