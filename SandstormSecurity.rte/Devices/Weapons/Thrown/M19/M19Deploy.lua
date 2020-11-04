@@ -66,9 +66,11 @@ function Update(self)
 	end
 		
 	if self.deployment and self.parent then
+		self.Frame = math.floor(math.min(self.deploymentStartTimer.ElapsedSimTimeMS / self.deploymentDialTwistDelay, 1) * 2 + 0.5)
 		if self.deploymentStartTimer:IsPastSimMS(self.deploymentStartDelay) then
 			self.StanceOffset = Vector(6, 1)
 			self.SupportOffset = Vector(1, 1)
+			
 			if self.deploymentStartTimer:IsPastSimMS(self.deploymentPinPullDelay) then
 				self.deploymentPinPullDelay = 200;
 				if self.pinPulled == false then
@@ -96,7 +98,19 @@ function Update(self)
 						end
 						self.StanceOffset = Vector(-12, 3)
 						self.SupportOffset = Vector(90, 90)
+						
+						self.Frame = 2
 
+						local checkOrigin = self.parent.FGArm.Pos + Vector(7 * self.FlipFactor, 2):RadRotate(self.RotAngle)
+						local checkVec = Vector(24 * self.FlipFactor, 0):RadRotate(self.RotAngle)
+						local color = 120
+						
+						local maxi = 3
+						for i = 1, maxi do
+							PrimitiveMan:DrawLinePrimitive(checkOrigin + checkVec * i / maxi * 0.8, checkOrigin + checkVec * i / maxi, color)
+						end
+						PrimitiveMan:DrawLinePrimitive(checkOrigin + checkVec, checkOrigin + checkVec + Vector(-5 * self.FlipFactor, 4):RadRotate(self.RotAngle), color)
+						PrimitiveMan:DrawLinePrimitive(checkOrigin + checkVec, checkOrigin + checkVec + Vector(-5 * self.FlipFactor, -4):RadRotate(self.RotAngle), color)
 					end
 				end
 			end
@@ -116,8 +130,9 @@ function Update(self)
 				self:SetNumberValue("Sandstorm Custom Throw", 1)
 				
 				local set = CreateMOSRotating(self.PresetName.." Active");
-				set.Pos = self.Pos;
-				set.RotAngle = self.RotAngle
+				set.Pos = self.Pos
+				set.RotAngle = 0
+				--set.RotAngle = self.RotAngle
 				set.Team = self.Team
 				set.IgnoresTeamHits = true
 				--set.Vel = self.Vel + Vector(15 * self.FlipFactor, 0):RadRotate(self.RotAngle)
@@ -131,6 +146,8 @@ function Update(self)
 		self.JointOffset = Vector(-1, 1)
 		self.StanceOffset = Vector(7, 6)
 		self.SupportOffset = Vector(1, 1)
+		
+		self.Frame = 0
 		
 		self.deploymentStartTimer:Reset()
 	end

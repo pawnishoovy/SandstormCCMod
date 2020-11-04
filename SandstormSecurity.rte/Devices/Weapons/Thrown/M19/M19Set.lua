@@ -10,6 +10,7 @@ function Create(self)
 	
 	self.checkTimer = Timer();
 	self.checkDelay = 1000;
+	self.checkI = 0
 	
 	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Bomb/"
 	
@@ -80,9 +81,23 @@ function Update(self)
 		self.impactCooldown = 300; -- increase impact cooldown from first 0
 	end
 
-	if self.checkTimer:IsPastSimMS(self.checkDelay) then
-		self.checkDelay = 300;
-		self.checkTimer:Reset();		
+	if self.checkTimer:IsPastSimMS(self.checkDelay) and self.Vel.Magnitude < 5 then
+		self.checkDelay = 100;
+		self.checkTimer:Reset();
+		
+		self.checkI = self.checkI % 2 + 1
+		
+		local checkOrigin = Vector(self.Pos.X, self.Pos.Y) + Vector((self.checkI - 1) * 3, - 5)--:RadRotate(self.RotAngle)
+		local checkPix = SceneMan:GetMOIDPixel(checkOrigin.X, checkOrigin.Y)
+		PrimitiveMan:DrawLinePrimitive(checkOrigin, checkOrigin, 5)
+		
+		local stepper = nil
+		if checkPix ~= 255 then
+			stepper = MovableMan:GetMOFromID(checkPix);
+		end
+		
+		--
+		--[[
 		local rayVector = Vector(0, -5):RadRotate(self.RotAngle);
 		local ray1 = SceneMan:CastMORay(self.Pos + Vector(-3, -1):RadRotate(self.RotAngle), rayVector, self.ID, -2, 0, true, 1); -- -2 = no team ignored, self.ID = ignore self
 		PrimitiveMan:DrawLinePrimitive(self.Pos + Vector(-3, -1):RadRotate(self.RotAngle), self.Pos + Vector(-3, 0):RadRotate(self.RotAngle) + rayVector, 5)
@@ -98,10 +113,12 @@ function Update(self)
 		end
 		if ray3 ~= nil then
 			self.object = MovableMan:GetMOFromID(ray3);
-		end
-		if self.object then
-			self.object2 = MovableMan:GetMOFromID(self.object.RootID); -- get the torso/base part
-			if self.object2.Mass > 10 then -- if its heavy enough
+		end]]
+		
+		if stepper then
+			stepperParent = MovableMan:GetMOFromID(stepper.RootID); -- get the torso/base part
+			if (stepperParent and stepperParent.Mass > 10) or stepper.Mass > 10 then -- if its heavy enough
+				self:EraseFromTerrain()
 				self:GibThis();
 			end
 		end

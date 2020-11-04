@@ -29,7 +29,7 @@ function Create(self)
 	["bigIndoors"] = nil};
 	self.debrisSounds.Indoors = {["Variations"] = 5,
 	["Path"] = dir.."/Debris/Indoors/DebrisIndoorsMedium"};
-	self.debrisSounds.bigIndoors = {["Variations"] = 5,
+	self.debrisSounds.BigIndoors = {["Variations"] = 5,
 	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsMedium"};
 	
 	local outdoorRays = 0;
