@@ -30,7 +30,7 @@ function Create(self)
 	self.debrisSounds.Indoors = {["Variations"] = 5,
 	["Path"] = dir.."/Debris/Indoors/DebrisIndoorsMedium"};
 	self.debrisSounds.bigIndoors = {["Variations"] = 5,
-	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsMedium"};
+	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsLarge"};
 	
 	local outdoorRays = 0;
 	
