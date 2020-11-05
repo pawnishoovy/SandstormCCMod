@@ -29,7 +29,7 @@ function Create(self)
 	["bigIndoors"] = nil};
 	self.debrisSounds.Indoors = {["Variations"] = 5,
 	["Path"] = dir.."/Debris/Indoors/DebrisIndoorsMedium"};
-	self.debrisSounds.BigIndoors = {["Variations"] = 5,
+	self.debrisSounds.bigIndoors = {["Variations"] = 5,
 	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsMedium"};
 	
 	local outdoorRays = 0;
@@ -69,7 +69,7 @@ function Create(self)
 	if outdoorRays == 0 and indoorRays >= 3 then
 		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.Indoors.Path .. math.random(1, self.debrisSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	elseif outdoorRays == 0 and bigIndoorRays >= 3 then
-		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.BigIndoors.Path .. math.random(1, self.debrisSounds.BigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.bigIndoors.Path .. math.random(1, self.debrisSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	end
 	
 	if outdoorRays >= 2 then
