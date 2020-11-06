@@ -160,7 +160,7 @@ function Update(self)
 			spoon.Vel = self.Vel+Vector(0,-6)+Vector(3*math.random(),0):RadRotate(math.random()*(math.pi*2));
 			MovableMan:AddParticle(spoon);
 			
-			self.frm = 2
+			self.frm = 1
 			
 			self.pinSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CO/Sounds/SpoonEject" .. math.random(1,4) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);			
 		end
@@ -175,7 +175,6 @@ function Update(self)
 		pin.Vel = self.Vel+Vector(0,-6)+Vector(3*math.random(),0):RadRotate(math.random()*(math.pi*2));
 		MovableMan:AddParticle(pin);
 		
-		self.frm = 1
 		
 		self.pinSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CO/Sounds/PullPin" .. math.random(1,3) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
 	end	
@@ -184,5 +183,5 @@ function Update(self)
 		self:GibThis();
 	end
 	
-	self.Frame = self.frm
+	self.Frame = self.frm + (self.UniqueID % 2) * 2
 end

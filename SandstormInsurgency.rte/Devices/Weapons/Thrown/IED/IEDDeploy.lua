@@ -135,7 +135,7 @@ function Update(self)
 					-- cool VISUALIZATIONZZZZ
 					local color = 120
 					local position = rayEndPos + Vector(2,0):RadRotate(direction)
-					local width = 10 * 0.5
+					local width = 12 * 0.5
 					local height = 4 * 0.5
 					
 					PrimitiveMan:DrawLinePrimitive(position + Vector(width, height):RadRotate(direction + math.pi/2), position + Vector(-width, height):RadRotate(direction + math.pi/2), color)
@@ -251,7 +251,7 @@ function Update(self)
 					local angle = ToMOSRotating(charge).RotAngle
 					
 					local color = 5
-					local width = 10 * 0.5
+					local width = 12 * 0.5
 					local height = 4 * 0.5
 					
 					PrimitiveMan:DrawLinePrimitive(pos + Vector(width, height):RadRotate(angle + math.pi/2), pos + Vector(-width, height):RadRotate(angle + math.pi/2), color)
