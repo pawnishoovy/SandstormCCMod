@@ -17,28 +17,28 @@ function Create(self)
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hit"] = nil};
 	self.concreteHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactConcrete"};
+	["Path"] = dir.."M19/ImpactConcrete"};
 	
 	--
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hit"] = nil};
 	self.dirtHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactDirt"};
+	["Path"] = dir.."M19/ImpactDirt"};
 	
 	--
 	
 	self.sandHit = {["IDs"] = {[8] = "Exists"},
 	["Hit"] = nil};
 	self.sandHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactSand"};
+	["Path"] = dir.."M19/ImpactSand"};
 	
 	--
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hit"] = nil};
 	self.solidMetalHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactSolidMetal"};
+	["Path"] = dir.."M19/ImpactSolidMetal"};
 	
 end
 
