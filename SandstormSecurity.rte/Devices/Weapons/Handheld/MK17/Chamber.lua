@@ -87,11 +87,12 @@ function Create(self)
 	-- Progressive Recoil System 
 	self.recoilAcc = 0 -- for sinous
 	self.recoilStr = 0 -- for accumulator
-	self.recoilStrength = 6 -- multiplier for base recoil added to the self.recoilStr when firing
-	self.recoilPowStrength = 1 -- multiplier for self.recoilStr when firing
+	self.recoilStrength = 9 -- multiplier for base recoil added to the self.recoilStr when firing
+	self.recoilPowStrength = 0.5 -- multiplier for self.recoilStr when firing
+	self.recoilRandomUpper = 3 -- upper end of random multiplier (1 is lower)
 	self.recoilDamping = 1.0
 	
-	self.recoilMax = 60 -- in deg.
+	self.recoilMax = 20 -- in deg.
 	self.originalSharpLength = self.SharpLength
 	-- Progressive Recoil System 
 end
@@ -107,6 +108,11 @@ function Update(self)
 			self.parent = ToAHuman(actor);
 			self.parentSet = true;
 		end
+	end
+	
+	if UInputMan:KeyPressed(15) then
+	  PresetMan:ReloadAllScripts();
+	  self:ReloadScripts();
 	end
 	
 	-- Smoothing
@@ -319,10 +325,10 @@ function Update(self)
 	end
 	
 	if self:DoneReloading() == true and self.chamberOnReload then
-		self.Magazine.RoundCount = 30;
+		self.Magazine.RoundCount = 20;
 		self.chamberOnReload = false;
 	elseif self:DoneReloading() then
-		self.Magazine.RoundCount = 31;
+		self.Magazine.RoundCount = 21;
 		self.chamberOnReload = false;
 	end
 	
@@ -333,6 +339,27 @@ function Update(self)
 		self.horizontalAnim = self.horizontalAnim + 0.2
 		self.angVel = self.angVel + RangeRand(0,1) * 3
 		self.Frame = 3;
+		
+		if self.parent then
+			if self.parent:GetController():IsState(Controller.BODY_CROUCH) then
+				self.recoilStrength = 7
+				self.recoilPowStrength = 0.5
+				self.recoilRandomUpper = 2.2
+				self.recoilDamping = 1
+				
+				self.recoilMax = 20
+			else
+				self.recoilStrength = 9
+				self.recoilPowStrength = 0.5
+				self.recoilRandomUpper = 3
+				self.recoilDamping = 1
+				
+				self.recoilMax = 20
+			end
+			if not self.parent:GetController():IsState(Controller.AIM_SHARP) then
+				self.recoilDamping = self.recoilDamping * 0.8;
+			end
+		end
 		
 		if self.Magazine then
 			if self.Magazine.RoundCount > 0 then			
@@ -453,7 +480,7 @@ function Update(self)
 		
 		-- Progressive Recoil Update
 		if self.FiredFrame then
-			self.recoilStr = self.recoilStr + (math.random(1,3) * 0.5 * self.recoilStrength) + (self.recoilStr * 0.6 * self.recoilPowStrength)
+			self.recoilStr = self.recoilStr + (math.random(1, self.recoilRandomUpper) * 0.5 * self.recoilStrength) + (self.recoilStr * 0.6 * self.recoilPowStrength)
 		end
 		
 		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0 * self.recoilDamping) * 1000) / 1000
