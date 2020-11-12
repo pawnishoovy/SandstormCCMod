@@ -324,7 +324,9 @@ function Update(self)
 		self.Frame = 3;
 		
 		if self.parent then
-			if self.parent:GetController():IsState(Controller.BODY_CROUCH) then
+			local controller = self.parent:GetController();	
+			
+			if controller:IsState(Controller.BODY_CROUCH) then
 				self.recoilStrength = 5
 				self.recoilPowStrength = 0.5
 				self.recoilRandomUpper = 1.8
@@ -339,7 +341,9 @@ function Update(self)
 				
 				self.recoilMax = 20
 			end
-			if not self.parent:GetController():IsState(Controller.AIM_SHARP) then
+			if (not controller:IsState(Controller.AIM_SHARP))
+			or (controller:IsState(Controller.MOVE_LEFT)
+			or controller:IsState(Controller.MOVE_RIGHT)) then
 				self.recoilDamping = self.recoilDamping * 0.9;
 			end
 		end
@@ -461,7 +465,7 @@ function Update(self)
 		
 		-- Progressive Recoil Update
 		if self.FiredFrame then
-			self.recoilStr = self.recoilStr + (math.random(1, self.recoilRandomUpper) * 0.5 * self.recoilStrength) + (self.recoilStr * 0.6 * self.recoilPowStrength)
+			self.recoilStr = self.recoilStr + ((math.random(10, self.recoilRandomUpper * 10) / 10) * 0.5 * self.recoilStrength) + (self.recoilStr * 0.6 * self.recoilPowStrength)
 		end
 		
 		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0 * self.recoilDamping) * 1000) / 1000

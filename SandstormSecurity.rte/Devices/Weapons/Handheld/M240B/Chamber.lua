@@ -453,7 +453,7 @@ function Update(self)
 		
 		self.horizontalAnim = self.horizontalAnim + 0.3
 		--self.recoilStr = self.recoilStr + 1.0
-		self.recoilStr = self.recoilStr + math.random(1,3) * 0.5 * postureMultiplier
+		self.recoilStr = self.recoilStr + math.random(1,1.5) * 0.5 * postureMultiplier
 		self.angVel = self.angVel + RangeRand(-1,1) * 3 * postureMultiplier
 		self.Frame = 1
 		
