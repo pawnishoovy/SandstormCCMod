@@ -31,7 +31,7 @@ function Create(self)
 	
 	--
 	
-	self.SandHit = {["Variations"] = 10,
+	self.SandHit = {["Variations"] = 8,
 	["Path"] = dir..name.."/Sand/HitSand"};
 end
 
