@@ -645,8 +645,8 @@ function Create(self)
 	self.spotVoiceLineDelay = 15000;
 	
 	 -- in pixels
-	self.spotDistanceClose = 120;
-	self.spotDistanceMid = 360;
+	self.spotDistanceClose = 175;
+	self.spotDistanceMid = 520;
 	--spotDistanceFar -- anything further than distanceMid
 	
 	 -- in MS
