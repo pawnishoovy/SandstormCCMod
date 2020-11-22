@@ -657,6 +657,11 @@ function Create(self)
 	self.spotIgnoreDelayChance = 10;
 	self.spotNoVoicelineChance = 15;
 	
+	 -- burst fire
+	self.burstFireDelayTimer = Timer()
+	self.burstFireDelayMin = 150
+	self.burstFireDelayMax = 300
+	self.burstFireDelay = math.random(self.burstFireDelayMin,self.burstFireDelayMax)	
 	
 	-- experimental method for enhanced dying - don't let the actor actually die until we want him to.
 	-- reason for this is because when the actor IsDead he will really want to settle and there's not much we can do about it.
@@ -833,6 +838,8 @@ function Update(self)
 		InsurgencyAIBehaviours.handleHealth(self);
 		
 		InsurgencyAIBehaviours.handleStaminaAndSuppression(self);
+		
+		SecurityAIBehaviours.handleAITargetLogic(self);
 		
 		InsurgencyAIBehaviours.handleVoicelines(self);
 		

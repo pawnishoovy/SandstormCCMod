@@ -555,82 +555,82 @@ function Update(self)
 	
 	
 	
-	-- DEBUG GIZMOS
-	if self.parent and self.parent:IsPlayerControlled() then
+	-- -- DEBUG GIZMOS
+	-- if self.parent and self.parent:IsPlayerControlled() then
 		
-		-- RECOIL DEBUG GRAPH
-		-- graoh setup
-		if not self.debugRecoilGraphIni then
-			self.debugRecoilGraphIni = true
-			self.debugRecoilGraphValues = {}
-			self.debugRecoilGraphValuesMax = 200
-			self.debugRecoilGraphMaximum = 1
-		end
-		self.debugRecoilGraphVar = self.recoilStr
+		-- -- RECOIL DEBUG GRAPH
+		-- -- graoh setup
+		-- if not self.debugRecoilGraphIni then
+			-- self.debugRecoilGraphIni = true
+			-- self.debugRecoilGraphValues = {}
+			-- self.debugRecoilGraphValuesMax = 200
+			-- self.debugRecoilGraphMaximum = 1
+		-- end
+		-- self.debugRecoilGraphVar = self.recoilStr
 		
-		-- 6 --> F key
-		--if not (UInputMan:KeyPressed(6)) then -- capture new data but only when freeze key IS NOT pressed
-		table.insert(self.debugRecoilGraphValues, self.debugRecoilGraphVar)
-		self.debugRecoilGraphMaximum = math.max(self.debugRecoilGraphMaximum, self.debugRecoilGraphVar)
+		-- -- 6 --> F key
+		-- --if not (UInputMan:KeyPressed(6)) then -- capture new data but only when freeze key IS NOT pressed
+		-- table.insert(self.debugRecoilGraphValues, self.debugRecoilGraphVar)
+		-- self.debugRecoilGraphMaximum = math.max(self.debugRecoilGraphMaximum, self.debugRecoilGraphVar)
 		
-		if #self.debugRecoilGraphValues > self.debugRecoilGraphValuesMax then
-			table.remove(self.debugRecoilGraphValues, 1)
-		end
-		--end
+		-- if #self.debugRecoilGraphValues > self.debugRecoilGraphValuesMax then
+			-- table.remove(self.debugRecoilGraphValues, 1)
+		-- end
+		-- --end
 		
-		local pos = self.Pos + Vector(0,-120)
-		local width = self.debugRecoilGraphValuesMax * 0.5
-		local height = 50 * 0.5
+		-- local pos = self.Pos + Vector(0,-120)
+		-- local width = self.debugRecoilGraphValuesMax * 0.5
+		-- local height = 50 * 0.5
 		
-		PrimitiveMan:DrawBoxFillPrimitive(pos +  Vector(-width, -height), pos +  Vector(width, height + 1), 240)
+		-- PrimitiveMan:DrawBoxFillPrimitive(pos +  Vector(-width, -height), pos +  Vector(width, height + 1), 240)
 		
-		-- GRAPH LINES
-		local lastPixelPos = nil
-		-- BG
-		for i, value in ipairs(self.debugRecoilGraphValues) do
-			local pixelPos = pos + Vector(-width + i, height - (value / self.debugRecoilGraphMaximum * height * 2.0))
-			if lastPixelPos == nil then lastPixelPos = pixelPos end
-			PrimitiveMan:DrawLinePrimitive(pixelPos + Vector(0,2), lastPixelPos + Vector(0,2), 245);
+		-- -- GRAPH LINES
+		-- local lastPixelPos = nil
+		-- -- BG
+		-- for i, value in ipairs(self.debugRecoilGraphValues) do
+			-- local pixelPos = pos + Vector(-width + i, height - (value / self.debugRecoilGraphMaximum * height * 2.0))
+			-- if lastPixelPos == nil then lastPixelPos = pixelPos end
+			-- PrimitiveMan:DrawLinePrimitive(pixelPos + Vector(0,2), lastPixelPos + Vector(0,2), 245);
 			
-			lastPixelPos = pixelPos
-		end
+			-- lastPixelPos = pixelPos
+		-- end
 		
-		lastPixelPos = nil
-		-- FG
-		for i, value in ipairs(self.debugRecoilGraphValues) do
-			local pixelPos = pos + Vector(-width + i, height - (value / self.debugRecoilGraphMaximum * height * 2.0))
-			if lastPixelPos == nil then lastPixelPos = pixelPos end
-			PrimitiveMan:DrawLinePrimitive(pixelPos, lastPixelPos, 244);
+		-- lastPixelPos = nil
+		-- -- FG
+		-- for i, value in ipairs(self.debugRecoilGraphValues) do
+			-- local pixelPos = pos + Vector(-width + i, height - (value / self.debugRecoilGraphMaximum * height * 2.0))
+			-- if lastPixelPos == nil then lastPixelPos = pixelPos end
+			-- PrimitiveMan:DrawLinePrimitive(pixelPos, lastPixelPos, 244);
 			
-			lastPixelPos = pixelPos
-		end
-		-- GRAPH LINES
+			-- lastPixelPos = pixelPos
+		-- end
+		-- -- GRAPH LINES
 		
-		PrimitiveMan:DrawBoxFillPrimitive(pos +  Vector(-width, -height), pos +  Vector(width, -height - 7), 220)
-		PrimitiveMan:DrawTextPrimitive(pos + Vector(-width, -height - 8), "Current value: "..tostring(math.floor(self.debugRecoilGraphVar * 1000) / 1000), true, 0)
-		PrimitiveMan:DrawTextPrimitive(pos + Vector(-width + 110, -height - 8), "Max value: "..tostring(math.floor(self.debugRecoilGraphMaximum * 1000) / 1000), true, 0)
+		-- PrimitiveMan:DrawBoxFillPrimitive(pos +  Vector(-width, -height), pos +  Vector(width, -height - 7), 220)
+		-- PrimitiveMan:DrawTextPrimitive(pos + Vector(-width, -height - 8), "Current value: "..tostring(math.floor(self.debugRecoilGraphVar * 1000) / 1000), true, 0)
+		-- PrimitiveMan:DrawTextPrimitive(pos + Vector(-width + 110, -height - 8), "Max value: "..tostring(math.floor(self.debugRecoilGraphMaximum * 1000) / 1000), true, 0)
 		
-		PrimitiveMan:DrawTextPrimitive(pos + Vector(-width + 60, height + 7), "Recoil Debug Graph", true, 0)
+		-- PrimitiveMan:DrawTextPrimitive(pos + Vector(-width + 60, height + 7), "Recoil Debug Graph", true, 0)
 		
-		PrimitiveMan:DrawBoxPrimitive(pos +  Vector(-width - 1, -height - 8), pos + Vector(width + 1, -height), 96)
+		-- PrimitiveMan:DrawBoxPrimitive(pos +  Vector(-width - 1, -height - 8), pos + Vector(width + 1, -height), 96)
 		
-		PrimitiveMan:DrawBoxPrimitive(pos +  Vector(-width - 1, height + 2), pos + Vector(width + 1, -height - 8), 96)
-		-- GRAPH END
+		-- PrimitiveMan:DrawBoxPrimitive(pos +  Vector(-width - 1, height + 2), pos + Vector(width + 1, -height - 8), 96)
+		-- -- GRAPH END
 		
-		-- ROTATION DEBUG GIZMO
-		pos = self.Pos + Vector(width + 30,-120)
-		local radius = 24
+		-- -- ROTATION DEBUG GIZMO
+		-- pos = self.Pos + Vector(width + 30,-120)
+		-- local radius = 24
 		
-		PrimitiveMan:DrawCircleFillPrimitive(pos, radius + 1, 96)
-		PrimitiveMan:DrawCircleFillPrimitive(pos, radius, 240)
+		-- PrimitiveMan:DrawCircleFillPrimitive(pos, radius + 1, 96)
+		-- PrimitiveMan:DrawCircleFillPrimitive(pos, radius, 240)
 		
-		PrimitiveMan:DrawCirclePrimitive(pos, 1, 244);
+		-- PrimitiveMan:DrawCirclePrimitive(pos, 1, 244);
 		
-		PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.recoilMax), 161);
-		PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(-self.recoilMax), 161);
+		-- PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.recoilMax), 161);
+		-- PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(-self.recoilMax), 161);
 		
-		PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.rotationTarget), 46);
-		PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.rotation), 244);
-		-- ROTATION GIZMO END
-	end
+		-- PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.rotationTarget), 46);
+		-- PrimitiveMan:DrawLinePrimitive(pos, pos + Vector(radius, 0):DegRotate(self.rotation), 244);
+		-- -- ROTATION GIZMO END
+	-- end
 end

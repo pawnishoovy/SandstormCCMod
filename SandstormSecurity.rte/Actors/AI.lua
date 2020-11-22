@@ -851,7 +851,7 @@ function Update(self)
 		
 		SecurityAIBehaviours.handleStaminaAndSuppression(self);
 		
-		SecurityAIBehaviours.handleAITargetLogic(self)
+		SecurityAIBehaviours.handleAITargetLogic(self);
 		
 		SecurityAIBehaviours.handleVoicelines(self);
 		
