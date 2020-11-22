@@ -700,6 +700,106 @@ function SecurityAIBehaviours.handleHeadFrames(self)
 
 end
 
+function SecurityAIBehaviours.handleAITargetLogic(self)
+	-- SPOT ENEMY REACTION
+	-- works off of the native AI's target
+	
+	if not self.LastTargetID then
+		self.LastTargetID = -1
+	end
+	
+	--spotEnemy
+	--spotEnemyFar
+	--spotEnemyClose
+	
+	if (not self:IsPlayerControlled()) and self.AI.Target and IsAHuman(self.AI.Target) then
+	
+		self.spotVoiceLineTimer:Reset();
+		
+		local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
+		local distance = posDifference.Magnitude
+		
+		local isClose = distance < self.spotDistanceClose
+		local isMid = distance < self.spotDistanceMid 
+		local isFar = distance > self.spotDistanceMid 
+		
+		-- DEBUG spot distance
+		local maxi = math.floor(distance / 10)
+		for i = 1, maxi do
+			local vec = posDifference * i / maxi
+			local pos = self.Pos + vec
+			local color = 162
+			if vec.Magnitude < self.spotDistanceClose then
+				color = 13
+			elseif vec.Magnitude < self.spotDistanceMid then
+				color = 122
+			end
+			PrimitiveMan:DrawLinePrimitive(pos, pos, color);
+		 end
+		
+		if not isClose and self.EquippedItem and IsHDFirearm(self.EquippedItem) then
+			if ToHDFirearm(self.EquippedItem):NumberValueExists("recoilStrengthCurrent") and ToHDFirearm(self.EquippedItem):NumberValueExists("recoilStrengthBase") then
+				local strCurrent = ToHDFirearm(self.EquippedItem):GetNumberValue("recoilStrengthCurrent")
+				local strBase = ToHDFirearm(self.EquippedItem):GetNumberValue("recoilStrengthBase")
+				
+				local distanceDif = (self.spotDistanceMid - self.spotDistanceClose)
+				local distanceFactor = math.min(math.max((distance / distanceDif + self.spotDistanceClose / distanceDif) - 1, 0), 1)
+				
+				local burstDelay = not self.burstFireDelayTimer:IsPastSimMS(self.burstFireDelay * strBase / 7 * (distanceFactor + 0.4))
+				
+				if strCurrent > strBase / (distanceFactor + 0.4) or burstDelay then
+					self.controller:SetState(Controller.WEAPON_FIRE, false)
+					if not burstDelay then
+						self.burstFireDelayTimer:Reset()
+						self.burstFireDelay = math.random(self.burstFireDelayMin,self.burstFireDelayMax)
+					end
+				end
+			end
+		end
+		
+		if self.spotAllowed ~= false then
+			
+			if self.LastTargetID == -1 then
+				self.LastTargetID = self.AI.Target.UniqueID
+				-- Target spotted
+				--local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
+				
+				if not self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") or -- If no timer exists
+				self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Age") < (self.AI.Target.Age - self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Delay")) or -- If the timer runs out of time limit
+				math.random(0, 100) < self.spotIgnoreDelayChance -- Small chance to ignore timers, to spice things up
+				then
+					-- Setup the delay timer
+					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
+					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Delay", math.random(self.spotDelayMin, self.spotDelayMax))
+					
+					self.spotAllowed = false;
+					
+					if isClose then
+						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyClose, self.voiceSoundVariations.spotEnemyClose, 3, 4, false);
+					elseif isMid then
+						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemy, self.voiceSoundVariations.spotEnemy, 3, 3, false);
+					else
+						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyFar, self.voiceSoundVariations.spotEnemyFar, 3, 2, false);
+					end
+				end
+			else
+				-- Refresh the delay timer
+				if self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") then
+					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
+				end
+			end
+		end
+	else
+		if self.spotVoiceLineTimer:IsPastSimMS(self.spotVoiceLineDelay) then
+			self.spotAllowed = true;
+		end
+		if self.LastTargetID ~= -1 then
+			self.LastTargetID = -1
+			-- Target lost
+			--print("TARGET LOST!")
+		end
+	end
+end
 
 function SecurityAIBehaviours.handleVoicelines(self)
 
@@ -875,81 +975,6 @@ function SecurityAIBehaviours.handleVoicelines(self)
 			self.friendlyDownTimer:Reset();
 		end
 		self:RemoveNumberValue("Sandstorm Friendly Down")
-	end
-	
-	-- SPOT ENEMY REACTION
-	-- works off of the native AI's target
-	
-	if not self.LastTargetID then
-		self.LastTargetID = -1
-	end
-	
-	--spotEnemy
-	--spotEnemyFar
-	--spotEnemyClose
-	
-	if (not self:IsPlayerControlled()) and self.AI.Target and IsAHuman(self.AI.Target) then
-	
-		self.spotVoiceLineTimer:Reset();
-		
-		if self.spotAllowed ~= false then
-			
-			-- DEBUG spot distance
-			--
-			-- local dif = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
-			-- local maxi = math.floor(dif.Magnitude / 10)
-			-- for i = 1, maxi do
-				-- local vec = dif * i / maxi
-				-- local pos = self.Pos + vec
-				-- local color = 162
-				-- if vec.Magnitude < self.spotDistanceClose then
-					-- color = 13
-				-- elseif vec.Magnitude < self.spotDistanceMid then
-					-- color = 122
-				-- end
-				-- PrimitiveMan:DrawLinePrimitive(pos, pos, color);
-			-- end
-			
-			if self.LastTargetID == -1 then
-				self.LastTargetID = self.AI.Target.UniqueID
-				-- Target spotted
-				local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
-				local distance = posDifference.Magnitude
-				
-				if not self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") or -- If no timer exists
-				self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Age") < (self.AI.Target.Age - self.AI.Target:GetNumberValue("Sandstorm Enemy Spotted Delay")) or -- If the timer runs out of time limit
-				math.random(0, 100) < self.spotIgnoreDelayChance -- Small chance to ignore timers, to spice things up
-				then
-					-- Setup the delay timer
-					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
-					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Delay", math.random(self.spotDelayMin, self.spotDelayMax))
-					
-					self.spotAllowed = false;
-					
-					if distance < self.spotDistanceClose then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyClose, self.voiceSoundVariations.spotEnemyClose, 3, 4, false);
-					elseif distance < self.spotDistanceMid then
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemy, self.voiceSoundVariations.spotEnemy, 3, 3, false);
-					else
-						SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotEnemyFar, self.voiceSoundVariations.spotEnemyFar, 3, 2, false);
-					end
-				end
-			else
-				-- Refresh the delay timer
-				if self.AI.Target:NumberValueExists("Sandstorm Enemy Spotted Age") then
-					self.AI.Target:SetNumberValue("Sandstorm Enemy Spotted Age", self.AI.Target.Age)
-				end
-			end
-		end
-	else
-		if self.spotVoiceLineTimer:IsPastSimMS(self.spotVoiceLineDelay) then
-			self.spotAllowed = true;
-		end
-		if self.LastTargetID ~= -1 then
-			self.LastTargetID = -1
-			-- Target lost
-			--print("TARGET LOST!")
-		end
 	end
 	
 	

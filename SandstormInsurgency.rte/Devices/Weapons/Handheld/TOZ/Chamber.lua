@@ -138,17 +138,17 @@ function Update(self)
 			local controller = self.parent:GetController();		
 		
 			if controller:IsState(Controller.BODY_CROUCH) then
-				self.recoilStrength = 12
-				self.recoilPowStrength = 0.5
+				self.recoilStrength = 11
+				self.recoilPowStrength = 2.5
 				self.recoilRandomUpper = 1
-				self.recoilDamping = 1.0
+				self.recoilDamping = 0.4
 				
 				self.recoilMax = 20
 			else
 				self.recoilStrength = 13
-				self.recoilPowStrength = 0.4
+				self.recoilPowStrength = 3.4
 				self.recoilRandomUpper = 1.2
-				self.recoilDamping = 0.9
+				self.recoilDamping = 0.25
 				
 				self.recoilMax = 20
 			end

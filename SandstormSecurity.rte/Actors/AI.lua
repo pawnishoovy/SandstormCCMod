@@ -657,8 +657,8 @@ function Create(self)
 	self.spotVoiceLineDelay = 15000;
 	
 	 -- in pixels
-	self.spotDistanceClose = 120;
-	self.spotDistanceMid = 360;
+	self.spotDistanceClose = 175;
+	self.spotDistanceMid = 520;
 	--spotDistanceFar -- anything further than distanceMid
 	
 	 -- in MS
@@ -669,6 +669,11 @@ function Create(self)
 	self.spotIgnoreDelayChance = 10;
 	self.spotNoVoicelineChance = 15;
 	
+	 -- burst fire
+	self.burstFireDelayTimer = Timer()
+	self.burstFireDelayMin = 150
+	self.burstFireDelayMax = 300
+	self.burstFireDelay = math.random(self.burstFireDelayMin,self.burstFireDelayMax)
 	
 	-- experimental method for enhanced dying - don't let the actor actually die until we want him to.
 	-- reason for this is because when the actor IsDead he will really want to settle and there's not much we can do about it.
@@ -845,6 +850,8 @@ function Update(self)
 		SecurityAIBehaviours.handleHealth(self);
 		
 		SecurityAIBehaviours.handleStaminaAndSuppression(self);
+		
+		SecurityAIBehaviours.handleAITargetLogic(self)
 		
 		SecurityAIBehaviours.handleVoicelines(self);
 		
