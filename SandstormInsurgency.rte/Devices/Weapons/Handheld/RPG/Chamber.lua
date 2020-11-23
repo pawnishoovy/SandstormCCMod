@@ -3,27 +3,33 @@ function Create(self)
 	self.parentSet = false;
 
 	-- Sounds --
+	self.preSounds = {["Variations"] = 1,
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Pre"};		
+	
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
 	self.addSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/Add"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Add"};
 	
 	self.bassSounds = {["Loop"] = nil};
 	self.bassSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/Bass"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Bass"};
 	
 	self.noiseSounds = {["Outdoors"] = {["End"] = nil},
 	["Indoors"] = {["End"] = nil},
 	["bigIndoors"] = {["End"] = nil}};
 	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseOutdoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseOutdoorsEnd"};
 	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseIndoorsEnd"};
 	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/NoiseBigIndoorsEnd"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseBigIndoorsEnd"};
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/CompliSoundV2/ReflectionOutdoors"};
+	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/ReflectionOutdoors"};
+	
+	self.FireTimer = Timer();
+	self:SetNumberValue("DelayedFireTimeMS", 35);
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(math.abs(self.SharpStanceOffset.X), self.SharpStanceOffset.Y)
@@ -44,13 +50,16 @@ function Create(self)
 	
 	self.reloadTimer = Timer();
 	
+	self.roundLocked = true;
+	self.leverCocked = true;
+	
 	self.raisePrepareDelay = 750;
 	self.raiseAfterDelay = 800;
-	self.insertRoundPrepareDelay = 550;
-	self.insertRoundAfterDelay = 540;
-	self.lockRoundPrepareDelay = 1800;
+	self.insertRoundPrepareDelay = 1050;
+	self.insertRoundAfterDelay = 250;
+	self.lockRoundPrepareDelay = 600;
 	self.lockRoundAfterDelay = 730;
-	self.cockLeverPrepareDelay = 120;
+	self.cockLeverPrepareDelay = 1000;
 	self.cockLeverAfterDelay = 700;
 	self.shoulderPrepareDelay = 760;
 	self.shoulderAfterDelay = 400;
@@ -74,6 +83,12 @@ function Create(self)
 end
 
 function Update(self)
+
+	if UInputMan:KeyPressed(15) then
+	  PresetMan:ReloadAllScripts();
+	  self:ReloadScripts();
+	end
+
 	self.rotationTarget = 0 -- ZERO IT FIRST AAAA!!!!!
 
 	if self.ID == self.RootID then
@@ -110,14 +125,12 @@ function Update(self)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
 	
 	if self:IsReloading() then
-		if self.parent and self.reloadPhase > 0 and  self.reloadPhase < 5 then
+		if self.parent and self.reloadPhase > 0 and  self.reloadPhase < 4 then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
 		end
 		
-		self.phaseOnStop = 0; -- ALWAYS 0
-		
 		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
-			local color = (self.reloadPhase < 3 and 105 or 120)
+			local color = (self.reloadPhase < 2 and 105 or 120)
 			local position = self.parent.AboveHUDPos + Vector(0, 36)
 			PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-3), 2, color);
 			PrimitiveMan:DrawLinePrimitive(position + Vector(2,-2), position + Vector(2,4), color);
@@ -129,57 +142,46 @@ function Update(self)
 			self.reloadDelay = self.raisePrepareDelay;
 			self.afterDelay = self.raiseAfterDelay;			
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/RaisePrepare1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/RaisePrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Raise1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/Raise1";
 			
 		elseif self.reloadPhase == 1 then
-			self.reloadDelay = self.openTubePrepareDelay;
-			self.afterDelay = self.openTubeAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/OpenTubePrepare1";
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/OpenTube1";
-			
-			self.rotationTarget = -45;
-			
-		elseif self.reloadPhase == 2 then
-			self.reloadDelay = self.removeRoundPrepareDelay;
-			self.afterDelay = self.removeRoundAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/RemoveRound1";
-			
-			self.rotationTarget = -45;
-			
-		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.insertRoundPrepareDelay;
 			self.afterDelay = self.insertRoundAfterDelay;
 			self.prepareSoundPath = nil;
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/InsertRound1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/InsertRound1";
 			
-			self.rotationTarget = -45;
+			self.rotationTarget = 45;
+			
+		elseif self.reloadPhase == 2 then
+			self.reloadDelay = self.lockRoundPrepareDelay;
+			self.afterDelay = self.lockRoundAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/LockRound1";
+			
+			self.rotationTarget = 45;
+			
+		elseif self.reloadPhase == 3 then
+			self.reloadDelay = self.cockLeverPrepareDelay;
+			self.afterDelay = self.cockLeverAfterDelay;
+			self.prepareSoundPath = nil;
+			self.afterSoundPath = 
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/CockLever1";
+			
+			self.rotationTarget = 25;
 			
 		elseif self.reloadPhase == 4 then
-			self.reloadDelay = self.closeTubePrepareDelay;
-			self.afterDelay = self.closeTubeAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/CloseTubePrepare1";
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/CloseTube1";
-			
-			self.rotationTarget = -45;
-			
-		elseif self.reloadPhase == 5 then
 			self.reloadDelay = self.shoulderPrepareDelay;
 			self.afterDelay = self.shoulderAfterDelay;
 			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/ShoulderPrepare1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/ShoulderPrepare1";
 			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/M3MAAWS/Sounds/Shoulder1";
+			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/Shoulder1";
 
-			self.rotationTarget = -45;
+			self.rotationTarget = 25;
 		end
 		
 		if self.prepareSoundPlayed ~= true then
@@ -190,101 +192,50 @@ function Update(self)
 		end
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
-		
-			self.phasePrepareFinished = true;
 			
 			if self.reloadPhase == 0 then
 			
 				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-					self.reloadingVector = Vector(8, 7);
+					self.reloadingVector = Vector(4, 7);
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.reloadingVector = Vector(3, 3);
+					self.reloadingVector = Vector(2, 3);
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 					self.reloadingVector = Vector(0, 0);
 				end
 			
-				self.rotationTarget = -45;
+				self.rotationTarget = 45;
 
 			elseif self.reloadPhase == 1 then
 			
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*3)) then
-					self.Frame = 4;
-					self.tubeOpened = true;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-					self.Frame = 3;
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+					self.Frame = 0;
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.Frame = 2;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 					self.Frame = 1;
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+					self.Frame = 2;
 				end
 
 			elseif self.reloadPhase == 2 then
 			
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
-					self.Frame = 4;
-					--[[
-					if not self.roundRemoved then
-						self.roundRemoved = true;
-						local fake
-						fake = CreateMOSRotating("Casing M3MAAWS");
-						fake.Pos = self.Pos + Vector(-9*self.FlipFactor, 2):RadRotate(self.RotAngle);
-						fake.Vel = self.Vel + Vector(-4*self.FlipFactor, 0):RadRotate(self.RotAngle);
-						fake.RotAngle = self.RotAngle;
-						--fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
-						fake.HFlipped = self.HFlipped;
-						MovableMan:AddParticle(fake);
-						
-					end]]
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.2)) then
-					self.Frame = 5;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.9)) then
-					self.Frame = 6;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
-					self.Frame = 7;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.3)) then
-					self.Frame = 8;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 9;
-				end
+				self.roundLocked = true;
+				self.reloadingVector = Vector(5, 7);
 
 			elseif self.reloadPhase == 3 then
 			
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
-					self.Frame = 4;
-					self.roundInserted = true;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.2)) then
-					self.Frame = 9;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.9)) then
-					self.Frame = 8;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
-					self.Frame = 7;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.3)) then
-					self.Frame = 6;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 5;
-				end
+				self.leverCocked = true;
 			
 			elseif self.reloadPhase == 4 then
 			
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.6)) then
-					self.Frame = 0;
-					self.tubeClosed = true;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.4)) then
-					self.Frame = 1;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.2)) then
-					self.Frame = 2;
-				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.Frame = 3;
-				end
-			
-			elseif self.reloadPhase == 5 then
-			
-				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
-					self.reloadingVector = Vector(0, 0);
+				if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*3)) then
+					self.reloadingVector = Vector(3, -1);
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
+					self.reloadingVector = Vector(3, 0);
+				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+					self.reloadingVector = Vector(3, 2);
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-					self.reloadingVector = Vector(3, 3);
+					self.reloadingVector = Vector(3, 4);
 				elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-					self.reloadingVector = Vector(8, 7);
+					self.reloadingVector = Vector(5, 7);
 				end			
 			
 				self.rotationTarget = -5;
@@ -293,50 +244,32 @@ function Update(self)
 			
 			if self.afterSoundPlayed ~= true then
 			
-				if self.reloadPhase == 2 then
-					
-				elseif self.reloadPhase == 4 then
-
-				else
-					--self.phaseOnStop = nil;
-				end
-			
 				self.afterSoundPlayed = true;
 				if self.afterSoundPath then
 					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
 				end
 			end
+			
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
 				self.reloadTimer:Reset();
 				self.prepareSoundPlayed = false;
 				self.afterSoundPlayed = false;
 				if self.reloadPhase == 0 then
-					if self.tubeClosed then
-						self.reloadPhase = 5;
-					elseif self.roundInserted then
+					if self.leverCocked then
 						self.reloadPhase = 4;
-					elseif self.roundRemoved then
+					elseif self.roundLocked then
 						self.reloadPhase = 3;
-					elseif self.tubeOpened then
-						self.reloadPhase = 2;
 					else
 						self.reloadPhase = 1;
 					end
-				elseif self.reloadPhase == 5 then
-					self.tubeOpened = false;
-					self.roundRemoved = false;
-					self.roundInserted = false;
-					self.tubeClosed = false;
+				elseif self.reloadPhase == 4 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
-					self.phaseOnStop = nil;
 					self.reloadingVector = nil;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
 			end
-		else
-			self.phasePrepareFinished = false;
 		end
 	else
 		self.reloadingVector = nil;
@@ -345,16 +278,11 @@ function Update(self)
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
 		self.afterSoundPlayed = false;
-		if self.phaseOnStop then
-			self.reloadPhase = self.phaseOnStop;
-			self.phaseOnStop = nil;
-		end
-		if self.tubeClosed then
+		self.reloadPhase = 0;
+		if self.roundLocked then
 			self.Frame = 0;
-		elseif self.tubeOpened then
-			self.Frame = 4;
 		else
-			self.Frame = 0;
+			self.Frame = 3;
 		end
 		self.ReloadTime = 9999;
 	end
@@ -365,6 +293,10 @@ function Update(self)
 		
 		self.horizontalAnim = self.horizontalAnim + 0.2
 		self.angVel = self.angVel - RangeRand(0,1) * 6
+		
+		self.Frame = 3;
+		self.roundLocked = false;
+		self.leverCocked = false;
 		
 		if self.Magazine then
 			if self.Magazine.RoundCount > 0 then			
@@ -499,28 +431,6 @@ function Update(self)
 		else
 			self.StanceOffset = Vector(self.originalStanceOffset.X, self.originalStanceOffset.Y) + stance
 			self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
-		end
-		
-		-- Dirty Fix
-		if self.reloadPhase == 2 then
-			
-			if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2.5)) then
-				self.Frame = 4;
-				
-				if not self.roundRemoved then
-					self.roundRemoved = true;
-					local fake
-					fake = CreateMOSRotating("Casing M3MAAWS");
-					fake.Pos = self.Pos + Vector(-9*self.FlipFactor, 2):RadRotate(self.RotAngle);
-					fake.Vel = self.Vel + Vector(-4*self.FlipFactor, 0):RadRotate(self.RotAngle);
-					fake.RotAngle = self.RotAngle;
-					--fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
-					fake.HFlipped = self.HFlipped;
-					MovableMan:AddParticle(fake);
-					
-				end
-			end
-			
 		end
 	end
 	
