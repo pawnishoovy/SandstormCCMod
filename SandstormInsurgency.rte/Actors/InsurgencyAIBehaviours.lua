@@ -724,6 +724,7 @@ function InsurgencyAIBehaviours.handleAITargetLogic(self)
 		local isFar = distance > self.spotDistanceMid 
 		
 		-- DEBUG spot distance
+		--[[
 		local maxi = math.floor(distance / 10)
 		for i = 1, maxi do
 			local vec = posDifference * i / maxi
@@ -735,7 +736,7 @@ function InsurgencyAIBehaviours.handleAITargetLogic(self)
 				color = 122
 			end
 			PrimitiveMan:DrawLinePrimitive(pos, pos, color);
-		 end
+		end]]
 		
 		if not isClose and self.EquippedItem and IsHDFirearm(self.EquippedItem) then
 			if ToHDFirearm(self.EquippedItem):NumberValueExists("recoilStrengthCurrent") and ToHDFirearm(self.EquippedItem):NumberValueExists("recoilStrengthBase") then
