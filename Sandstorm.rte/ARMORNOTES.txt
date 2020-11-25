@@ -1,0 +1,140 @@
+RealBullet hits Armor
+
+First Try: RHA VS RHA
+
+ModifiedAP = InitialAP - ArmorValue
+ModifiedDamage = InitialDamage * (ModifiedAP / InitialAP)
+
+ModifiedWounds = InitialWounds * (ModifiedAP / InitialAP)
+Round ModifiedWounds to nearest
+If ModifiedWounds < 1, ModifiedWounds = 1
+
+If ModifiedDamage above 0:
+
+WoundMult = (ModifiedDamage/ActorTorsoWoundDamage) / ModifiedWounds
+
+spawn appropriate damage pixel(s), ignoring armor, and end equation
+Add dummy wound to vest, play armorhit sound
+
+If ModifiedDamage <= 0 then:
+
+Second Try: MPA VS MPA
+
+ModifiedBP = InitialBP - ArmorValue
+ModifiedDamage = InitialDamage * (ModifiedBP / InitialBP)
+
+Add dummy wound to vest, play armorhitsound. Directly subtract remaining damage, if any, from actor HP
+
+
+
+numbers:
+
+NO ARMOR:
+0 RHA
+0 MPA
+
+LIGHT ARMOR:
+
+4mm RHA
+5 MPA
+
+HEAVY ARMOR:
+
+13mm RHA
+21 MPA
+
+SUPERHEAVY ARMOR:
+
+18mm RHA
+35 MPA
+
+weapons:
+
+COLT PYTHON:
+
+.357 Magnum JHP (some kinda extra-heavy load to make it worth using over other pistols)
+5mm RHA
+18 MPA
+
+GalilSAR:
+
+5.56x45mm FMJ (run of the mill)
+6mm RHA
+34 MPA
+
+M3MAAWS:
+
+lol
+
+M4A1:
+
+5.56x45mm FMJ (run of the mill)
+6mm RHA
+31 MPA
+
+M9:
+
+9mm FMJ (run of the mill)
+4mm RHA
+9.5 MPA
+
+M16A4:
+
+5.56x45mm AP (cool armor piercing)
+12.2mm RHA
+30 MPA
+
+M24:
+
+7.62x51mm AP (cool armor piercing)
+16mm RHA
+65 MPA
+
+M45:
+
+.45 ACP FMJ (run of the mill)
+3.3mm RHA
+11 MPA
+
+M82A1:
+
+.50 BMG Ball (does not penetrate well technically but it HURTS)
+14mm RHA
+300 MPA
+
+M249:
+
+5.56x45mm FMJ (run of the mill)
+6mm RHA
+31 MPA
+
+M870:
+
+12 gauge buckshot (run of the mill)
+each pellet:
+3.6mm RHA
+4.5 MPA
+
+MK14:
+
+7.62x51mm AP (cool armor piercing)
+14mm RHA
+57 MPA
+
+MK18:
+
+5.56x45mm FMJ (run of the mill)
+5.5mm RHA
+29 MPA
+
+MP5A5:
+
+9mm JHP (hollow-point: terrible ap)
+2mm RHA
+9.5 MPA
+
+VHS2:
+
+5.56x45mm FMJ (run of the mill)
+6.5mm RHA
+34 MPA
