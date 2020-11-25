@@ -36,9 +36,6 @@ function Create(self)
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
 	
-	self.originalJointOffset = Vector(self.JointOffset.X, self.JointOffset.Y)
-	self.originalSupportOffset = Vector(math.abs(self.SupportOffset.X), self.SupportOffset.Y)
-	
 	self.shellsToEject = self.Magazine.Capacity
 	self.ejectedShell = false
 	
@@ -61,12 +58,12 @@ function Create(self)
 	self.afterReloadDelay = 400;
 	self.afterReloadTimer = Timer();
 	
-	self.cockPrepareDelay = 500;
-	self.cockAfterDelay = 300;
+	self.cockPrepareDelay = 250;
+	self.cockAfterDelay = 250;
 	self.openPrepareDelay = 750;
 	self.openAfterDelay = 1000;
 	self.speedLoaderPrepareDelay = 500;
-	self.speedLoaderAfterDelay = 500;
+	self.speedLoaderAfterDelay = 800;
 	self.closePrepareDelay = 500;
 	self.closeAfterDelay = 500;
 	
@@ -79,6 +76,8 @@ function Create(self)
 	self.reloadPhase = 0;
 	
 	self.ReloadTime = 19999;
+	
+	self.Frame = 1;
 	
 	-- Progressive Recoil System 
 	self.recoilAcc = 0 -- for sinous
@@ -109,6 +108,7 @@ function Update(self)
 	end
 	
 	-- Smoothing
+
 	local min_value = -math.pi;
 	local max_value = math.pi;
 	local value = self.RotAngle - self.lastRotAngle
@@ -135,6 +135,9 @@ function Update(self)
 		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
 		
 		self.reloadPhase = 0;
+		
+		self.Frame = 0;
+		self.hammerBack = false;
 		
 		if self.parent then
 			local controller = self.parent:GetController();		
@@ -333,6 +336,7 @@ function Update(self)
 				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Schofield/Sounds/Open";
 				self.afterSoundVars = 3;
 				
+				self.rotationTarget = 10
 			elseif self.reloadPhase == 2 then
 				self.reloadDelay = self.speedLoaderPrepareDelay;
 				self.afterDelay = self.speedLoaderAfterDelay;
@@ -343,8 +347,9 @@ function Update(self)
 				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Schofield/Sounds/SpeedLoader";
 				self.afterSoundVars = 3;
 				
-				self.rotationTarget = -10
+				self.rotationTarget = 25
 			elseif self.reloadPhase == 3 then
+				self.Frame = 4;
 				self.reloadDelay = self.closePrepareDelay;
 				self.afterDelay = self.closeAfterDelay;
 				self.prepareSoundPath = nil;
@@ -353,7 +358,7 @@ function Update(self)
 				"SandstormInsurgency.rte/Devices/Weapons/Handheld/Schofield/Sounds/Close";
 				self.afterSoundVars = 3;
 				
-				self.rotationTarget = 10 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
+				self.rotationTarget = 0
 			end
 			
 			if self.prepareSoundPlayed ~= true then
@@ -374,23 +379,12 @@ function Update(self)
 					
 					self.Casing = false
 				end]]
-				if self.reloadPhase == 0 then
-					self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs * self.afterDelay
-				end
 			
 				self.phasePrepareFinished = true;
 			
 				if self.afterSoundPlayed ~= true then
-					if self.reloadPhase == 1 then
-						if self.ejectedShell == false then
-							self.ejectedShell = true;
-							for i = 1, self.shellsToEject do
-								local shell = CreateMOSParticle("Casing Pistol");
-								shell.Pos = self.Pos;
-								shell.Vel = Vector(math.random() * (-1) * self.FlipFactor, -4):RadRotate(self.RotAngle):DegRotate((math.random() * 32) - 16);
-								MovableMan:AddParticle(shell);
-							end
-						end
+					if self.reloadPhase == 3 then
+						self.angVel = self.angVel + RangeRand(0.7,1.1) * 20
 					end
 				
 					self.afterSoundPlayed = true;
@@ -400,19 +394,50 @@ function Update(self)
 				end
 			
 				if self.reloadPhase == 0 then
+				
+					self.Frame = 1;
+					self.hammerBack = true;
 					
 				elseif self.reloadPhase == 1 then
+				
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+						self.Frame = 4;
+						self.frameOpen = true;
+						self.phaseOnStop = 2;
+						if self.ejectedShell == false then
+							self.ejectedShell = true;
+							for i = 1, self.shellsToEject do
+								local shell = CreateMOSParticle("Casing Pistol");
+								shell.Pos = self.Pos + Vector(0, -2):RadRotate(self.RotAngle);
+								shell.Vel = Vector(math.random() * (-0.4) * self.FlipFactor, -4):RadRotate(self.RotAngle):DegRotate((math.random() * 32) - 16);
+								MovableMan:AddParticle(shell);
+							end
+						end
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.3)) then
+						self.Frame = 3;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.1)) then
+						self.Frame = 2;
+					end
 					
 				elseif self.reloadPhase == 2 then
 					
 					--placeholder
 					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-						self.Frame = 0;
+						self.Frame = 6;
+						self.phaseOnStop = 3;
 					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
-						self.Frame = 0;
+						self.Frame = 5;
 					end
 					
-				elseif self.reloadPhase == 3 then		
+				elseif self.reloadPhase == 3 then
+				
+					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*2)) then
+						self.Frame = 1;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
+						self.Frame = 2;
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
+						self.Frame = 3;
+					end
 
 				end
 				
@@ -445,6 +470,7 @@ function Update(self)
 						self.reloadPhase = 0;
 						self.Chamber = false;
 						self.Reloading = false;
+						self.frameOpen = false;
 
 					else
 						self.reloadPhase = self.reloadPhase + 1;
@@ -455,8 +481,6 @@ function Update(self)
 			end
 			
 		else
-			local f = math.max(1 - math.min((self.FireTimer.ElapsedSimTimeMS - 25) / 200, 1), 0)
-			self.JointOffset = self.originalJointOffset + Vector(1, 0) * f
 			
 			self.reloadTimer:Reset();
 			self.prepareSoundPlayed = false;
@@ -467,6 +491,17 @@ function Update(self)
 		self.ammoCountRaised = false;
 		if self.Reloading then
 			self.resumeReload = true;
+		end
+		if self.frameOpen == true then
+			self.Frame = 4;
+		elseif self.hammerBack == true then
+			self.Frame = 1;
+		else
+			self.Frame = 0;
+		end
+		if self.phaseOnStop then
+			self.reloadPhase = self.phaseOnStop;
+			self.phaseOnStop = nil;
 		end
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
@@ -522,8 +557,7 @@ function Update(self)
 		if self.parent:GetController():IsState(Controller.AIM_SHARP) == true and self.parent:GetController():IsState(Controller.MOVE_LEFT) == false and self.parent:GetController():IsState(Controller.MOVE_RIGHT) == false then
 			supportOffset = supportOffset + Vector(-1,0)
 		end
-		
-		self.SupportOffset = self.originalSupportOffset + supportOffset
+	
 		
 		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);
 		local offsetTotal = Vector(jointOffset.X, jointOffset.Y):RadRotate(-total) - jointOffset
