@@ -481,10 +481,11 @@ function SecurityAIBehaviours.handleHealth(self)
 		-- blood taint on the head
 		if self.Head then
 			local headTaint = nil
-			for attachment in self.Attachables do
-				if attachment.PresetName == "Sandstorm Head Blood Taint" then
-					headTaint = attachment
-				end
+			if self:NumberValueExists("HeadBloodTaintID") then
+				local mo = MovableMan:FindObjectByUniqueID(self:GetNumberValue("HeadBloodTaintID"))
+				if mo then
+					headTaint = ToAttachable(mo)
+				end				
 			end
 			
 			if headTaint ~= nil then
@@ -497,6 +498,8 @@ function SecurityAIBehaviours.handleHealth(self)
 				if self.Health <= 80 then
 					local taint = CreateAttachable("Sandstorm Head Blood Taint", "Sandstorm.rte");
 					self.Head:AddAttachable(taint);
+					taint.Frame = math.floor((1 - ((math.min(self.Health, 100) + 20) / 100)) * 5 + 0.5)
+					self:SetNumberValue("HeadBloodTaintID", taint.UniqueID)
 				end
 			end
 		end
