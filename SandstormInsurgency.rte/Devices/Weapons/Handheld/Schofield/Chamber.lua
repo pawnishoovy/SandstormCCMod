@@ -28,10 +28,7 @@ function Create(self)
 	self.reflectionSounds.Outdoors = {["Variations"] = 3,
 	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/Schofield/CompliSoundV2/ReflectionOutdoors"};
 	
-	self.FireTimer = Timer();
 	self:SetNumberValue("DelayedFireTimeMS", 35)
-	
-	self.originalSharpLength = self.SharpLength
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
@@ -41,7 +38,7 @@ function Create(self)
 	
 	self.rotation = 0
 	self.rotationTarget = 0
-	self.rotationSpeed = 9
+	self.rotationSpeed = 11
 	
 	self.horizontalAnim = 0
 	self.verticalAnim = 0
@@ -78,6 +75,9 @@ function Create(self)
 	self.ReloadTime = 19999;
 	
 	self.Frame = 1;
+	
+	self.reloadHUDAmmo = 0
+	self.reloadHUDAmmoMax = 6
 	
 	-- Progressive Recoil System 
 	self.recoilAcc = 0 -- for sinous
@@ -127,12 +127,10 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
-	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.FireTimer.ElapsedSimTimeMS / 125, 1), 2.0) * 0.1)
-	
 	if self.FiredFrame then
-		self.horizontalAnim = self.horizontalAnim + 2
+		self.horizontalAnim = self.horizontalAnim + 6
 		
-		self.angVel = self.angVel + RangeRand(0.7,1.1) * 30
+		self.angVel = self.angVel + RangeRand(0.7,1.1) * 15
 		
 		self.reloadPhase = 0;
 		
@@ -246,24 +244,33 @@ function Update(self)
 
 	
 		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		
+		if self.Magazine then
+			self.reloadHUDAmmo = self.Magazine.RoundCount
+		else
+			self.reloadHUDAmmo = 0
+		end
 	end
 	
 	-- PAWNIS RELOAD ANIMATION HERE
 	if self.reChamber then
 		if self:IsReloading() then
 			self.Reloading = true;
-			self.reloadCycle = true;
 		end
 		self.reChamber = false;
 		self.Chamber = true;
 		self.Casing = true;
+		self.delayedFireEnabled = false
 	end
 	
 	if self:IsReloading() and (not self.Chamber) then -- if we start reloading from "scratch"
 		self.Chamber = true;
 		self.ReloadTime = 19999;
 		self.Reloading = true;
-		self.reloadCycle = true;
+	end
+	
+	if self.Magazine and not self:IsReloading() then
+		self.reloadHUDAmmo = self.Magazine.RoundCount
 	end
 	
 	if self.parent then
@@ -288,19 +295,19 @@ function Update(self)
 			self:Deactivate();
 			if self:IsReloading() then
 				
-				-- Fancy Reload Progress GUI
-				-- if not (not self.reloadCycle and self.parent:GetController():IsState(Controller.WEAPON_FIRE)) and self.parent:IsPlayerControlled() then
-					-- for i = 1, self.ammoCount do
-						-- local color = 120
-						-- local spacing = 4
-						-- local offset = Vector(0 - spacing * 0.5 + spacing * (i) - spacing * self.ammoCount / 2, (self.ammoCountRaised and i == self.ammoCount) and 35 or 36)
-						-- local position = self.parent.AboveHUDPos + offset
-						-- PrimitiveMan:DrawCirclePrimitive(position + Vector(0,-2), 1, color);
-						-- PrimitiveMan:DrawLinePrimitive(position + Vector(1,-3), position + Vector(1,3), color);
-						-- PrimitiveMan:DrawLinePrimitive(position + Vector(-1,-3), position + Vector(-1,3), color);
-						-- PrimitiveMan:DrawLinePrimitive(position + Vector(1,3), position + Vector(-1,3), color);
-					-- end
-				-- end
+				if self.parent:IsPlayerControlled() then
+					for i = 1, self.reloadHUDAmmoMax do
+						local position = Vector(math.floor(self.parent.AboveHUDPos.X), math.floor(self.parent.AboveHUDPos.Y)) + Vector(0, 37)
+						local color = 105
+						if i <= self.reloadHUDAmmo then
+							color = 120
+						end
+						
+						position = position + Vector(5,0):RadRotate(math.pi * 2 * i / self.reloadHUDAmmoMax)
+						position = Vector(math.floor(position.X), math.floor(position.Y))
+						PrimitiveMan:DrawCirclePrimitive(position, 1, color);
+					end
+				end
 				
 				if self.Reloading == false then
 					self.ReloadTime = 19999;
@@ -337,6 +344,8 @@ function Update(self)
 				self.afterSoundVars = 3;
 				
 				self.rotationTarget = 10
+				
+				self.canSmoke = false -- don't ask
 			elseif self.reloadPhase == 2 then
 				self.reloadDelay = self.speedLoaderPrepareDelay;
 				self.afterDelay = self.speedLoaderAfterDelay;
@@ -383,8 +392,12 @@ function Update(self)
 				self.phasePrepareFinished = true;
 			
 				if self.afterSoundPlayed ~= true then
-					if self.reloadPhase == 3 then
-						self.angVel = self.angVel + RangeRand(0.7,1.1) * 20
+					if self.reloadPhase == 0 then
+						self.angVel = self.angVel + RangeRand(0.7,1.1) * 10
+					elseif self.reloadPhase == 1 then
+						self.angVel = self.angVel - RangeRand(0.7,1.1) * 40
+					elseif self.reloadPhase == 3 then
+						self.angVel = self.angVel + RangeRand(0.7,1.1) * 50
 					end
 				
 					self.afterSoundPlayed = true;
@@ -401,6 +414,8 @@ function Update(self)
 				elseif self.reloadPhase == 1 then
 				
 					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*0.5)) then
+						self.reloadHUDAmmo = 0
+						
 						self.Frame = 4;
 						self.frameOpen = true;
 						self.phaseOnStop = 2;
@@ -423,8 +438,12 @@ function Update(self)
 					
 					--placeholder
 					if self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.5)) then
-						self.Frame = 6;
+						self.Frame = 7;
 						self.phaseOnStop = 3;
+						
+						self.reloadHUDAmmo = self.reloadHUDAmmoMax
+					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1.25)) then
+						self.Frame = 6;
 					elseif self.reloadTimer:IsPastSimMS(self.reloadDelay + ((self.afterDelay/5)*1)) then
 						self.Frame = 5;
 					end
@@ -547,16 +566,6 @@ function Update(self)
 		self.RotAngle = self.RotAngle + total;
 		
 		--self:SetNumberValue("MagRotation", total);
-		
-		local supportOffset = Vector(0,0)
-		if self.Frame == 1 then
-			supportOffset = Vector(-1,0)
-		elseif self.Frame == 2 then
-			supportOffset = Vector(-3,0)
-		end
-		if self.parent:GetController():IsState(Controller.AIM_SHARP) == true and self.parent:GetController():IsState(Controller.MOVE_LEFT) == false and self.parent:GetController():IsState(Controller.MOVE_RIGHT) == false then
-			supportOffset = supportOffset + Vector(-1,0)
-		end
 	
 		
 		local jointOffset = Vector(self.JointOffset.X * self.FlipFactor, self.JointOffset.Y):RadRotate(self.RotAngle);

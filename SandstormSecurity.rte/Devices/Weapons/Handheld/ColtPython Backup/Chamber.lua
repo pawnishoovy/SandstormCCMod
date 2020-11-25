@@ -70,6 +70,9 @@ function Create(self)
 	
 	self.ReloadTime = 9999;
 	
+	self.swayAcc = 0 -- for sinous
+	self.swayStr = 0 -- for accumulator
+	
 	self.cocked = false -- precision mode
 	self.cockTimer = Timer()
 	self.cockDelay = self.delayedFireTimeMS * 2
@@ -83,18 +86,6 @@ function Create(self)
 	
 	self.reloadHUDAmmo = 0
 	self.reloadHUDAmmoMax = 6
-	
-	-- Progressive Recoil System 
-	self.recoilAcc = 0 -- for sinous
-	self.recoilStr = 0 -- for accumulator
-	self.recoilStrength = 13 -- multiplier for base recoil added to the self.recoilStr when firing
-	self.recoilPowStrength = 0.4 -- multiplier for self.recoilStr when firing
-	self.recoilRandomUpper = 1.2 -- upper end of random multiplier (1 is lower)
-	self.recoilDamping = 0.9
-	
-	self.recoilMax = 20 -- in deg.
-	self.originalSharpLength = self.SharpLength
-	-- Progressive Recoil System 	
 	
 	local ms = 1 / (self.RateOfFire / 60) * 1000
 	ms = ms + self.delayedFireTimeMS
@@ -147,6 +138,13 @@ function Update(self)
 	self.lastRotAngle = self.RotAngle
 	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
 	
+	local sharpRecoil = (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (250), 1), 2.0) * 0.1)
+	local sharpFocus = math.pow(math.min(self.cockTimer.ElapsedSimTimeMS / (self.cockDelay + self.cockedAimFocus), 1), 2)
+	
+	--self.SharpLength = self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)
+	local sharpSpeed = 15
+	self.SharpLength = (self.SharpLength + (self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)) * TimerMan.DeltaTimeSecs * sharpSpeed) / (1 + TimerMan.DeltaTimeSecs * sharpSpeed)
+	
 	if not self:IsActivated() then
 		self.canShoot = true
 	end
@@ -182,7 +180,6 @@ function Update(self)
 					end
 					
 					-- Cool awesome precision mode focus hud cosshair
-					--[[
 					if self.parent:IsPlayerControlled() then
 						local color = 120
 						local dist = 250 - 10 * math.sin(sharpFocus * math.pi * 2)
@@ -198,8 +195,7 @@ function Update(self)
 						end
 						--PrimitiveMan:DrawCirclePrimitive(self.Pos + Vector(dist * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), 1, color);
 						PrimitiveMan:DrawLinePrimitive(self.Pos + Vector((dist - 5) * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), self.Pos + Vector((dist + 5) * self.FlipFactor,0):RadRotate(self.lastAnimRotAngle), color);
-					end]]
-					-- rip Cool awesome precision mode focus hud crosshair ;-(
+					end
 				end
 			end
 		else
@@ -438,157 +434,24 @@ function Update(self)
 
 	-- PAWNIS RELOAD ANIMATION HERE
 	
-	if self.delayedFire then
-		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) or self.cocked then
-			self:Activate()
-		end
-	end
-	
-	if self.FiredFrame then
-		self.horizontalAnim = self.horizontalAnim + 6
-		
-		if self.parent then
-			local controller = self.parent:GetController();		
-		
-			if controller:IsState(Controller.BODY_CROUCH) or self.cocked then
-				self.recoilStrength = 11
-				self.recoilPowStrength = 1.5
-				self.recoilRandomUpper = 1
-				self.recoilDamping = 0.4
-				
-				self.recoilMax = 20
-			else
-				self.recoilStrength = 13
-				self.recoilPowStrength = 1.4
-				self.recoilRandomUpper = 1.2
-				self.recoilDamping = 0.25
-				
-				self.recoilMax = 20
-			end
-			if (not controller:IsState(Controller.AIM_SHARP))
-			or (controller:IsState(Controller.MOVE_LEFT)
-			or controller:IsState(Controller.MOVE_RIGHT)) then
-				self.recoilDamping = self.recoilDamping * 0.9;
-			end
-		end
-		
-		self.Frame = 0;
-		
-		--if self.Magazine then
-		--	self.Magazine.RoundCount = self.Magazine.RoundCount - 1
-		--end
-		
-		self.canSmoke = true
-		self.smokeTimer:Reset()
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
-
-		local outdoorRays = 0;
-		
-		local indoorRays = 0;
-		
-		local bigIndoorRays = 0;
-
-		if self.parent:IsPlayerControlled() then
-			self.rayThreshold = 2; -- this is the first ray check to decide whether we play outdoors
-			local Vector2 = Vector(0,-700); -- straight up
-			local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
-			local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
-			local Vector2SlightLeft = Vector(0,-700):RadRotate(22.5*(math.pi/180));
-			local Vector2SlightRight = Vector(0,-700):RadRotate(-22.5*(math.pi/180));		
-			local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
-			local Vector4 = Vector(0,0); -- dont need this but is needed as an arg
-
-			self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-			self.rayRight = SceneMan:CastObstacleRay(self.Pos, Vector2Right, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-			self.rayLeft = SceneMan:CastObstacleRay(self.Pos, Vector2Left, Vector3, Vector4, self.RootID, self.Team, 128, 7);			
-			self.raySlightRight = SceneMan:CastObstacleRay(self.Pos, Vector2SlightRight, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-			self.raySlightLeft = SceneMan:CastObstacleRay(self.Pos, Vector2SlightLeft, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-			
-			self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
-		else
-			self.rayThreshold = 1; -- has to be different for AI
-			local Vector2 = Vector(0,-700); -- straight up
-			local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
-			local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
-			self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
-			
-			self.rayTable = {self.ray};
-		end
-		
-		for _, rayLength in ipairs(self.rayTable) do
-			if rayLength < 0 then
-				outdoorRays = outdoorRays + 1;
-			elseif rayLength > 170 then
-				bigIndoorRays = bigIndoorRays + 1;
-			else
-				indoorRays = indoorRays + 1;
-			end
-		end
-		
-		if outdoorRays >= self.rayThreshold then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		else -- bigIndoor
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		end
-
-	
-		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		
-		self.delayedFire = false
-		
-		self.canShoot = false
-		self.cocked = false
-	end
-	
 	-- Animation
 	if self.parent then
 		self.horizontalAnim = math.floor(self.horizontalAnim / (1 + TimerMan.DeltaTimeSecs * 24.0) * 1000) / 1000
 		self.verticalAnim = math.floor(self.verticalAnim / (1 + TimerMan.DeltaTimeSecs * 15.0) * 1000) / 1000
 		
+		local str = math.min(self.Vel.Magnitude, 20) + (self.swayStr + 4) * (1 - sharpFocus)
+		self.swayStr = math.floor(self.swayStr / (1 + TimerMan.DeltaTimeSecs * 6.0) * 1000) / 1000
+		self.swayAcc = (self.swayAcc + str * TimerMan.DeltaTimeSecs) % (math.pi * 4)
+		
 		local stance = Vector()
 		stance = stance + Vector(-1,0) * self.horizontalAnim -- Horizontal animation
 		stance = stance + Vector(0,5) * self.verticalAnim -- Vertical animation
 		
-		-- Progressive Recoil Update
-		if self.FiredFrame then
-			self.recoilStr = self.recoilStr + ((math.random(10, self.recoilRandomUpper * 10) / 10) * 0.5 * self.recoilStrength) + (self.recoilStr * 0.6 * self.recoilPowStrength)
-			self:SetNumberValue("recoilStrengthBase", self.recoilStrength * (1 + self.recoilPowStrength) / self.recoilDamping)
-		end
-		self:SetNumberValue("recoilStrengthCurrent", self.recoilStr)
+		self.rotationTarget = self.rotationTarget - (self.angVel * 3) -- aim sway/smoothing
+		local swayA = (math.sin(self.swayAcc) * str) * 0.5
+		local swayB = (math.sin(self.swayAcc * 0.5) * str) * 0.1
 		
-		self.recoilStr = math.floor(self.recoilStr / (1 + TimerMan.DeltaTimeSecs * 8.0 * self.recoilDamping) * 1000) / 1000
-		self.recoilAcc = (self.recoilAcc + self.recoilStr * TimerMan.DeltaTimeSecs) % (math.pi * 4)
-		
-		local recoilA = (math.sin(self.recoilAcc) * self.recoilStr) * 0.05 * self.recoilStr
-		local recoilB = (math.sin(self.recoilAcc * 0.5) * self.recoilStr) * 0.01 * self.recoilStr
-		local recoilC = (math.sin(self.recoilAcc * 0.25) * self.recoilStr) * 0.05 * self.recoilStr
-		
-		local recoilFinal = math.max(math.min(recoilA + recoilB + recoilC, self.recoilMax), -self.recoilMax)
-		
-		local sharpRecoil = (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (250), 1), 2.0) * 0.1)
-		local sharpFocus = math.pow(math.min(self.cockTimer.ElapsedSimTimeMS / (self.cockDelay + self.cockedAimFocus), 1), 2)
-		
-		--self.SharpLength = self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)
-		--local sharpSpeed = 15
-		--self.SharpLength = (self.SharpLength + (self.originalSharpLength * sharpRecoil * (1 + sharpFocus * 0.5)) * TimerMan.DeltaTimeSecs * sharpSpeed) / (1 + TimerMan.DeltaTimeSecs * sharpSpeed)
-		self.SharpLength = math.max(self.originalSharpLength * (1 + sharpFocus * 0.5) - (self.recoilStr * 3 + math.abs(recoilFinal)), 0)
-		
-		self.rotationTarget = self.rotationTarget + recoilFinal -- apply the recoil
-		-- Progressive Recoil Update	
+		self.rotationTarget = self.rotationTarget + (swayA + swayB) -- sway
 		
 		self.rotationTarget = self.rotationTarget + (self.cocked and ((1 - sharpFocus) * 15) or 0) -- cock anim
 		
@@ -608,6 +471,115 @@ function Update(self)
 		self.SharpStanceOffset = Vector(self.originalSharpStanceOffset.X, self.originalSharpStanceOffset.Y) + stance
 		
 		self.lastAnimRotAngle = self.RotAngle
+	end
+	
+	if self.delayedFire then
+		self:Deactivate()
+		self.horizontalAnim = self.horizontalAnim + TimerMan.DeltaTimeSecs / self.delayedFireTimeMS * 1000
+		if self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) or self.cocked then
+			self.swayStr = self.swayStr + 15
+			
+			self.Frame = 0;
+			
+			if self.Magazine then
+				self.Magazine.RoundCount = self.Magazine.RoundCount - 1
+			end
+			
+			self.canSmoke = true
+			self.smokeTimer:Reset()
+			
+			local muzzleFlash = CreateAttachable("Muzzle Flash Shotgun", "Base.rte");
+			muzzleFlash.ParentOffset = self.MuzzleOffset
+			muzzleFlash.Lifetime = TimerMan.DeltaTimeSecs * 1300
+			muzzleFlash.Frame = math.random(0, muzzleFlash.FrameCount - 1);
+			self:AddAttachable(muzzleFlash);
+			
+			if self.noiseEndSound then
+				if self.noiseEndSound:IsBeingPlayed() then
+					self.noiseEndSound:Stop(-1)
+				end
+			end
+			
+			if self.reflectionSound then
+				if self.reflectionSound:IsBeingPlayed() then
+					self.reflectionSound:Stop(-1)
+				end
+			end
+
+			local outdoorRays = 0;
+			
+			local indoorRays = 0;
+			
+			local bigIndoorRays = 0;
+
+			if self.parent:IsPlayerControlled() then
+				self.rayThreshold = 2; -- this is the first ray check to decide whether we play outdoors
+				local Vector2 = Vector(0,-700); -- straight up
+				local Vector2Left = Vector(0,-700):RadRotate(45*(math.pi/180));
+				local Vector2Right = Vector(0,-700):RadRotate(-45*(math.pi/180));			
+				local Vector2SlightLeft = Vector(0,-700):RadRotate(22.5*(math.pi/180));
+				local Vector2SlightRight = Vector(0,-700):RadRotate(-22.5*(math.pi/180));		
+				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg
+
+				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.rayRight = SceneMan:CastObstacleRay(self.Pos, Vector2Right, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.rayLeft = SceneMan:CastObstacleRay(self.Pos, Vector2Left, Vector3, Vector4, self.RootID, self.Team, 128, 7);			
+				self.raySlightRight = SceneMan:CastObstacleRay(self.Pos, Vector2SlightRight, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				self.raySlightLeft = SceneMan:CastObstacleRay(self.Pos, Vector2SlightLeft, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				
+				self.rayTable = {self.ray, self.rayRight, self.rayLeft, self.raySlightRight, self.raySlightLeft};
+			else
+				self.rayThreshold = 1; -- has to be different for AI
+				local Vector2 = Vector(0,-700); -- straight up
+				local Vector3 = Vector(0,0); -- dont need this but is needed as an arg
+				local Vector4 = Vector(0,0); -- dont need this but is needed as an arg		
+				self.ray = SceneMan:CastObstacleRay(self.Pos, Vector2, Vector3, Vector4, self.RootID, self.Team, 128, 7);
+				
+				self.rayTable = {self.ray};
+			end
+			
+			for _, rayLength in ipairs(self.rayTable) do
+				if rayLength < 0 then
+					outdoorRays = outdoorRays + 1;
+				elseif rayLength > 170 then
+					bigIndoorRays = bigIndoorRays + 1;
+				else
+					indoorRays = indoorRays + 1;
+				end
+			end
+			
+			if outdoorRays >= self.rayThreshold then
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+				self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			else -- bigIndoor
+				self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			end
+
+		
+			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			
+			local bullet = CreateMOSRotating("Bullet ColtPython");
+			bullet.Pos = self.Pos + Vector(self.MuzzleOffset.X * self.FlipFactor, self.MuzzleOffset.Y):RadRotate(self.RotAngle);
+			bullet.Vel = self.Vel + Vector(1 * self.FlipFactor,0):RadRotate(self.RotAngle) * 180; -- BULLET SPEED
+			bullet.RotAngle = self.RotAngle + (math.pi * (-self.FlipFactor + 1) / 2)
+			bullet:SetNumberValue("WoundDamageMultiplier", 2.0)
+			bullet:SetNumberValue("Wounds", math.random(2,3))
+			bullet:SetNumberValue("AlwaysTracer", math.random(0,1))
+			bullet:SetNumberValue("NoSmoke", 1)
+			if self.parent then
+				bullet.Team = self.parent.Team;
+				bullet.IgnoresTeamHits = true;
+			end
+			MovableMan:AddParticle(bullet);
+			
+			self.delayedFire = false
+			
+			self.canShoot = false
+			self.cocked = false
+		end
 	end
 	
 	if self.canSmoke and not self.smokeTimer:IsPastSimMS(1500) then
