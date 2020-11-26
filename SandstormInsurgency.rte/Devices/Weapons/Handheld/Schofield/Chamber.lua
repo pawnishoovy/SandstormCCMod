@@ -471,6 +471,7 @@ function Update(self)
 							self.reloadPhase = 1;
 							self.Chamber = false;
 							self.Reloading = false;
+							self.frameOpen = false;
 						else
 							self.reloadPhase = self.reloadPhase + 1;
 						end
