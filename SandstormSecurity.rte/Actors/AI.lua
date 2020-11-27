@@ -227,6 +227,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Death/Death",
 			seriousDeath = 
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Death/SeriousDeath",
+			flameDeath = 
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Death/FlameDeath",
 			Incapacitated =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Death/Incapacitated",
 			Suppressed =
@@ -257,6 +259,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Exertion/SeriousExertion",
 			Pain =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Pain/Pain",
+			burnPain =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Pain/BurnPain",
 			Flashed =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecAmericanMale/Flashed/Flashed",
 			Reload =
@@ -306,6 +310,7 @@ function Create(self)
 			
 			self.voiceSoundVariations = {Death = 19,
 			seriousDeath = 15,
+			flameDeath = 5,
 			Incapacitated = 11,
 			Suppressed = 37,
 			SuppressedByExplosion = 6,
@@ -321,6 +326,7 @@ function Create(self)
 			Exertion = 7,
 			seriousExertion = 7,
 			Pain = 17,
+			burnPain = 6,
 			Flashed = 5,
 			Reload = 29,
 			suppressedReload = 35,
@@ -355,6 +361,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Death/Death",
 			seriousDeath = 
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Death/SeriousDeath",
+			flameDeath = 
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Death/FlameDeath",
 			Incapacitated =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Death/Incapacitated",
 			Suppressed =
@@ -385,6 +393,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Exertion/SeriousExertion",
 			Pain =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Pain/Pain",
+			burnPain =
+			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Pain/BurnPain",
 			Flashed =
 			self.RTE.."/Actors/Shared/Sounds/VO/SecArabMale/Flashed/Flashed",
 			Reload =
@@ -434,6 +444,7 @@ function Create(self)
 			
 			self.voiceSoundVariations = {Death = 20,
 			seriousDeath = 18,
+			flameDeath = 5,
 			Incapacitated = 13,
 			Suppressed = 34,
 			SuppressedByExplosion = 5,
@@ -449,6 +460,7 @@ function Create(self)
 			Exertion = 8,
 			seriousExertion = 4,
 			Pain = 15,
+			burnPain = 5,
 			Flashed = 5,
 			Reload = 32,
 			suppressedReload = 30,
@@ -489,6 +501,8 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/Death",
 		seriousDeath = 
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/SeriousDeath",
+		seriousDeath = 
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/FlameDeath",
 		Incapacitated =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/Incapacitated",
 		Suppressed =
@@ -519,6 +533,8 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Exertion/SeriousExertion",
 		Pain =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Pain/Pain",
+		burnPain =
+		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Pain/BurnPain",
 		Flashed =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Flashed/Flashed",
 		Reload =
@@ -568,6 +584,7 @@ function Create(self)
 		
 		self.voiceSoundVariations = {Death = 20,
 		seriousDeath = 15,
+		flameDeath = 7,
 		Incapacitated = 12,
 		Suppressed = 34,
 		SuppressedByExplosion = 5,
@@ -583,6 +600,7 @@ function Create(self)
 		Exertion = 8,
 		seriousExertion = 4,
 		Pain = 18,
+		burnPain = 5,
 		Flashed = 4,
 		Reload = 25,
 		suppressedReload = 29,

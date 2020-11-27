@@ -227,6 +227,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/Death",
 			seriousDeath = 
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/SeriousDeath",
+			flameDeath = 
+			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/FlameDeath",
 			Incapacitated =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/Incapacitated",
 			Suppressed =
@@ -255,6 +257,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/Exertion",
 			Pain =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Pain/Pain",
+			burnPain =
+			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Pain/BurnPain",
 			Flashed =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Flashed/Flashed",
 			Reload =
@@ -304,6 +308,7 @@ function Create(self)
 			
 			self.voiceSoundVariations = {Death = 25,
 			seriousDeath = 16,
+			flameDeath = 6,
 			Incapacitated = 11,
 			Suppressed = 45,
 			SuppressedByExplosion = 5,
@@ -318,6 +323,7 @@ function Create(self)
 			exhaleHeavy = 8,
 			Exertion = 20,
 			Pain = 15,
+			burnPain = 5,
 			Flashed = 5,
 			Reload = 28,
 			suppressedReload = 38,
@@ -352,6 +358,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/Death",
 			seriousDeath = 
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/SeriousDeath",
+			flameDeath = 
+			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/FlameDeath",
 			Incapacitated =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/Incapacitated",
 			Suppressed =
@@ -380,6 +388,8 @@ function Create(self)
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Exertion/Exertion",
 			Pain =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Pain/Pain",
+			burnPain =
+			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Pain/BurnPain",
 			Flashed =
 			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Flashed/Flashed",
 			Reload =
@@ -429,6 +439,7 @@ function Create(self)
 			
 			self.voiceSoundVariations = {Death = 30,
 			seriousDeath = 14,
+			flameDeath = 6,
 			Incapacitated = 16,
 			Suppressed = 47,
 			SuppressedByExplosion = 6,
@@ -443,6 +454,7 @@ function Create(self)
 			exhaleHeavy = 8,
 			Exertion = 30,
 			Pain = 17,
+			burnPain = 4,
 			Flashed = 5,
 			Reload = 39,
 			suppressedReload = 37,
@@ -480,6 +492,8 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/Death",
 		seriousDeath = 
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/SeriousDeath",
+		flameDeath = 
+		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/FlameDeath",
 		Incapacitated =
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/Incapacitated",
 		Suppressed =
@@ -508,6 +522,8 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Exertion/Exertion",
 		Pain =
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Pain/Pain",
+		burnPain =
+		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Pain/BurnPain",
 		Flashed =
 		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Flashed/Flashed",
 		Reload =
@@ -557,6 +573,7 @@ function Create(self)
 		
 		self.voiceSoundVariations = {Death = 32,
 		seriousDeath = 19,
+		flameDeath = 5,
 		Incapacitated = 10,
 		Suppressed = 42,
 		SuppressedByExplosion = 4,
@@ -571,6 +588,7 @@ function Create(self)
 		exhaleHeavy = 8,
 		Exertion = 28,
 		Pain = 25,
+		burnPain = 5,
 		Flashed = 11,
 		Reload = 30,
 		suppressedReload = 29,
