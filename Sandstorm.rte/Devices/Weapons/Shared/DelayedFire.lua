@@ -44,7 +44,7 @@ function Update(self)
 	end
 	self.lastAge = self.Age + 0
 	
-	if self:DoneReloading() then
+	if self:DoneReloading() or self:IsReloading() then
 		self.fireDelayTimer:Reset()
 	end
 
