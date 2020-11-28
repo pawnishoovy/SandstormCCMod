@@ -632,6 +632,11 @@ function Create(self)
 	self.healthUpdateTimer = Timer();
 	self.oldHealth = self.Health;
 	
+	-- chance upon any non-headshot death to be incapacitated for a while before really dying
+	self.incapacitationChance = 10;
+	
+	self.Burning = false;
+	
 	self.staminaUpdateTimer = Timer();
 	self.suppressionUpdateTimer = Timer();
 	
@@ -846,6 +851,11 @@ function Update(self)
 			self.voiceSound:SetPosition(self.Pos);
 		end
 	end
+	if self.burnLoop then
+		if self.burnLoop:IsBeingPlayed() then
+			self.burnLoop:SetPosition(self.Pos);
+		end
+	end
 	
 	if (self.Dying ~= true) then
 		
@@ -855,9 +865,11 @@ function Update(self)
 		
 		InsurgencyAIBehaviours.handleHealth(self);
 		
+		InsurgencyAIBehaviours.handleBurning(self);
+		
 		InsurgencyAIBehaviours.handleStaminaAndSuppression(self);
 		
-		SecurityAIBehaviours.handleAITargetLogic(self);
+		InsurgencyAIBehaviours.handleAITargetLogic(self);
 		
 		InsurgencyAIBehaviours.handleVoicelines(self);
 		
@@ -868,6 +880,8 @@ function Update(self)
 		InsurgencyAIBehaviours.handleMovement(self);
 	
 		InsurgencyAIBehaviours.handleHeadLoss(self);
+		
+		InsurgencyAIBehaviours.handleBurning(self);
 		
 		--InsurgencyAIBehaviours.handleDeadAirAndFalling(self);
 		
@@ -934,6 +948,12 @@ function Destroy(self)
 		if self.headGibSound then
 			if self.headGibSound:IsBeingPlayed() then
 				self.headGibSound:Stop(-1)
+			end
+		end
+		if self.burnLoop then
+			if self.burnLoop:IsBeingPlayed() then
+				self.burnLoop:Stop(-1)
+				self.soundEffect = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/End1.ogg", self.Pos, -1, 0, 130, 1, 400, false);
 			end
 		end
 		

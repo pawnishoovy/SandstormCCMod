@@ -466,7 +466,18 @@ function SecurityAIBehaviours.handleHealth(self)
 
 	if (healthTimerReady or wasLightlyInjured or wasInjured or wasHeavilyInjured) then
 		self.oldHealth = self.Health;
-		self.healthUpdateTimer:Reset();	
+		self.healthUpdateTimer:Reset();
+		
+		if self:NumberValueExists("Burn Pain") then
+			self:RemoveNumberValue("Burn Pain");
+			SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.burnPain, self.voiceSoundVariations.burnPain, 5, 2);
+		end
+		
+		if self:NumberValueExists("Death By Fire") then
+			SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.flameDeath, self.voiceSoundVariations.flameDeath, 20, 4);
+			self.incapacitated = true
+			self.incapacitationChance = 0;
+		end
 		
 		if wasHeavilyInjured then
 			self.Suppression = self.Suppression + 100;
@@ -523,13 +534,21 @@ function SecurityAIBehaviours.handleHealth(self)
 						if d < 300 then
 							local strength = SceneMan:CastStrengthSumRay(self.Pos, actor.Pos, 0, 128);
 							if strength < 500 and math.random(1, 100) < 65 then
-								actor:SetNumberValue("Sandstorm Friendly Down", 0)
+								if self:NumberValueExists("Death By Fire") then
+									actor:SetNumberValue("Sandstorm Friendly Down", 1)
+								else
+									actor:SetNumberValue("Sandstorm Friendly Down", 0)
+								end
 								break;  -- first come first serve
 							else
 								if IsAHuman(actor) and actor.Head then -- if it is a human check for head
 									local strength = SceneMan:CastStrengthSumRay(self.Pos, ToAHuman(actor).Head.Pos, 0, 128);	
 									if strength < 500 and math.random(1, 100) < 65 then		
+									if self:NumberValueExists("Death By Fire") then
+										actor:SetNumberValue("Sandstorm Friendly Down", 1)
+									else
 										actor:SetNumberValue("Sandstorm Friendly Down", 0)
+									end
 										break; -- first come first serve
 									end
 								end
@@ -576,10 +595,21 @@ function SecurityAIBehaviours.handleHealth(self)
 		if math.random(1,2) < 2 then
 			self.controller:SetState(Controller.WEAPON_DROP,true);
 		end
+	end	
+	
+end
+
+function SecurityAIBehaviours.handleBurning(self)
+
+	if self:NumberValueExists("Death By Fire") and self.Burning == false then
+		self.Burning = true;
+		self.soundEffect = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/Ignite1.ogg", self.Pos, -1, 0, 130, 1, 400, false);
 	end
-		
 	
-	
+	if self.Burning and (not self.burnLoop) then
+		self.burnLoop = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/Loop1.ogg", self.Pos, -1, 3, 130, 1, 400, false);
+	end	
+
 end
 
 function SecurityAIBehaviours.handleStaminaAndSuppression(self)
@@ -1025,6 +1055,10 @@ function SecurityAIBehaviours.handleDying(self)
 		self.Health = 1;
 		self.Status = 3;
 	else
+		if self.burnLoop and self.burnLoop:IsBeingPlayed() then
+			self.burnLoop:Stop(-1);
+			self.soundEffect = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/End1.ogg", self.Pos, -1, 0, 130, 1, 400, false);
+		end
 		if self.Head then
 			self.Head.Frame = self.baseHeadFrame + 1; -- (+1: eyes closed. rest in peace grunt)
 		end
@@ -1058,13 +1092,21 @@ function SecurityAIBehaviours.handleDying(self)
 					if d < 300 then
 						local strength = SceneMan:CastStrengthSumRay(self.Pos, actor.Pos, 0, 128);
 						if strength < 500 and math.random(1, 100) < 65 then
-							actor:SetNumberValue("Sandstorm Friendly Down", 0)
+							if self:NumberValueExists("Death By Fire") then
+								actor:SetNumberValue("Sandstorm Friendly Down", 1)
+							else
+								actor:SetNumberValue("Sandstorm Friendly Down", 0)
+							end
 							break;  -- first come first serve
 						else
 							if IsAHuman(actor) and actor.Head then -- if it is a human check for head
 								local strength = SceneMan:CastStrengthSumRay(self.Pos, ToAHuman(actor).Head.Pos, 0, 128);	
 								if strength < 500 and math.random(1, 100) < 65 then		
-									actor:SetNumberValue("Sandstorm Friendly Down", 0)
+									if self:NumberValueExists("Death By Fire") then
+										actor:SetNumberValue("Sandstorm Friendly Down", 1)
+									else
+										actor:SetNumberValue("Sandstorm Friendly Down", 0)
+									end
 									break; -- first come first serve
 								end
 							end
@@ -1083,7 +1125,7 @@ function SecurityAIBehaviours.handleDying(self)
 				self.ToSettle = false;
 				self.RestThreshold = -1;
 				self.dyingSoundPlayed = true;
-				if (math.random(1, 100) < 10) then
+				if (math.random(1, 100) < self.incapacitationChance) then
 					SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Incapacitated, self.voiceSoundVariations.Incapacitated, 14)
 					self.incapacitated = true
 				end

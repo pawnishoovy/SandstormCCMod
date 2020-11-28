@@ -1,24 +1,28 @@
+
 function Create(self)
 	self.origMass = self.Mass;
 	self.lastVel = 0;
 	
 	self.Frame = math.random(0, self.FrameCount - 1);
 end
+function OnAttach(self)
+	self.lighterSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CocktailMolotov/Sounds/LighterOpen.ogg", self.Pos, -1, 0, 130, 1, 450, false);
+end
 function Update(self)
-	if self.ID == self.RootID then
-		if self.thrown == false then
-			self.AngularVel = self.AngularVel - self.Vel.Magnitude * self.FlipFactor * math.random();
-			self.thrown = true;
+	if not self:IsAttached() and self.Live then
+		if not self.Thrown then
+			self.Thrown = true;
+			self.throwSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CocktailMolotov/Sounds/Throw.ogg", self.Pos, -1, 0, 130, 1, 450, false);
 		end
 		self.Mass = self.origMass + math.sqrt(self.lastVel);
 	else
-		self.thrown = false;
 		self.Mass = self.origMass;
 	end
 	if self.WoundCount > 1 then
 		self:Activate();
 	end
 	if not self.explosion and self:IsActivated() then
+		self.Live = true;
 		self.explosion = CreateMOSRotating("Sandstorm Cocktail Molotov Explosion")
 		self.flameArea = CreateMOSRotating("Sandstorm Cocktail Molotov Area")
 	end

@@ -501,7 +501,7 @@ function Create(self)
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/Death",
 		seriousDeath = 
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/SeriousDeath",
-		seriousDeath = 
+		flameDeath = 
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/FlameDeath",
 		Incapacitated =
 		self.RTE.."/Actors/Shared/Sounds/VO/SecArabFemale/Death/Incapacitated",
@@ -643,6 +643,11 @@ function Create(self)
 	
 	self.healthUpdateTimer = Timer();
 	self.oldHealth = self.Health;
+	
+	-- chance upon any non-headshot death to be incapacitated for a while before really dying
+	self.incapacitationChance = 10;
+	
+	self.Burning = false;
 	
 	self.staminaUpdateTimer = Timer();
 	self.suppressionUpdateTimer = Timer();
@@ -858,6 +863,11 @@ function Update(self)
 			self.voiceSound:SetPosition(self.Pos);
 		end
 	end
+	if self.burnLoop then
+		if self.burnLoop:IsBeingPlayed() then
+			self.burnLoop:SetPosition(self.Pos);
+		end
+	end
 	
 	if (self.Dying ~= true) then
 		
@@ -866,6 +876,8 @@ function Update(self)
 		SecurityAIBehaviours.handleMovement(self);
 		
 		SecurityAIBehaviours.handleHealth(self);
+		
+		SecurityAIBehaviours.handleBurning(self);
 		
 		SecurityAIBehaviours.handleStaminaAndSuppression(self);
 		
@@ -880,6 +892,8 @@ function Update(self)
 		SecurityAIBehaviours.handleMovement(self);
 	
 		SecurityAIBehaviours.handleHeadLoss(self);
+		
+		SecurityAIBehaviours.handleBurning(self);
 		
 		--SecurityAIBehaviours.handleDeadAirAndFalling(self);
 		
@@ -946,6 +960,12 @@ function Destroy(self)
 		if self.headGibSound then
 			if self.headGibSound:IsBeingPlayed() then
 				self.headGibSound:Stop(-1)
+			end
+		end
+		if self.burnLoop then
+			if self.burnLoop:IsBeingPlayed() then
+				self.burnLoop:Stop(-1)
+				self.soundEffect = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/End1.ogg", self.Pos, -1, 0, 130, 1, 400, false);
 			end
 		end
 		
