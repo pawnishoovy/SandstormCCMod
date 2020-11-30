@@ -8,6 +8,8 @@ function Create(self)
 	self.HeatOverheatThreshold = self.HeatMax * 0.9
 	self.HeatDamageAccumulated = 0
 	self.HeatDamageAccumulatedMax = 15
+	
+	-- TODO pre3 base this off actor's burstdamage
 	self.HeatDamage = 6
 	
 	self.HeatBurning = false
@@ -75,16 +77,16 @@ function Update(self)
 				local MOs = {self.parent.FGFoot, self.parent.BGFoot}
 				local particles = {"Flame Smoke 2"}
 				
-				if self.Heat > 15 then
+				if self.Heat > 25 then
 					table.insert(MOs, self.parent.FGLeg)
 					table.insert(MOs, self.parent.BGLeg)
 				end
-				if self.Heat > 35 then
+				if self.Heat > 60 then
 					table.insert(MOs, self.parent)
 					
 					table.insert(particles, "Explosion Smoke 1")
 				end
-				if self.Heat > 50 then
+				if self.Heat > 75 then
 					table.insert(MOs, self.parent.FGArm)
 					table.insert(MOs, self.parent.BGArm)
 					
@@ -92,7 +94,7 @@ function Update(self)
 					table.insert(particles, "Sandstorm Cocktail Molotov Flame")
 				end
 				
-				if self.Heat > 65 then
+				if self.Heat > 90 then
 					table.insert(MOs, self.parent.Head)
 					table.insert(particles, "Explosion Smoke 1")
 				end
