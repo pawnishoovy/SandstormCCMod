@@ -43,7 +43,7 @@ function Create(self)
 end
 function Update(self)
 	
-	PrimitiveMan:DrawCirclePrimitive(self.Pos, self.fuelRange, 5)
+	--PrimitiveMan:DrawCirclePrimitive(self.Pos, self.fuelRange, 5)
 	
 	if self.Age > self.burnTime then
 		self.ToDelete = true
@@ -169,7 +169,7 @@ function Update(self)
 				fuel.GFXDelay = math.random(self.GFXDelayMin, self.GFXDelayMax)
 			end
 			
-			PrimitiveMan:DrawCirclePrimitive(fuel.Pos, 13 - 10 * (1 - strength), 13) -- Debug draw
+			--PrimitiveMan:DrawCirclePrimitive(fuel.Pos, 13 - 10 * (1 - strength), 13) -- Debug draw
 		end
 	end
 	
@@ -187,7 +187,7 @@ function Update(self)
 					
 					--local terrCheck = SceneMan:CastStrengthRay(self.Pos, dist, 30, Vector(), 5, 0, SceneMan.SceneWrapsX)
 					--if terrCheck == false then
-					PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + dist,  147)
+					--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + dist,  147)
 					table.insert(self.actorsInRange, actor.UniqueID)
 					--else
 						--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + dist,  47)
@@ -221,7 +221,7 @@ function Update(self)
 				
 				local dist = SceneMan:ShortestDistance(fuel.Pos, actor.Pos, SceneMan.SceneWrapsX)
 				if dist.Magnitude <= range then
-					PrimitiveMan:DrawLinePrimitive(fuel.Pos, fuel.Pos + dist, 122)
+					--PrimitiveMan:DrawLinePrimitive(fuel.Pos, fuel.Pos + dist, 122)
 					if actor:NumberValueExists("ActorHeat") then
 						actor:SetNumberValue("ActorHeat", actor:GetNumberValue("ActorHeat") + self.burnRate * TimerMan.DeltaTimeSecs * (1 + math.pow(strength, 2)))
 					else
