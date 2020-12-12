@@ -8,8 +8,6 @@ function Create(self)
 	self.HeatOverheatThreshold = self.HeatMax * 0.9
 	self.HeatDamageAccumulated = 0
 	self.HeatDamageAccumulatedMax = 15
-	
-	-- TODO pre3 base this off actor's burstdamage
 	self.HeatDamage = 6
 	
 	self.HeatBurning = false
@@ -40,7 +38,7 @@ function Update(self)
 		self.Heat = self.parent:GetNumberValue("ActorHeat")
 		
 		self.Heat = math.min(self.Heat, self.HeatMax)
-		PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "HEAT = ".. math.floor(self.Heat), true, 0)
+		--PrimitiveMan:DrawTextPrimitive(self.Pos + Vector(-20, 20), "HEAT = ".. math.floor(self.Heat), true, 0)
 		
 		if self.Heat > self.HeatLast then
 			self.HeatDamageAccumulated = self.HeatDamageAccumulated + math.abs(self.Heat - self.HeatLast)
