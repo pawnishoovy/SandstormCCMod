@@ -99,24 +99,33 @@ function Update(self)
 		end
 	end
 	
-	-- Smoothing
-	local min_value = -math.pi;
-	local max_value = math.pi;
-	local value = self.RotAngle - self.lastRotAngle
-	local result;
-	local ret = 0
-	
-	local range = max_value - min_value;
-	if range <= 0 then
-		result = min_value;
-	else
-		ret = (value - min_value) % range;
-		if ret < 0 then ret = ret + range end
-		result = ret + min_value;
-	end
-	
-	self.lastRotAngle = self.RotAngle
-	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+    -- Smoothing
+    local min_value = -math.pi;
+    local max_value = math.pi;
+    local value = self.RotAngle - self.lastRotAngle
+    local result;
+    local ret = 0
+    
+    local range = max_value - min_value;
+    if range <= 0 then
+        result = min_value;
+    else
+        ret = (value - min_value) % range;
+        if ret < 0 then ret = ret + range end
+        result = ret + min_value;
+    end
+    
+    self.lastRotAngle = self.RotAngle
+    self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+    
+    if self.lastHFlipped ~= nil then
+        if self.lastHFlipped ~= self.HFlipped then
+            self.lastHFlipped = self.HFlipped
+            self.angVel = 0
+        end
+    else
+        self.lastHFlipped = self.HFlipped
+    end
 	
 	self.SharpLength = self.originalSharpLength * (0.9 + math.pow(math.min(self.FireTimer.ElapsedSimTimeMS / 250, 1), 2.0) * 0.1)
 	

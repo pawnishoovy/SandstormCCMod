@@ -119,24 +119,33 @@ function Update(self)
 	end
 	self.lastAge = self.Age + 0
 	
-	-- Smoothing
-	local min_value = -math.pi;
-	local max_value = math.pi;
-	local value = self.RotAngle - self.lastRotAngle
-	local result;
-	local ret = 0
-	
-	local range = max_value - min_value;
-	if range <= 0 then
-		result = min_value;
-	else
-		ret = (value - min_value) % range;
-		if ret < 0 then ret = ret + range end
-		result = ret + min_value;
-	end
-	
-	self.lastRotAngle = self.RotAngle
-	self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+    -- Smoothing
+    local min_value = -math.pi;
+    local max_value = math.pi;
+    local value = self.RotAngle - self.lastRotAngle
+    local result;
+    local ret = 0
+    
+    local range = max_value - min_value;
+    if range <= 0 then
+        result = min_value;
+    else
+        ret = (value - min_value) % range;
+        if ret < 0 then ret = ret + range end
+        result = ret + min_value;
+    end
+    
+    self.lastRotAngle = self.RotAngle
+    self.angVel = (result / TimerMan.DeltaTimeSecs) * self.FlipFactor
+    
+    if self.lastHFlipped ~= nil then
+        if self.lastHFlipped ~= self.HFlipped then
+            self.lastHFlipped = self.HFlipped
+            self.angVel = 0
+        end
+    else
+        self.lastHFlipped = self.HFlipped
+    end
 	
 	local sharpRecoil = (0.9 + math.pow(math.min(self.delayedFireTimer.ElapsedSimTimeMS / (250), 1), 2.0) * 0.1)
 	local sharpFocus = math.pow(math.min(self.cockTimer.ElapsedSimTimeMS / (self.cockDelay + self.cockedAimFocus), 1), 2)
