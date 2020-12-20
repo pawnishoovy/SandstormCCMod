@@ -641,7 +641,12 @@ function Update(self)
 		
 		self.SharpLength = math.max(self.originalSharpLength - (self.recoilStr * 3 + math.abs(recoilFinal)), 0)
 		
-		self.rotationTarget = self.rotationTarget + recoilFinal -- apply the recoil
+		--self.rotationTarget = self.rotationTarget + recoilFinal -- apply the recoil
+		if self.delayedFire then -- Rotation fix
+			self.rotation = recoilFinal + (self.angVel * 3)
+		else
+			self.rotationTarget = self.rotationTarget + recoilFinal -- apply the recoil
+		end
 		-- Progressive Recoil Update				
 		
 		self.rotation = (self.rotation + self.rotationTarget * TimerMan.DeltaTimeSecs * self.rotationSpeed) / (1 + TimerMan.DeltaTimeSecs * self.rotationSpeed)
