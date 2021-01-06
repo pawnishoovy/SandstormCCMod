@@ -8,9 +8,6 @@ from os import listdir
 from string import digits
 
 
-timesPrinted = 0
-
-
 def createWeaponSoundContainers(weaponsFolderPath):
 	blacklistedWeaponFolderNames = ("ColtPython Backup", "DEPRECATED")
 
@@ -20,10 +17,10 @@ def createWeaponSoundContainers(weaponsFolderPath):
 
 			# print(weaponFolderName, weaponFolderPath)
 
-			soundContainer =  getWeaponSoundContainer(weaponFolderName, weaponFolderPath, "CompliSoundV2")
+			soundContainer  = getWeaponSoundContainer(weaponFolderName, weaponFolderPath, "CompliSoundV2")
 			soundContainer += getWeaponSoundContainer(weaponFolderName, weaponFolderPath, "Sounds")
 
-			weaponIniInputPath = posixpath.join(weaponFolderPath, weaponFolderName).replace("\\", "/") + ".ini"
+			weaponIniInputPath = posixpath.join(weaponFolderPath, weaponFolderName) + ".ini"
 
 			with open(join("..", weaponIniInputPath), "r") as fileIn:
 				soundContainer += fileIn.read()
@@ -40,15 +37,12 @@ def createWeaponSoundContainers(weaponsFolderPath):
 
 
 def getWeaponSoundContainer(weaponFolderName, weaponFolderPath, soundFolderName):
-	global timesPrinted
-	
 	soundContainer = ""
 
 	wordsWithRestartOverlap = ("Reflection", "End")
 
 	for soundNameNoNum, soundNameCount in getSoundNames(weaponFolderPath, soundFolderName).items():
 		soundContainer += "AddSoundContainer = SoundContainer\n\tPresetName = "
-
 		soundContainer += soundNameNoNum + " " + weaponFolderName
 
 		soundContainer += "\n\tAttenuationStartDistance = "
@@ -62,11 +56,9 @@ def getWeaponSoundContainer(weaponFolderName, weaponFolderPath, soundFolderName)
 			soundContainer += "\n\tSoundOverlapMode = Restart"
 
 		for soundNameNum in range(1, soundNameCount + 1):
-			soundContainer += "\n\tAddSound = " + posixpath.join(weaponFolderPath, soundFolderName, soundNameNoNum) + str(soundNameNum) + ".ogg"
+			soundContainer += "\n\tAddSound = " + posixpath.join(weaponFolderPath, soundFolderName, soundNameNoNum).replace("\\", "/") + str(soundNameNum) + ".ogg"
 
 		soundContainer += "\n\n"
-
-		timesPrinted += 1
 
 	return soundContainer
 
@@ -78,7 +70,7 @@ def getSoundNames(weaponFolderPath, soundFolderName):
 	for soundName in listdir(soundNameFolderPath):
 		soundNamePath = join(soundNameFolderPath, soundName)
 		if os.path.isfile(soundNamePath):
-			soundName, fileExtension = os.path.splitext(soundName)
+			soundName, extension = os.path.splitext(soundName)
 			soundNameNoNum = soundName.rstrip(digits)
 			soundNames[soundNameNoNum] = soundNames.get(soundNameNoNum, 0) + 1
 
@@ -91,15 +83,27 @@ def createVOSoundContainers(actorsPath):
 	with open(join("..", actorsPath, "Shared.ini"), "r") as fileIn:
 		soundContainer += fileIn.read()
 
-	voiceOverFolderPath = join(actorsPath, "Shared/Sounds/VO")
-	voiceOverFolderInputPath = join("..", voiceOverFolderPath)
-	for voiceOverFactionName in listdir(voiceOverFolderInputPath):
-		voiceOverFactionNamePath = join(voiceOverFolderInputPath, voiceOverFactionName)
-		for voiceOverReactionFolderName in listdir(voiceOverFactionNamePath):
-			voiceOverReactionFolderPath = join(voiceOverFactionNamePath, voiceOverReactionFolderName)
-			for voiceOverReactionFileName in listdir(voiceOverReactionFolderPath):
-				voiceOverReactionFilePath = join(voiceOverReactionFolderPath, voiceOverReactionFileName)
-				# print(voiceOverReactionFileName, voiceOverReactionFilePath)
+	voiceOverFolderPath = join("..", actorsPath, "Shared/Sounds/VO")
+	for faction in listdir(voiceOverFolderPath):
+		factionPath = join(voiceOverFolderPath, faction)
+
+		soundNames = {}
+		for voiceOverReactionFolderName in listdir(factionPath):
+			voiceOverReactionFolderPath = join(factionPath, voiceOverReactionFolderName)
+			for soundName in listdir(voiceOverReactionFolderPath):
+				voiceOverReactionFilePath = join(voiceOverReactionFolderPath, soundName).replace("\\", "/")
+				if os.path.isfile(voiceOverReactionFilePath):
+					soundName, extension = os.path.splitext(soundName)
+					soundNameNoNum = soundName.rstrip(digits)
+					soundNames[soundNameNoNum] = soundNames.get(soundNameNoNum, 0) + 1
+
+		for soundNameNoNum, soundNameCount in soundNames.items():
+			soundContainer += "\n\nAddSoundContainer = SoundContainer"
+			soundContainer += "\n\tPresetName = " + soundNameNoNum + " " + faction
+			soundContainer += "\n\tAttenuationStartDistance = 200"
+
+			for soundNameNum in range(1, soundNameCount + 1):
+				soundContainer += "\n\tAddSound = " + posixpath.join(actorsPath, "Shared/Sounds/VO", soundNameNoNum).replace("\\", "/") + str(soundNameNum) + ".ogg"
 
 	voiceOverOutputPath = posixpath.join("Output", actorsPath, "Shared.ini")
 
@@ -112,54 +116,8 @@ def createVOSoundContainers(actorsPath):
 		fileOut.write(soundContainer)
 
 
-def getVOSoundContainer(weaponFolderName, weaponFolderPath, soundFolderName):
-	global timesPrinted
-	
-	soundContainer = ""
-
-	wordsWithRestartOverlap = ("Reflection", "End")
-
-	for soundNameNoNum, soundNameCount in getSoundNames(weaponFolderPath, soundFolderName).items():
-		soundContainer += "AddSoundContainer = SoundContainer\n\tPresetName = "
-
-		soundContainer += soundNameNoNum + " " + weaponFolderName
-
-		soundContainer += "\n\tAttenuationStartDistance = "
-
-		if soundFolderName == "CompliSoundV2":
-			soundContainer += "250"
-		else:
-			soundContainer += "170"
-
-		if any(word in soundNameNoNum for word in wordsWithRestartOverlap):
-			soundContainer += "\n\tSoundOverlapMode = Restart"
-
-		for soundNameNum in range(1, soundNameCount + 1):
-			soundContainer += "\n\tAddSound = " + posixpath.join(weaponFolderPath, soundFolderName, soundNameNoNum) + str(soundNameNum) + ".ogg"
-
-		soundContainer += "\n\n"
-
-		timesPrinted += 1
-
-	return soundContainer
-
-
-# def getVONames(weaponFolderPath, soundFolderName):
-# 	soundNames = {}
-
-# 	soundNameFolderPath = join("..", weaponFolderPath, soundFolderName)
-# 	for soundName in listdir(soundNameFolderPath):
-# 		soundNamePath = join(soundNameFolderPath, soundName)
-# 		if os.path.isfile(soundNamePath):
-# 			soundName, fileExtension = os.path.splitext(soundName)
-# 			soundNameNoNum = soundName.rstrip(digits)
-# 			soundNames[soundNameNoNum] = soundNames.get(soundNameNoNum, 0) + 1
-
-# 	return soundNames
-
-
 createWeaponSoundContainers(weaponsFolderPath="SandstormInsurgency.rte/Devices/Weapons/Handheld")
-# createWeaponSoundContainers(weaponsFolderPath="SandstormSecurity.rte/Devices/Weapons/Handheld")
-# createVOSoundContainers(actorsPath="SandstormInsurgency.rte/Actors")
-# createVOSoundContainers(actorsPath="SandstormSecurity.rte/Actors")
-print("Conversions: {}".format(timesPrinted))
+createWeaponSoundContainers(weaponsFolderPath="SandstormSecurity.rte/Devices/Weapons/Handheld")
+createVOSoundContainers(actorsPath="SandstormInsurgency.rte/Actors")
+createVOSoundContainers(actorsPath="SandstormSecurity.rte/Actors")
+print("Converting done.")
