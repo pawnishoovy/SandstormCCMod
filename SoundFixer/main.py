@@ -2,7 +2,7 @@
 # 3. 
 
 
-import os, posixpath
+import os, posixpath, pathlib
 from os.path import join
 from os import listdir
 from string import digits
@@ -119,8 +119,52 @@ def createVOSoundContainers(actorsPath):
 		fileOut.write(soundContainer)
 
 
-createWeaponSoundContainers(weaponsFolderPath="SandstormInsurgency.rte/Devices/Weapons/Handheld")
-createWeaponSoundContainers(weaponsFolderPath="SandstormSecurity.rte/Devices/Weapons/Handheld")
-createVOSoundContainers(actorsPath="SandstormInsurgency.rte/Actors")
-createVOSoundContainers(actorsPath="SandstormSecurity.rte/Actors")
+def createSandstormSoundContainers(folder1, foo):
+	folder2 = posixpath.join(folder1, foo)
+
+	sounds = {}
+	for relativeSoundFolder, subfolders, soundFiles in os.walk(posixpath.join("..", folder2)):
+		p = pathlib.Path(relativeSoundFolder)
+		soundFolder = pathlib.Path(*p.parts[2:])
+
+		for soundNameFull in soundFiles:
+			soundName, extension = os.path.splitext(soundNameFull)
+			soundNameNoNum = soundName.rstrip(digits)
+			key = str(soundFolder / soundNameNoNum)
+			sounds[key] = sounds.get(key, 0) + 1
+
+	soundContainer = ""
+
+	readSharedIniPath = posixpath.join("..", folder1, "Shared.ini")
+	if os.path.isfile(readSharedIniPath):
+		with open(readSharedIniPath, "r") as fileIn:
+			soundContainer += fileIn.read()
+
+	for path, soundCount in sounds.items():
+		soundContainer += "\n\nAddSoundContainer = SoundContainer"
+		soundContainer += "\n\tPresetName = " + path.replace("\\", "")
+		soundContainer += "\n\tAttenuationStartDistance = 200"
+
+		for soundNum in range(1, soundCount + 1):
+			soundContainer += "\n\tAddSound = " + path.replace("\\", "/") + str(soundNum) + ".ogg"
+
+	outputPath = posixpath.join("Output", folder1, "Shared.ini")
+
+	try:
+		os.makedirs(os.path.dirname(outputPath))
+	except FileExistsError:
+		pass
+
+	with open(outputPath, "w") as fileOut:
+		fileOut.write(soundContainer)
+
+
+createWeaponSoundContainers("SandstormInsurgency.rte/Devices/Weapons/Handheld")
+createWeaponSoundContainers("SandstormSecurity.rte/Devices/Weapons/Handheld")
+createVOSoundContainers("SandstormInsurgency.rte/Actors")
+createVOSoundContainers("SandstormSecurity.rte/Actors")
+createSandstormSoundContainers("Sandstorm.rte/Actors", "Shared/Sounds")
+createSandstormSoundContainers("Sandstorm.rte/Effects", "Sounds")
+createSandstormSoundContainers("Sandstorm.rte/Devices", "Weapons/Shared/Sounds")
+
 print("Converting done.")
