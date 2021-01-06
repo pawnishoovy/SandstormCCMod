@@ -1,0 +1,24 @@
+all definitions should go into SandstormSecurity.rte\Actors\Shared.ini
+
+one definition per sound name, i.e.
+
+SuppressedReload
+
+Reload
+
+Pain
+
+Death
+
+SeriousDeath
+
+
+SUFFIX: initial folder name, so either SecAmericanMale, SecArabFemale, SecArabMale
+
+i.e.
+
+Reload SecAmericanMale
+
+Death SecArabMale
+
+etc.

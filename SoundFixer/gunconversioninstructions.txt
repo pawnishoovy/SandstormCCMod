@@ -1,0 +1,68 @@
+SandstormSecurity.rte\Devices\Weapons\Handheld holds all the gun folders
+
+every single gun folder has the same name as the .ini, and the same name as the internal name used for definitions
+
+i.e.
+
+SandstormSecurity.rte\Devices\Weapons\Handheld\M3MAAWS
+
+M3MAAWS.ini
+
+Magazine M3MAAWS
+
+
+
+every single gun folder has two folders inside: CompliSoundV2, and Sounds
+
+every single sound name needs its own SoundContainer
+
+i.e.
+
+Add
+
+Bass
+
+Mech
+
+AddStart
+
+BassStart
+
+MagIn
+
+MagOut
+
+etc...
+
+
+
+MOST soundcontainers in CompliSoundV2 need to look like this:
+
+AddSoundContainer = SoundContainer
+	PresetName = Pre Judge
+	AttenuationStartDistance = 250
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/Pre1.ogg
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/Pre2.ogg
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/Pre3.ogg
+
+that is to say, nothing special except 250 attenuation
+
+EXCEPTION: all sounds with:
+
+-Reflection
+-End
+
+in the name need to look like this:
+
+AddSoundContainer = SoundContainer
+	PresetName = ManualReflection Judge
+	AttenuationStartDistance = 250
+	SoundOverlapMode = Restart
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/ManualReflection1.ogg
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/ManualReflection2.ogg
+	AddSound = Heat.rte/Devices/Weapons/Handheld/Judge/CompliSound/ManualReflection3.ogg
+
+(key detail: Restart overlap mode)
+
+all sounds in Sounds should be normal except for 170 attenuation
+
