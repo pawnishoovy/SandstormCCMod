@@ -95,15 +95,18 @@ def createVOSoundContainers(actorsPath):
 				if os.path.isfile(voiceOverReactionFilePath):
 					soundName, extension = os.path.splitext(soundName)
 					soundNameNoNum = soundName.rstrip(digits)
-					soundNames[soundNameNoNum] = soundNames.get(soundNameNoNum, 0) + 1
+					if not soundNameNoNum in soundNames:
+						soundNames[soundNameNoNum] = {"soundNameCount": 1, "folder": voiceOverReactionFolderName}
+					else:
+						soundNames[soundNameNoNum]["soundNameCount"] = soundNames[soundNameNoNum]["soundNameCount"] + 1
 
-		for soundNameNoNum, soundNameCount in soundNames.items():
+		for soundNameNoNum, values in soundNames.items():
 			soundContainer += "\n\nAddSoundContainer = SoundContainer"
 			soundContainer += "\n\tPresetName = " + soundNameNoNum + " " + faction
 			soundContainer += "\n\tAttenuationStartDistance = 200"
 
-			for soundNameNum in range(1, soundNameCount + 1):
-				soundContainer += "\n\tAddSound = " + posixpath.join(actorsPath, "Shared/Sounds/VO", soundNameNoNum).replace("\\", "/") + str(soundNameNum) + ".ogg"
+			for soundNameNum in range(1, values["soundNameCount"] + 1):
+				soundContainer += "\n\tAddSound = " + posixpath.join(actorsPath, "Shared/Sounds/VO", faction, values["folder"], soundNameNoNum).replace("\\", "/") + str(soundNameNum) + ".ogg"
 
 	voiceOverOutputPath = posixpath.join("Output", actorsPath, "Shared.ini")
 
