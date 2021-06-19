@@ -3,8 +3,7 @@ function Create(self)
 
 	self.playSound = true;	
 
-	self.Hit = {["Variations"] = 8,
-	["Path"] = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/LargeShell/Hit"};
+	self.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsCasingLargeShellHit", "Sandstorm.rte");
 	
 end
 
@@ -14,7 +13,7 @@ function OnCollideWithTerrain(self, terrainID)
 	
 		self.playSound = false;
 	
-		self.hitSound = AudioMan:PlaySound(self.Hit.Path .. math.random(1, self.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+		self.Hit:Play(self.Pos);
 
 	end
 

@@ -10,73 +10,43 @@ function Create(self)
 	
 	self.Rolls = 0;
 	
-	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Grenade/"
-	
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.concreteHit.Hard = {["Variations"] = 9,
-	["Path"] = dir.."Flash/Concrete/HitHardConcrete"};
-	self.concreteHit.Medium = {["Variations"] = 9,
-	["Path"] = dir.."Flash/Concrete/HitMediumConcrete"};
-	self.concreteHit.Soft = {["Variations"] = 9,
-	["Path"] = dir.."Flash/Concrete/HitSoftConcrete"};
+	self.concreteHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashConcreteHitHardConcrete", "Sandstorm.rte");
+	self.concreteHit.Medium = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashConcreteHitMediumConcrete", "Sandstorm.rte");
+	self.concreteHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashConcreteHitSoftConcrete", "Sandstorm.rte");
 	
-	self.concreteRoll = {["Variations"] = 8,
-	["Path"] = dir.."Frag/Concrete/RollConcrete"};
+	self.concreteRoll = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFragConcreteRollConcrete", "Sandstorm.rte");
 	
 	--
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.dirtHit.Hard = {["Variations"] = 8,
-	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
-	self.dirtHit.Medium = {["Variations"] = 8,
-	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
-	self.dirtHit.Soft = {["Variations"] = 9,
-	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
+	self.dirtHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashDirtHitHardDirt", "Sandstorm.rte");
+	self.dirtHit.Medium = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashDirtHitMediumDirt", "Sandstorm.rte");
+	self.dirtHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashDirtHitSoftDirt", "Sandstorm.rte");
 	
-	self.dirtRoll = {["Variations"] = 9,
-	["Path"] = dir.."Frag/Dirt/RollDirt"};
+	self.dirtRoll = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFragDirtRollDirt", "Sandstorm.rte");
 	
 	--
-	--[[
+	
 	self.sandHit = {["IDs"] = {[6] = "Exists", [8] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.sandHit.Hard = {["Variations"] = 6,
-	["Path"] = dir.."Frag/Sand/HitHardSand"};
-	self.sandHit.Medium = {["Variations"] = 6,
-	["Path"] = dir.."Frag/Sand/HitMediumSand"};
-	self.sandHit.Soft = {["Variations"] = 6,
-	["Path"] = dir.."Frag/Sand/HitSoftSand"};
+	self.sandHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSandHitHardSand", "Sandstorm.rte");
+	self.sandHit.Medium = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSandHitMediumSand", "Sandstorm.rte");
+	self.sandHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSandHitSoftSand", "Sandstorm.rte");
 	
-	self.sandRoll = {["Variations"] = 6,
-	["Path"] = dir.."Frag/Sand/RollSand"};]]
-	
-	self.sandHit = {["IDs"] = {[8] = "Exists"},
-	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.sandHit.Hard = {["Variations"] = 8,
-	["Path"] = dir.."Flash/Dirt/HitHardDirt"};
-	self.sandHit.Medium = {["Variations"] = 8,
-	["Path"] = dir.."Flash/Dirt/HitMediumDirt"};
-	self.sandHit.Soft = {["Variations"] = 8,
-	["Path"] = dir.."Flash/Dirt/HitSoftDirt"};
-	
-	self.sandRoll = {["Variations"] = 9,
-	["Path"] = dir.."Frag/Dirt/RollDirt"};
+	self.sandRoll = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFragSandRollSand", "Sandstorm.rte");
 	
 	--
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hard"] = nil, ["Medium"] = nil, ["Soft"] = nil};
-	self.solidMetalHit.Hard = {["Variations"] = 5,
-	["Path"] = dir.."Flash/SolidMetal/HitHardSolidMetal"};
-	self.solidMetalHit.Medium = {["Variations"] = 4,
-	["Path"] = dir.."Flash/SolidMetal/HitMediumSolidMetal"};
-	self.solidMetalHit.Soft = {["Variations"] = 8,
-	["Path"] = dir.."Flash/SolidMetal/HitSoftSolidMetal"};
+	self.solidMetalHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSolidMetalHitHardSolidMetal", "SolidMetalstorm.rte");
+	self.solidMetalHit.Medium = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSolidMetalHitMediumSolidMetal", "SolidMetalstorm.rte");
+	self.solidMetalHit.Soft = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFlashSolidMetalHitSoftSolidMetal", "SolidMetalstorm.rte");
 	
-	self.solidMetalRoll = {["Variations"] = 10,
-	["Path"] = dir.."Frag/SolidMetal/RollSolidMetal"};
+	self.solidMetalRoll = CreateSoundContainer("DevicesWeaponsSharedSoundsGrenadeFragSolidMetalRollSolidMetal", "SolidMetalstorm.rte");
 	
 	self.frm = 0
 end
@@ -89,52 +59,52 @@ function OnCollideWithTerrain(self, terrainID)
 		self.impactSoundAllowed = false;
 		if self.workingTravelImpulse.Magnitude > 40 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hard.Path .. math.random(1, self.dirtHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.dirtHit.Soft:Play(self.Pos);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Hard.Path .. math.random(1, self.sandHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.sandHit.Soft:Play(self.Pos);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Soft:Play(self.Pos);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hard.Path .. math.random(1, self.solidMetalHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.solidMetalHit.Soft:Play(self.Pos);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hard.Path .. math.random(1, self.concreteHit.Hard.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Soft:Play(self.Pos);
 			end
 		elseif self.workingTravelImpulse.Magnitude > 20 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Medium.Path .. math.random(1, self.dirtHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.dirtHit.Medium:Play(self.Pos);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Medium.Path .. math.random(1, self.sandHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.sandHit.Medium:Play(self.Pos);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Medium:Play(self.Pos);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Medium.Path .. math.random(1, self.solidMetalHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.solidMetalHit.Medium:Play(self.Pos);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Medium.Path .. math.random(1, self.concreteHit.Medium.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Medium:Play(self.Pos);
 			end
 		elseif self.workingTravelImpulse.Magnitude > 5 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Soft.Path .. math.random(1, self.dirtHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.dirtHit.Soft:Play(self.Pos);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Soft.Path .. math.random(1, self.sandHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.sandHit.Soft:Play(self.Pos);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Soft:Play(self.Pos);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Soft.Path .. math.random(1, self.solidMetalHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.solidMetalHit.Soft:Play(self.Pos);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Soft.Path .. math.random(1, self.concreteHit.Soft.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Soft:Play(self.Pos);
 			end
 		elseif self.Rolls < 2 then-- roll
 			self.Rolls = self.Rolls + 1;
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.dirtRoll.Path .. math.random(1, self.dirtRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.dirtRoll:Play(self.Pos);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.sandRoll.Path .. math.random(1, self.sandRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.sandRoll:Play(self.Pos);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteRoll:Play(self.Pos);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.rollSound = AudioMan:PlaySound(self.solidMetalRoll.Path .. math.random(1, self.solidMetalRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.solidMetalRoll:Play(self.Pos);
 			else -- default to concrete
-				self.rollSound = AudioMan:PlaySound(self.concreteRoll.Path .. math.random(1, self.concreteRoll.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteRoll:Play(self.Pos);
 			end
 		end
 	end

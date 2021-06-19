@@ -1,9 +1,7 @@
 
 function Create(self)
-
-	self.baseRTE = "Sandstorm.rte";
 	
-	-- Gear Light Armor
+	-- Gear Heavy Armor
 	-- less gibs, more damage, more realistic deaths
 	local woundLimitMultiplier = 1.5
 	local woundDamageMultiplier = 1.25
@@ -14,35 +12,23 @@ function Create(self)
 	end
 	
 	self.movementSounds = {
-	Land = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Land/Land",
-	Jump = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Jump/Jump",
-	Crawl = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Crawl/Crawl",
-	Sprint = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Prone/Prone",
-	Crouch = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Crouch/Crouch",
-	Stand = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Stand/Stand",
-	Throw = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Throw/Throw",
-	throwStart = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/ThrowStart/ThrowStart",
-	Fall = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Fall/Fall",
-	walkPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Walk/Pre",
-	walkPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Walk/Post",
-	sprintPre = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Sprint/Pre",
-	sprintPost = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/Gear/Heavy/Sprint/Post",
-	Impact = 0,};
+	Land = CreateSoundContainer("Gear Heavy Land", "Sandstorm.rte"),
+	Jump = CreateSoundContainer("Gear Heavy Jump", "Sandstorm.rte"),
+	Crouch = CreateSoundContainer("Gear Heavy Crouch", "Sandstorm.rte"),
+	Stand = CreateSoundContainer("Gear Heavy Stand", "Sandstorm.rte"),
+	Step = CreateSoundContainer("Gear Heavy Walk", "Sandstorm.rte"),
+	Prone = CreateSoundContainer("Gear Heavy Prone", "Sandstorm.rte"),
+	Crawl = CreateSoundContainer("Gear Heavy Crawl", "Sandstorm.rte"),
+	Throw = CreateSoundContainer("Gear Heavy Throw", "Sandstorm.rte"),
+	throwStart = CreateSoundContainer("Gear Heavy ThrowStart", "Sandstorm.rte"),
+	Fall = CreateSoundContainer("Gear Heavy Fall", "Sandstorm.rte")};
 	
-	self.movementSoundVariations = {Land = 5,
-	Jump = 5,
-	Impact = 5,
-	Crawl = 5,
-	Sprint = 5,
-	Crouch = 5,
-	Stand = 5,
-	Throw = 4,
-	throwStart = 4,
-	Fall = 5,
-	walkPre = 5,
-	walkPost = 5,
-	sprintPre = 5,
-	sprintPost = 5};
+	self.walkSound = CreateSoundContainer("Gear Heavy Walk", "Sandstorm.rte")
+	self.sprintSound = CreateSoundContainer("Gear Heavy Sprint", "Sandstorm.rte")	
+	
+	self.StrideSound = CreateSoundContainer("Gear Heavy Walk", "Sandstorm.rte")
+	self.DeviceSwitchSound = CreateSoundContainer("Gear Heavy DeviceSwitch", "Sandstorm.rte")
+	self.BodyHitSound = CreateSoundContainer("Gear Heavy TerrainImpact", "Sandstorm.rte")
 	
 	self.sprintMultiplier = 1.2;
 	

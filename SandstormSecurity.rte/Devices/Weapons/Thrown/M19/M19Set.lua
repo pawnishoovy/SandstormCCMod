@@ -12,33 +12,27 @@ function Create(self)
 	self.checkDelay = 1000;
 	self.checkI = 0
 	
-	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Bomb/"
-	
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hit"] = nil};
-	self.concreteHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M19/ImpactConcrete"};
+	self.concreteHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactConcrete", "Sandstorm.rte");
 	
 	--
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hit"] = nil};
-	self.dirtHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M19/ImpactDirt"};
+	self.dirtHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactDirt", "Sandstorm.rte");
 	
 	--
 	
 	self.sandHit = {["IDs"] = {[8] = "Exists"},
 	["Hit"] = nil};
-	self.sandHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M19/ImpactSand"};
+	self.sandHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactSand", "Sandstorm.rte");
 	
 	--
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hit"] = nil};
-	self.solidMetalHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M19/ImpactSolidMetal"};
+	self.solidMetalHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactSolidMetal", "Sandstorm.rte");
 	
 end
 
@@ -50,15 +44,15 @@ function OnCollideWithTerrain(self, terrainID)
 		self.impactSoundAllowed = false;
 		if self.workingTravelImpulse.Magnitude > 5 then
 			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.dirtHit.Hit:Play(self.Pos);
 			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.sandHit.Hit:Play(self.Pos);
 			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Hit:Play(self.Pos);
 			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.solidMetalHit.Hit:Play(self.Pos);
 			else -- default to concrete
-				self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+				self.concreteHit.Hit:Play(self.Pos);
 			end
 		end
 	end

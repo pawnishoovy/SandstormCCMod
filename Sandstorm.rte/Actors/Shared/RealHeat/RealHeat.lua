@@ -1,6 +1,12 @@
 function Create(self)
 	self.parentSet = false;
 	
+	self.singeSound = CreateSoundContainer("RealHeat Singe", "Sandstorm.rte");
+	
+	self.igniteSound = CreateSoundContainer("RealHeat Ignite", "Sandstorm.rte");
+	self.loopSound = CreateSoundContainer("RealHeat Loop", "Sandstorm.rte");
+	self.endSound = CreateSoundContainer("RealHeat End", "Sandstorm.rte");
+	
 	self.Heat = 0
 	self.HeatMax = 100
 	self.HeatLast = 0
@@ -21,6 +27,12 @@ function Create(self)
 	self.HeatDissipateTimer = Timer()
 end
 function Update(self)
+
+	self.singeSound.Pos = self.Pos;
+	self.igniteSound.Pos = self.Pos;
+	self.loopSound.Pos = self.Pos;
+	self.endSound.Pos = self.Pos;
+
 	--PrimitiveMan:DrawCirclePrimitive(self.Pos, 13, 162)
 	
 	if not self:IsAttached() then
@@ -56,16 +68,18 @@ function Update(self)
 				self.parent.Health = self.parent.Health - 1.5 * TimerMan.DeltaTimeSecs
 			elseif self.Heat > self.HeatOverheatThreshold then -- Overheat instakill
 				self.parent:SetNumberValue("Death By Fire", self.Heat)
+				self.igniteSound:Play(self.Pos);
+				self.loopSound:Play(self.Pos);
 				self.HeatBurning = true
 			elseif self.HeatDamageAccumulated > self.HeatDamageAccumulatedMax then
 				self.parent.Health = self.parent.Health - (self.HeatDamageAccumulated / self.HeatDamageAccumulatedMax) * self.HeatDamage
+				self.singeSound:Play(self.Pos);
 				self.HeatDamageAccumulated = 0
 				
 				if self.parent.Health < 1 or self.parent.Status == Actor.DEAD or self.parent.Status == Actor.DYING then
 					self.parent:SetNumberValue("Death By Fire", self.Heat)
 				end
 				
-				self.parent:SetNumberValue("Burn Pain", self.Heat)
 				self.parent:FlashWhite(30)
 			end
 		end
@@ -130,5 +144,13 @@ function Update(self)
 		end
 	else
 		self.ToDelete = true
+	end
+end
+
+function Destroy(self)
+
+	if self.loopSound:IsBeingPlayed() then
+		self.loopSound:Stop(-1);
+		self.endSound:Play(self.Pos);
 	end
 end

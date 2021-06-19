@@ -24,34 +24,28 @@ function Create(self)
 	
 	-- for planting sounds
 	-- impact sounds when thrown are done on M112Set.lua
-	
-	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Bomb/"
-	
+
 	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
 	["Hit"] = nil};
-	self.concreteHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactConcrete"};
+	self.concreteHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactConcrete", "Sandstorm.rte");
 	
 	--
 	
 	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
 	["Hit"] = nil};
-	self.dirtHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactDirt"};
+	self.dirtHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactDirt", "Sandstorm.rte");
 	
 	--
 	
 	self.sandHit = {["IDs"] = {[8] = "Exists"},
 	["Hit"] = nil};
-	self.sandHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactSand"};
+	self.sandHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactSand", "Sandstorm.rte");
 	
 	--
 	
 	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
 	["Hit"] = nil};
-	self.solidMetalHit.Hit = {["Variations"] = 3,
-	["Path"] = dir.."M112/ImpactSolidMetal"};	
+	self.solidMetalHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactSolidMetal", "Sandstorm.rte");
 	
 end
 

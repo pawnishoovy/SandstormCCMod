@@ -4,35 +4,37 @@ function Create(self)
 	
 	self.impulse = Vector()
 	
-	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Casing/"
-	local name = "LargeCaliber"
+	local type = "Large Caliber"
 	
-	self.ConcreteHit = {["Variations"] = 10,
-	["Path"] = dir..name.."/Concrete/HitConcrete"};
-	
-	self.ConcreteRoll = {["Variations"] = 10,
-	["Path"] = dir..name.."/Concrete/RollConcrete"};
-	
-	--
-	
-	self.DirtHit = {["Variations"] = 10,
-	["Path"] = dir..name.."/Dirt/HitDirt"};
-	
-	self.DirtRoll = {["Variations"] = 10,
-	["Path"] = dir..name.."/Dirt/RollDirt"};
-	
-	--
-	
-	self.SolidMetalHit = {["Variations"] = 10,
-	["Path"] = dir..name.."/SolidMetal/HitSolidMetal"};
-	
-	self.SolidMetalRoll = {["Variations"] = 10,
-	["Path"] = dir..name.."/SolidMetal/RollSolidMetal"};
-	
-	--
-	
-	self.SandHit = {["Variations"] = 10,
-	["Path"] = dir..name.."/Sand/HitSand"};
+	self.Sounds = {
+	Hit = {[12] = CreateSoundContainer("Casing " .. type .. " Hit Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Casing " .. type .. " Hit Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Casing " .. type .. " Hit Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Casing " .. type .. " Hit Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Casing " .. type .. " Hit Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Casing " .. type .. " Hit Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Casing " .. type .. " Hit Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Casing " .. type .. " Hit Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Casing " .. type .. " Hit Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Casing " .. type .. " Hit SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Casing " .. type .. " Hit SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Casing " .. type .. " Hit SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Casing " .. type .. " Hit SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Casing " .. type .. " Hit SolidMetal", "Sandstorm.rte")},
+	Roll = {[12] = CreateSoundContainer("Casing " .. type .. " Roll Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Casing " .. type .. " Roll Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Casing " .. type .. " Roll Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Casing " .. type .. " Roll Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Casing " .. type .. " Roll Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Casing " .. type .. " Roll Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Casing " .. type .. " Roll Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Casing " .. type .. " Hit Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Casing " .. type .. " Hit Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Casing " .. type .. " Roll SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Casing " .. type .. " Roll SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Casing " .. type .. " Roll SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Casing " .. type .. " Roll SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Casing " .. type .. " Roll SolidMetal", "Sandstorm.rte")}}
 end
 
 function Update(self)
@@ -58,18 +60,19 @@ function OnCollideWithTerrain(self, terrainID)
 	end
 	
 	if playSound then
-		local sound = self.ConcreteHit
-		if string.find(material.PresetName,"Concrete") or string.find(material.PresetName,"Rock") or string.find(material.PresetName,"Glass") then
-			sound = (roll and self.ConcreteRoll or self.ConcreteHit)
-		elseif string.find(material.PresetName,"Dirt") or string.find(material.PresetName,"Soil") or string.find(material.PresetName,"Flesh") or string.find(material.PresetName,"Bone") or string.find(material.PresetName,"Grass") then
-			sound = (roll and self.DirtRoll or self.DirtHit)
-		elseif string.find(material.PresetName,"Sand") then
-			sound = self.SandHit
-		elseif string.find(material.PresetName,"Metal") or string.find(material.PresetName,"Stuff") then
-			sound = (roll and self.SolidMetalRoll or self.SolidMetalHit)
+		if roll then
+			if self.Sounds.Roll[terrainID] ~= nil then
+				self.Sounds.Roll[terrainID]:Play(self.Pos);
+			else
+				self.Sounds.Roll[12]:Play(self.Pos); -- default concrete
+			end
+		else
+			if self.Sounds.Hit[terrainID] ~= nil then
+				self.Sounds.Hit[terrainID]:Play(self.Pos);
+			else
+				self.Sounds.Hit[12]:Play(self.Pos); -- default concrete
+			end
 		end
-		
-		AudioMan:PlaySound(sound.Path .. math.random(1, sound.Variations) .. ".ogg", self.Pos, -1, 0, 15, 1, 200, false);
 	end
 	--print(self.impulse.Magnitude)
 end
