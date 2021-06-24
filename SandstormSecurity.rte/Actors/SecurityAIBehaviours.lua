@@ -157,42 +157,38 @@ function SecurityAIBehaviours.handleLiveAirAndFalling(self)
 		end
 	end
 	
-	if (self.wasInAir and self.Vel.Y < 10) then
-		self.altitude = SceneMan:FindAltitude(self.Pos, 100, 3);
-		if self.altitude < 25 then
-			--self.wasInAir = false;
-			if self.Status == 0 then
-				-- SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
-				-- if self.footPixel ~= 0 then
-					-- if self.terrainProneSounds[self.footPixel] ~= nil then
-						-- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
+	-- if (self.wasInAir and self.Vel.Y < 10) then
+		-- self.altitude = SceneMan:FindAltitude(self.Pos, 100, 3);
+		-- if self.altitude < 25 then
+			-- --self.wasInAir = false;
+			-- if self.Status == 0 then
+				-- -- SecurityAIBehaviours.createSoundEffect(self, self.movementSounds.Land, self.movementSoundVariations.Land);
+				-- -- if self.footPixel ~= 0 then
+					-- -- if self.terrainProneSounds[self.footPixel] ~= nil then
+						-- -- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[self.footPixel], self.terrainLandSoundVariations[self.footPixel]);
+					-- -- else
+						-- -- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
+					-- -- end
+				-- -- end
+				-- -- SecurityAIBehaviours.createExertionSoundEffect(self);
+				-- -- self.Stamina = self.Stamina - 6;
+			-- elseif self.moveSoundTimer:IsPastSimMS(600) then
+				-- self.moveSoundTimer:Reset();
+				-- self.movementSounds.Fall:Play(self.Pos);
+				-- if self.terrainCollided then
+					-- if self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith] ~= nil then
+						-- self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith]:Play(self.Pos);
 					-- else
-						-- SecurityAIBehaviours.createSoundEffect(self, self.terrainLandSounds[12], self.terrainLandSoundVariations[12]); -- default concrete
+						-- self.terrainSounds.TerrainImpactLight[12]:Play(self.Pos); -- default concrete
 					-- end
+					-- self.terrainCollided = false;
 				-- end
 				-- SecurityAIBehaviours.createExertionSoundEffect(self);
-				-- self.Stamina = self.Stamina - 6;
-			else
-				self.movementSounds.Fall:Play(self.Pos);
-				if self.terrainCollided then
-					if self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith] ~= nil then
-						self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith]:Play(self.Pos);
-					else
-						self.terrainSounds.TerrainImpactLight[12]:Play(self.Pos); -- default concrete
-					end
-					self.terrainCollided = false;
-				end
-				SecurityAIBehaviours.createExertionSoundEffect(self);
-				self.Stamina = self.Stamina - 15;
-			end
-		end
-	end
+				-- self.Stamina = self.Stamina - 15;
+			-- end
+		-- end
+	-- end
 	
-	if self.Vel.Y > 10 then
-		self.wasInAir = true;
-	else
-		self.wasInAir = false;
-	end
 end
 
 function SecurityAIBehaviours.handleMovement(self)
@@ -309,7 +305,7 @@ function SecurityAIBehaviours.handleMovement(self)
 			self.jumpStop:Reset()
 			self.jumpBoost:Reset()
 		end
-	elseif self.isJumping then
+	elseif self.isJumping or self.wasInAir then
 		if (self.feetContact[1] == true or self.feetContact[2] == true) and self.jumpStop:IsPastSimMS(100) then
 			self.isJumping = false
 			if self.Vel.Y > 0 and self.moveSoundTimer:IsPastSimMS(500) then
@@ -371,7 +367,7 @@ function SecurityAIBehaviours.handleMovement(self)
 	local sprintMultiplier = 0.65 * movementMultiplier - (0.1 * (1 - (self.Stamina / 100)))
 	if self.isSprinting or aiSprint then
 		self.footstepTime = self.sprintFootstepTime;
-		if input == false then
+		if input == false or self.controller:IsState(Controller.AIM_SHARP) then
 			self.isSprinting = false
 			self.StrideSound = self.walkSound;
 		end
@@ -1204,24 +1200,28 @@ function SecurityAIBehaviours.handleRagdoll(self)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + self.Vel, 13);
 	--self.TravelImpulse.Magnitude
 	if mat ~= 0 then
-		if self.TravelImpulse.Magnitude > 700 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
-			if self.terrainSounds.TerrainImpactHeavy[self.terrainCollidedWith] ~= nil then
-				self.terrainSounds.TerrainImpactHeavy[self.terrainCollidedWith]:Play(self.Pos);
-			else
-				self.terrainSounds.TerrainImpactHeavy[12]:Play(self.Pos); -- default concrete
+		if self.moveSoundTimer:IsPastSimMS(600) then
+			self.moveSoundTimer:Reset();
+			if self.TravelImpulse.Magnitude > 700 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
+				self.movementSounds.Fall:Play(self.Pos);
+				if self.terrainSounds.TerrainImpactHeavy[self.terrainCollidedWith] ~= nil then
+					self.terrainSounds.TerrainImpactHeavy[self.terrainCollidedWith]:Play(self.Pos);
+				else
+					self.terrainSounds.TerrainImpactHeavy[12]:Play(self.Pos); -- default concrete
+				end
+				self.ragdollTerrainImpactDelay = math.random(200, 500)
+				self.ragdollTerrainImpactTimer:Reset()
+			elseif self.TravelImpulse.Magnitude > 400 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
+				if self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith] ~= nil then
+					self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith]:Play(self.Pos);
+				else
+					self.terrainSounds.TerrainImpactLight[12]:Play(self.Pos); -- default concrete
+				end
+				self.ragdollTerrainImpactDelay = math.random(200, 500)
+				self.ragdollTerrainImpactTimer:Reset()
+			elseif self.TravelImpulse.Magnitude > 230 then
+				self.movementSounds.Crawl:Play(self.Pos);
 			end
-			self.ragdollTerrainImpactDelay = math.random(200, 500)
-			self.ragdollTerrainImpactTimer:Reset()
-		elseif self.TravelImpulse.Magnitude > 400 and self.ragdollTerrainImpactTimer:IsPastSimMS(self.ragdollTerrainImpactDelay) then
-			if self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith] ~= nil then
-				self.terrainSounds.TerrainImpactLight[self.terrainCollidedWith]:Play(self.Pos);
-			else
-				self.terrainSounds.TerrainImpactLight[12]:Play(self.Pos); -- default concrete
-			end
-			self.ragdollTerrainImpactDelay = math.random(200, 500)
-			self.ragdollTerrainImpactTimer:Reset()
-		elseif self.TravelImpulse.Magnitude > 230 then
-			self.movementSounds.Crawl:Play(self.Pos);
 		end
 	end
 end

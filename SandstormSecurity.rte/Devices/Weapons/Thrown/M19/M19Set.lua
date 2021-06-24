@@ -12,27 +12,21 @@ function Create(self)
 	self.checkDelay = 1000;
 	self.checkI = 0
 	
-	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
-	["Hit"] = nil};
-	self.concreteHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactConcrete", "Sandstorm.rte");
-	
-	--
-	
-	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
-	["Hit"] = nil};
-	self.dirtHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactDirt", "Sandstorm.rte");
-	
-	--
-	
-	self.sandHit = {["IDs"] = {[8] = "Exists"},
-	["Hit"] = nil};
-	self.sandHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactSand", "Sandstorm.rte");
-	
-	--
-	
-	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
-	["Hit"] = nil};
-	self.solidMetalHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM19ImpactSolidMetal", "Sandstorm.rte");
+	self.terrainSounds = {
+	Impact = {[12] = CreateSoundContainer("M19 Impact Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("M19 Impact Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("M19 Impact Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("M19 Impact Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("M19 Impact Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("M19 Impact Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("M19 Impact Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("M19 Impact Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("M19 Impact Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("M19 Impact SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("M19 Impact SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("M19 Impact SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("M19 Impact SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("M19 Impact SolidMetal", "Sandstorm.rte")}}
 	
 end
 
@@ -43,16 +37,10 @@ function OnCollideWithTerrain(self, terrainID)
 	if self.impactSoundAllowed ~= false then
 		self.impactSoundAllowed = false;
 		if self.workingTravelImpulse.Magnitude > 5 then
-			if self.dirtHit.IDs[terrainID] ~= nil then
-				self.dirtHit.Hit:Play(self.Pos);
-			elseif self.sandHit.IDs[terrainID] ~= nil then
-				self.sandHit.Hit:Play(self.Pos);
-			elseif self.concreteHit.IDs[terrainID] ~= nil then
-				self.concreteHit.Hit:Play(self.Pos);
-			elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-				self.solidMetalHit.Hit:Play(self.Pos);
+			if self.terrainSounds.Impact[terrainID] ~= nil then
+				self.terrainSounds.Impact[terrainID]:Play(self.Pos);
 			else -- default to concrete
-				self.concreteHit.Hit:Play(self.Pos);
+				self.terrainSounds.Impact[177]:Play(self.Pos);
 			end
 		end
 	end

@@ -3,23 +3,47 @@ function Create(self)
 	self.parentSet = false;
 	
 	-- Sounds --
-	self.addSounds = {["Loop"] = nil};
-	self.addSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Add"};
+	
+	self.preSounds = {["Normal"] = nil, ["Precision"] = nil};
+	self.preSounds.Normal = CreateSoundContainer("Pre ColtPython", "SandstormSecurity.rte");
+	self.preSounds.Precision = CreateSoundContainer("PrecisionPre ColtPython", "SandstormSecurity.rte");
+	
+	self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
+	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn ColtPython", "SandstormSecurity.rte");
+	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut ColtPython", "SandstormSecurity.rte");
+	
+	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.addSounds.Loop = CreateSoundContainer("Add ColtPython", "SandstormSecurity.rte");
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/NoiseBigIndoorsEnd"};
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd ColtPython", "SandstormSecurity.rte");
+	self.noiseSounds.Outdoors.End.Pitch = 1.0;
+	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd ColtPython", "SandstormSecurity.rte");
+	self.noiseSounds.Indoors.End.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd ColtPython", "SandstormSecurity.rte");
+	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("Noise ReflectionOutdoors", "Sandstorm.rte");
+	self.reflectionSounds.Outdoors.Pitch = 1.0
+	
+	self.reloadPrepareSounds = {["CylinderOpen"] = nil, ["EjectorRod"] = nil, ["SpeedLoader"] = nil, ["CylinderClose"] = nil}
+	self.reloadPrepareSounds.CylinderOpen = CreateSoundContainer("CylinderOpenPrepare ColtPython", "SandstormSecurity.rte");
+	self.reloadPrepareSounds.EjectorRod = CreateSoundContainer("EjectorRodPrepare ColtPython", "SandstormSecurity.rte");
+	self.reloadPrepareSounds.SpeedLoader = CreateSoundContainer("SpeedLoaderPrepare ColtPython", "SandstormSecurity.rte");
+	
+	self.reloadPrepareLengths = {["CylinderOpen"] = nil, ["EjectorRod"] = nil, ["SpeedLoader"] = nil, ["CylinderClose"] = nil}
+	self.reloadPrepareLengths.CylinderOpen = 400;
+	self.reloadPrepareLengths.EjectorRod = 100;
+	self.reloadPrepareLengths.SpeedLoader = 400;
+	
+	self.reloadAfterSounds = {["CylinderOpen"] = nil, ["EjectorRod"] = nil, ["SpeedLoader"] = nil, ["CylinderClose"] = nil}
+	self.reloadAfterSounds.CylinderOpen = CreateSoundContainer("CylinderOpen ColtPython", "SandstormSecurity.rte");
+	self.reloadAfterSounds.EjectorRod = CreateSoundContainer("EjectorRod ColtPython", "SandstormSecurity.rte");
+	self.reloadAfterSounds.SpeedLoader = CreateSoundContainer("SpeedLoader ColtPython", "SandstormSecurity.rte");
+	self.reloadAfterSounds.CylinderClose = CreateSoundContainer("CylinderClose ColtPython", "SandstormSecurity.rte");
 	
 	self.lastAge = self.Age
 	
@@ -183,7 +207,7 @@ function Update(self)
 			else
 				if self.cockTimer:IsPastSimMS(self.cockDelay) then
 					if not self.cocked then
-						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/PrecisionPre"..math.random(1,4)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+						self.preSounds.Precision:Play(self.Pos);
 						self.cocked = true
 						self.angVel = self.angVel - RangeRand(0.7,1.1) * 5
 						self.swayAcc = 0
@@ -232,7 +256,7 @@ function Update(self)
 		self.delayedFireTimer:Reset()
 		
 		if not self.cocked then
-			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/CompliSoundV2/Pre"..math.random(1,6)..".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+			self.preSounds.Normal:Play(self.Pos);
 			self.Frame = 1;
 		end
 		
@@ -267,58 +291,56 @@ function Update(self)
 
 		if self.reloadPhase == 0 then
 			self.reloadDelay = self.cylinderOpenPrepareDelay;
-			self.afterDelay = self.cylinderOpenAfterDelay;			
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpenPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderOpen";
-			self.afterSoundVars = 2;
+			self.afterDelay = self.cylinderOpenAfterDelay;		
+			
+			self.prepareSound = self.reloadPrepareSounds.CylinderOpen;
+			self.prepareSoundLength = self.reloadPrepareLengths.CylinderOpen;
+			self.afterSound = self.reloadAfterSounds.CylinderOpen;
 			
 			self.rotationTarget = 5;
 			self.ejectedShell = false
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.ejectorRodPrepareDelay;
 			self.afterDelay = self.ejectorRodAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRodPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/EjectorRod";
-			self.afterSoundVars = 2;
+			
+			self.prepareSound = self.reloadPrepareSounds.EjectorRod;
+			self.prepareSoundLength = self.reloadPrepareLengths.EjectorRod;
+			self.afterSound = self.reloadAfterSounds.EjectorRod;
 			
 			self.rotationTarget = 45;
 			
 		elseif self.reloadPhase == 2 then
 			self.reloadDelay = self.speedLoaderPrepareDelay;
 			self.afterDelay = self.speedLoaderAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoaderPrepare";
-			self.prepareSoundVars = 2;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/SpeedLoader";
-			self.afterSoundVars = 2;
+			
+			self.prepareSound = self.reloadPrepareSounds.SpeedLoader;
+			self.prepareSoundLength = self.reloadPrepareLengths.SpeedLoader;
+			self.afterSound = self.reloadAfterSounds.SpeedLoader;
 			
 			self.rotationTarget = -25;
 			
 		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.cylinderClosePrepareDelay;
 			self.afterDelay = self.cylinderCloseAfterDelay;		
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormSecurity.rte/Devices/Weapons/Handheld/ColtPython/Sounds/CylinderClose";
-			self.afterSoundVars = 2;
+			
+			self.prepareSound = nil;
+			self.prepareSoundLength = 0;
+			self.afterSound = self.reloadAfterSounds.CylinderClose;
 			
 			self.rotationTarget = -5;
 			--self.rotationTarget = -360 * 2; -- meme reload
 		end
 		
-		if self.prepareSoundPlayed ~= true then
+		if self.prepareSoundPlayed ~= true
+		and self.reloadTimer:IsPastSimMS(self.reloadDelay - self.prepareSoundLength) then
 			self.prepareSoundPlayed = true;
-			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+			if self.prepareSound then
+				self.prepareSound:Play(self.Pos);
 			end
 		end
+		
+		if self.prepareSound then self.prepareSound.Pos = self.Pos; end
+		self.afterSound.Pos = self.Pos;
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 		
@@ -392,8 +414,8 @@ function Update(self)
 				end
 			
 				self.afterSoundPlayed = true;
-				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+				if self.afterSound then
+					self.afterSound:Play(self.Pos);
 				end
 			end
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
@@ -489,18 +511,6 @@ function Update(self)
 		
 		self.canSmoke = true
 		self.smokeTimer:Reset()
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
 
 		local outdoorRays = 0;
 		
@@ -546,16 +556,16 @@ function Update(self)
 		end
 		
 		if outdoorRays >= self.rayThreshold then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Outdoors.End:Play(self.Pos);
+			self.reflectionSounds.Outdoors:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Indoors.End:Play(self.Pos);
 		else -- bigIndoor
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.bigIndoors.End:Play(self.Pos);
 		end
 
 	
-		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.Loop:Play(self.Pos);
 		
 		self.delayedFire = false
 		

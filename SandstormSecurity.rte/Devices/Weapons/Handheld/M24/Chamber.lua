@@ -4,26 +4,32 @@ function Create(self)
 
 	-- Sounds --
 	self.addSounds = {["Loop"] = nil};
-	self.addSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/Add"};
+	self.addSounds.Loop = CreateSoundContainer("Add M24", "SandstormSecurity.rte");
 	
 	self.bassSounds = {["Loop"] = nil};
-	self.bassSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/Bass"};
+	self.bassSounds.Loop = CreateSoundContainer("Bass M24", "SandstormSecurity.rte");
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/NoiseBigIndoorsEnd"};
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd M24", "SandstormSecurity.rte");
+	self.noiseSounds.Outdoors.End.Pitch = 1.0;
+	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd M24", "SandstormSecurity.rte");
+	self.noiseSounds.Indoors.End.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd M24", "SandstormSecurity.rte");
+	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/M24/CompliSoundV2/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("ReflectionOutdoors M24", "SandstormSecurity.rte");
+	self.reflectionSounds.Outdoors.Pitch = 1.0
+	
+	self.reloadAfterSounds = {["BoltUp"] = nil, ["BoltBack"] = nil, ["BoltBackReload"] = nil, ["RoundIn"] = nil, ["BoltForward"] = nil, ["BoltDown"] = nil}
+	self.reloadAfterSounds.BoltUp = CreateSoundContainer("BoltUp M24", "SandstormSecurity.rte");
+	self.reloadAfterSounds.BoltBack = CreateSoundContainer("BoltBack M24", "SandstormSecurity.rte");
+	self.reloadAfterSounds.BoltBackReload = CreateSoundContainer("BoltBackReload M24", "SandstormSecurity.rte");
+	self.reloadAfterSounds.RoundIn = CreateSoundContainer("RoundIn M24", "SandstormSecurity.rte");
+	self.reloadAfterSounds.BoltForward = CreateSoundContainer("BoltForward M24", "SandstormSecurity.rte");
+	self.reloadAfterSounds.BoltDown = CreateSoundContainer("BoltDown M24", "SandstormSecurity.rte");
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
@@ -53,7 +59,7 @@ function Create(self)
 	self.boltForwardPrepareDelay = 150;
 	self.boltForwardAfterDelay = 100;
 	self.boltDownPrepareDelay = 100;
-	self.boltDownAfterDelay = 1500;
+	self.boltDownAfterDelay = 100;
 	
 	-- phases:
 	-- 0: bolt up
@@ -199,63 +205,59 @@ function Update(self)
 				self.reloadDelay = self.boltUpPrepareDelay;
 				self.afterDelay = self.boltUpAfterDelay;
 				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/BoltUp";
-				self.afterSoundVars = 1;
+				self.prepareSound = nil;
+				self.prepareSoundLength = 0;
+				self.afterSound = self.reloadAfterSounds.BoltUp;
 				
 			elseif self.reloadPhase == 1 then
 				self.reloadDelay = self.boltBackPrepareDelay;
 				self.afterDelay = self.boltBackAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
+				
+				self.prepareSound = nil;
+				self.prepareSoundLength = 0;
 				if self:IsReloading() then
-					self.afterSoundPath = 
-					"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/BoltBackReload";
-					self.afterSoundVars = 1;
+					self.afterSound = self.reloadAfterSounds.BoltBackReload;
 				else
-					self.afterSoundPath = 
-					"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/BoltBack";
-					self.afterSoundVars = 1;
+					self.afterSound = self.reloadAfterSounds.BoltBack;
 				end
 				
 			elseif self.reloadPhase == 2 then
 				self.reloadDelay = self.shellInPrepareDelay;
 				self.afterDelay = self.shellInAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/RoundIn";
-				self.afterSoundVars = 5;
+
+				self.prepareSound = nil;
+				self.prepareSoundLength = 0;
+				self.afterSound = self.reloadAfterSounds.RoundIn;
 				
 			elseif self.reloadPhase == 3 then
 				self.reloadDelay = self.boltForwardPrepareDelay;
 				self.afterDelay = self.boltForwardAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/BoltForward";
-				self.afterSoundVars = 1;
+
+				self.prepareSound = nil;
+				self.prepareSoundLength = 0;
+				self.afterSound = self.reloadAfterSounds.BoltForward;
 				
 			elseif self.reloadPhase == 4 then
 				self.Frame = 2;
 				self.reloadDelay = self.boltDownPrepareDelay;
-				self.afterDelay = self.boltForwardAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/M24/Sounds/BoltDown";
-				self.afterSoundVars = 1;
+				self.afterDelay = self.boltDownAfterDelay;
+
+				self.prepareSound = nil;
+				self.prepareSoundLength = 0;
+				self.afterSound = self.reloadAfterSounds.BoltDown;
 				
 			end
 			
-			if self.prepareSoundPlayed ~= true then
+			if self.prepareSoundPlayed ~= true
+			and self.reloadTimer:IsPastSimMS(self.reloadDelay - self.prepareSoundLength) then
 				self.prepareSoundPlayed = true;
-				if self.prepareSoundPath then
-					self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+				if self.prepareSound then
+					self.prepareSound:Play(self.Pos);
 				end
 			end
+			
+			if self.prepareSound then self.prepareSound.Pos = self.Pos; end
+			self.afterSound.Pos = self.Pos;
 			
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 			
@@ -264,8 +266,8 @@ function Update(self)
 				if self.afterSoundPlayed ~= true then
 				
 					self.afterSoundPlayed = true;
-					if self.afterSoundPath then
-						self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".wav", self.Pos, -1, 0, 130, 1, 250, false);
+					if self.afterSound then
+						self.afterSound:Play(self.Pos);
 					end
 				end
 			
@@ -424,18 +426,6 @@ function Update(self)
 		if self.Magazine then
 			self.ammoCount = 0 + self.Magazine.RoundCount; -- +0 to avoid reference bullshit and save it as a number properly
 		end
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
 
 		local outdoorRays = 0;
 		
@@ -480,19 +470,19 @@ function Update(self)
 			end
 		end
 		
-		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.bassSounds.Loop:Play(self.Pos);
 		
 		if outdoorRays >= self.rayThreshold then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Outdoors.End:Play(self.Pos);
+			self.reflectionSounds.Outdoors:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Indoors.End:Play(self.Pos);
 		else -- bigIndoor
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.bigIndoors.End:Play(self.Pos);
 		end
 
 	
-		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".wav", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.Loop:Play(self.Pos);
 
 	end
 	

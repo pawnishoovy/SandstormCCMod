@@ -4,31 +4,44 @@ function Create(self)
 	
 	-- Sounds --
 	
-	self.addSounds = {["Loop"] = nil};
-	self.addSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/Add"};
+	self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
+	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn TS12", "SandstormSecurity.rte");
+	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut TS12", "SandstormSecurity.rte");
 	
-	self.bassSounds = {["Loop"] = nil};
-	self.bassSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/Bass"};
+	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.bassSounds.Loop = CreateSoundContainer("Bass TS12", "SandstormSecurity.rte");
 	
-	self.mechSounds = {["Loop"] = nil};
-	self.mechSounds.Loop = {["Variations"] = 4,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/Mech"};
+	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.addSounds.Loop = CreateSoundContainer("Add TS12", "SandstormSecurity.rte");
+	
+	self.mechSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.mechSounds.Loop = CreateSoundContainer("Mech TS12", "SandstormSecurity.rte");
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 5,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 6,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/NoiseBigIndoorsEnd"};
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd TS12", "SandstormSecurity.rte");
+	self.noiseSounds.Outdoors.End.Pitch = 1.0;
+	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd TS12", "SandstormSecurity.rte");
+	self.noiseSounds.Indoors.End.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd TS12", "SandstormSecurity.rte");
+	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/CompliSoundV2/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("Noise ReflectionOutdoors", "Sandstorm.rte");
+	self.reflectionSounds.Outdoors.Pitch = 0.9
+	
+	self.reloadPrepareSounds = {}
+	self.reloadPrepareSounds.SwitchSide = CreateSoundContainer("SwitchSidePrepare TS12", "SandstormSecurity.rte");
+	
+	self.reloadPrepareLengths = {}
+	self.reloadPrepareLengths.SwitchSide = 600;
+	
+	self.reloadAfterSounds = {}
+	self.reloadAfterSounds.RotateChamber = CreateSoundContainer("RotateChamber TS12", "SandstormSecurity.rte");
+	self.reloadAfterSounds.Rotate = CreateSoundContainer("Rotate TS12", "SandstormSecurity.rte");
+	self.reloadAfterSounds.ShellInsert = CreateSoundContainer("ShellInsert TS12", "SandstormSecurity.rte");
+	self.reloadAfterSounds.SwitchSide = CreateSoundContainer("SwitchSide TS12", "SandstormSecurity.rte");
 	
 	self.FireTimer = Timer();
 	
@@ -126,11 +139,6 @@ function Update(self)
 		end
 	end
 	
-	if UInputMan:KeyPressed(15) then
-	  PresetMan:ReloadAllScripts();
-	  self:ReloadScripts();
-	end
-	
     -- Smoothing
     local min_value = -math.pi;
     local max_value = math.pi;
@@ -212,18 +220,6 @@ function Update(self)
 			self.tube3AmmoCount = self.tube3AmmoCount -1;
 			self.roundChambered = true;
 		end
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
 
 		local outdoorRays = 0;
 		
@@ -268,20 +264,19 @@ function Update(self)
 			end
 		end
 		
-		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);			
-		self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.mechSounds.Loop:Play(self.Pos);
+		self.addSounds.Loop:Play(self.Pos);
+		self.bassSounds.Loop:Play(self.Pos);
 		
 		if outdoorRays >= self.rayThreshold then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Outdoors.End:Play(self.Pos);
+			self.reflectionSounds.Outdoors:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Indoors.End:Play(self.Pos);
 		else -- bigIndoor
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.bigIndoors.End:Play(self.Pos);
 		end
-
-	
-		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		
 	end
 	
 	-- PAWNIS RELOAD ANIMATION HERE
@@ -348,82 +343,76 @@ function Update(self)
 				self.reloadDelay = self.turnChamberPrepareDelay;
 				self.afterDelay = self.turnChamberAfterDelay;
 				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/RotateChamber";
-				self.afterSoundVars = 3;
+				self.prepareSound = nil
+				self.prepareSoundLength = 0
+				self.afterSound = self.reloadAfterSounds.RotateChamber;
+			
 				self.rotationTarget = 2
 				
 			elseif self.reloadPhase == 1 then
 				self.reloadDelay = self.TurnPrepareDelay
 				self.afterDelay = self.TurnAfterDelay
 				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/Rotate";
-				self.afterSoundVars = 3;
+				self.prepareSound = nil
+				self.prepareSoundLength = 0
+				self.afterSound = self.reloadAfterSounds.Rotate;
 				
 			elseif self.reloadPhase == 2 then
 				self.reloadDelay = self.shellInPrepareDelay;
 				self.afterDelay = self.shellInAfterDelay;
 				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/ShellInsert";
-				self.afterSoundVars = 4;
+				self.prepareSound = nil
+				self.prepareSoundLength = 0
+				self.afterSound = self.reloadAfterSounds.ShellInsert;
 				
 				self.rotationTarget = -10
 			elseif self.reloadPhase == 3 then
 				self.reloadDelay = self.boltBackPrepareDelay;
 				self.afterDelay = self.boltBackAfterDelay;
 				
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/BoltBack";
-				self.afterSoundVars = 1;
+				self.prepareSound = nil
+				self.prepareSoundLength = 0
+				self.afterSound = self.reloadAfterSounds.BoltBack; -- unused undefined
 				
 				self.rotationTarget = 10 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			elseif self.reloadPhase == 4 then
 				self.reloadDelay = self.boltForwardPrepareDelay;
 				self.afterDelay = self.boltForwardAfterDelay;
-				self.prepareSoundPath = nil;
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/BoltForward";
-				self.afterSoundVars = 1;
+
+				self.prepareSound = nil
+				self.prepareSoundLength = 0
+				self.afterSound = self.reloadAfterSounds.BoltForward; -- unused undefined
 				
 				self.rotationTarget = -5
 			elseif self.reloadPhase == 5 then
 				self.reloadDelay = self.switchSidePrepareDelay;
 				self.afterDelay = self.switchSideAfterDelay;
-				self.prepareSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/SwitchSidePrepare";
-				self.prepareSoundVars = 1;
-				self.afterSoundPath = 
-				"SandstormSecurity.rte/Devices/Weapons/Handheld/TS12/Sounds/SwitchSide";
-				self.afterSoundVars = 1;
+
+				self.prepareSound = self.reloadPrepareSounds.SwitchSide;
+				self.prepareSoundLength = self.reloadPrepareLengths.SwitchSide;
+				self.afterSound = self.reloadAfterSounds.SwitchSide;
 				
 				self.rotationTarget = 3;
 			end
 			
-			if self.prepareSoundPlayed ~= true then
+			if self.prepareSoundPlayed ~= true
+			and self.reloadTimer:IsPastSimMS(self.reloadDelay - self.prepareSoundLength) then
 				self.prepareSoundPlayed = true;
-				if self.prepareSoundPath then
-					self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. math.random(1, self.prepareSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+				if self.prepareSound then
+					self.prepareSound:Play(self.Pos);
 				end
 			end
+			
+			if self.prepareSound then self.prepareSound.Pos = self.Pos; end
+			self.afterSound.Pos = self.Pos;
 			
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 			
 			
 				if self.afterSoundPlayed ~= true then			
 					self.afterSoundPlayed = true;
-					if self.afterSoundPath then
-						self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. math.random(1, self.afterSoundVars) .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+					if self.afterSound then
+						self.afterSound:Play(self.Pos);
 					end
 				end
 			

@@ -3,7 +3,7 @@ function Create(self)
 
 	self.playSound = true;	
 
-	self.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsCasingLargeShellHit", "Sandstorm.rte");
+	self.Hit = CreateSoundContainer("Casing Large Shell Hit", "Sandstorm.rte");
 	
 end
 

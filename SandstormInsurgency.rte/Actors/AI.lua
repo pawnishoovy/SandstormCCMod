@@ -15,189 +15,12 @@ function Create(self)
 	-- Start modded code --
 	
 	self.RTE = "SandstormInsurgency.rte";
-	self.baseRTE = "Sandstorm.rte";	
+	self.baseRTE = "Sandstorm.rte";
 	
-	-- TERRAIN SOUNDS
-	
-	self.terrainImpactLightSounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Dirt/TerrainImpactDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Dirt/TerrainImpactDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Dirt/TerrainImpactDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Sand/TerrainImpactSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Dirt/TerrainImpactDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Dirt/TerrainImpactDirt",
-	[12] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Concrete/TerrainImpactConcrete",
-	[177] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/Concrete/TerrainImpactConcrete",
-	[178] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/SolidMetal/TerrainImpactSolidMetal",
-	[182] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Light/SolidMetal/TerrainImpactSolidMetal"};
-	
-	self.terrainImpactLightSoundVariations = {[9] =	5,
-	[10] =	5,
-	[11] =	5,
-	[128] =	5,
-	[6] =	5,
-	[8] =	5,
-	[12] =	5,
-	[177] =	5,
-	[178] =	5,
-	[182] =	5,};
-
-	self.terrainImpactHeavySounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Dirt/TerrainImpactDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Dirt/TerrainImpactDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Dirt/TerrainImpactDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Sand/TerrainImpactSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Dirt/TerrainImpactDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Dirt/TerrainImpactDirt",
-	[12] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Concrete/TerrainImpactConcrete",
-	[177] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/Concrete/TerrainImpactConcrete",
-	[178] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/SolidMetal/TerrainImpactSolidMetal",
-	[182] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/TerrainImpact/Heavy/SolidMetal/TerrainImpactSolidMetal"};
-	
-	self.terrainImpactHeavySoundVariations = {[9] =	5,
-	[10] =	5,
-	[11] =	5,
-	[128] =	5,
-	[6] =	5,
-	[8] =	5,
-	[12] =	5,
-	[177] =	5,
-	[178] =	5,
-	[182] =	5,};
-	
-	self.terrainLandSounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Dirt/LandDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Dirt/LandDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Dirt/LandDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Sand/LandSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Dirt/LandDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Dirt/LandDirt",
-	[12] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Concrete/LandConcrete",
-	[177] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/Concrete/LandConcrete",
-	[178] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/SolidMetal/LandSolidMetal",
-	[182] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Land/SolidMetal/LandSolidMetal"};
-	
-	self.terrainLandSoundVariations = {[9] =	5,
-	[10] =	5,
-	[11] =	5,
-	[128] =	5,
-	[6] =	5,
-	[8] =	5,
-	[12] =	5,
-	[177] =	5,
-	[178] =	5,
-	[182] =	5,};
-	
-	self.terrainJumpSounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Dirt/JumpDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Dirt/JumpDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Dirt/JumpDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Sand/JumpSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Dirt/JumpDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Dirt/JumpDirt",
-	[12] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Concrete/JumpConcrete",
-	[177] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/Concrete/JumpConcrete",
-	[178] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/SolidMetal/JumpSolidMetal",
-	[182] =	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Jump/SolidMetal/JumpSolidMetal"};
-	
-	self.terrainJumpSoundVariations = {[9] =	5,
-	[10] =	5,
-	[11] =	5,
-	[128] =	5,
-	[6] =	5,
-	[8] =	5,
-	[12] =	5,
-	[177] =	5,
-	[178] =	5,
-	[182] =	5,};
-	
-	self.terrainProneSounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Dirt/ProneDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Dirt/ProneDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Dirt/ProneDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Sand/ProneSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Dirt/ProneDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Dirt/ProneDirt",
-	[12] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Concrete/ProneConcrete",
-	[177] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/Concrete/ProneConcrete",
-	[178] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/SolidMetal/ProneSolidMetal",
-	[182] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Prone/SolidMetal/ProneSolidMetal"};
-	
-	self.terrainProneSoundVariations = {[9] =	4,
-	[10] =	4,
-	[11] =	4,
-	[128] =	4,
-	[6] =	4,
-	[8] =	4,
-	[12] =	4,
-	[177] =	4,
-	[178] =	4,
-	[182] =	4,};
-	
-	self.terrainCrawlSounds = {[9] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Dirt/CrawlDirt",
-	[10] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Dirt/CrawlDirt",
-	[11] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Dirt/CrawlDirt",
-	[128] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Sand/CrawlSand",
-	[6] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Dirt/CrawlDirt",
-	[8] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Dirt/CrawlDirt",
-	[12] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Concrete/CrawlConcrete",
-	[177] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/Concrete/CrawlConcrete",
-	[178] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/SolidMetal/CrawlSolidMetal",
-	[182] =
-	self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Crawl/SolidMetal/CrawlSolidMetal"};
-	
-	self.terrainCrawlSoundVariations = {[9] =	5,
-	[10] =	5,
-	[11] =	5,
-	[128] =	5,
-	[6] =	5,
-	[8] =	5,
-	[12] =	5,
-	[177] =	5,
-	[178] =	5,
-	[182] =	5,};
-	
-	self.miscSounds = {Impact = self.baseRTE.."/Actors/Shared/Sounds/ActorDamage/TerrainImpact/BoneBreak"};
-	
-	self.miscSoundVariations = {Impact = 5,};
+	self.miscSounds = {Impact = CreateSoundContainer("ActorsSharedSoundsActorDamageTerrainImpactBoneBreak", "Sandstorm.rte"),
+	burnIgnite = CreateSoundContainer("ActorsSharedSoundsActorDamageBurnIgnite", "Sandstorm.rte"),
+	burnLoop = CreateSoundContainer("ActorsSharedSoundsActorDamageBurnLoop", "Sandstorm.rte"),
+	burnEnd = CreateSoundContainer("ActorsSharedSoundsActorDamageBurnEnd", "Sandstorm.rte")};
 	
 	-- head and gender and voice management
 	
@@ -217,404 +40,119 @@ function Create(self)
 	
 	if self.Nationality == 1 then -- Arab
 		if math.random(1, 2) == 1 then		-- arab1
+			self.Identity = "InsArabMale1";
 			skin = 0
 			self.baseHeadFrame = headFrames * math.random(0, 5);
 			if self.Head then
 				self.Head.Frame = self.baseHeadFrame;
 			end
 		
-			self.voiceSounds = {Death = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/Death",
-			seriousDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/SeriousDeath",
-			flameDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/FlameDeath",
-			Incapacitated =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Death/Incapacitated",
-			Suppressed =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Suppression/SuppressedByGunfire",
-			SuppressedByExplosion =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Suppression/SuppressedByExplosion",
-			Suppressing =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Suppressing/Suppressing",
-			witnessDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/DeathReactions/FriendlyDown",
-			witnessGruesomeDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/DeathReactions/FriendlyGibbed",
-			inhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleLight",
-			inhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleMedium",
-			inhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleHeavy",
-			exhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleLight",
-			exhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleMedium",
-			exhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleHeavy",
-			Exertion = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Exertion/Exertion",
-			Pain =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Pain/Pain",
-			burnPain =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Pain/BurnPain",
-			Flashed =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Flashed/Flashed",
-			Reload =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Reload/Reload",
-			suppressedReload =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Reload/SuppressedReload",
-			flashOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/FlashOut",		
-			suppressedFlashOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedFlashOut",	
-			fragOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/FragOut",		
-			suppressedFragOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedFragOut",	
-			incendiaryOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/IncendiaryOut",		
-			suppressedIncendiaryOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedIncendiaryOut",	
-			mineOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/MineOut",		
-			suppressedMineOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedMineOut",	
-			molotovOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/MolotovOut",		
-			suppressedMolotovOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedMolotovOut",	
-			remoteOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/RemoteOut",		
-			suppressedRemoteOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedRemoteOut",	
-			smokeOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SmokeOut",		
-			suppressedSmokeOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Throw/SuppressedSmokeOut",
-			Tossback = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Tossback/Tossback",
-			spotGrenade =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Spot/SpotFrag",
-			spotRemote =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Spot/SpotRemote",
-			spotEnemy =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Spot/SpotEnemy",
-			spotEnemyFar =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Spot/SpotEnemyFar",
-			spotEnemyClose =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale1/Spot/SpotEnemyClose"};			
-			
-			self.voiceSoundVariations = {Death = 25,
-			seriousDeath = 16,
-			flameDeath = 6,
-			Incapacitated = 11,
-			Suppressed = 45,
-			SuppressedByExplosion = 5,
-			Suppressing = 5,
-			witnessDeath = 8,
-			witnessGruesomeDeath = 5,
-			inhaleLight = 10,
-			inhaleMedium = 10,
-			inhaleHeavy = 8,
-			exhaleLight = 10,
-			exhaleMedium = 10,
-			exhaleHeavy = 8,
-			Exertion = 20,
-			Pain = 15,
-			burnPain = 5,
-			Flashed = 5,
-			Reload = 28,
-			suppressedReload = 38,
-			flashOut = 8,
-			suppressedFlashOut = 7,
-			fragOut = 8,		
-			suppressedFragOut = 8,	
-			incendiaryOut = 5,		
-			suppressedIncendiaryOut = 5,	
-			mineOut = 5,		
-			suppressedMineOut = 5,	
-			molotovOut = 5,		
-			suppressedMolotovOut = 5,	
-			remoteOut = 5,		
-			suppressedRemoteOut = 5,	
-			smokeOut = 8,		
-			suppressedSmokeOut = 8,
-			Tossback = 5,
-			spotGrenade = 5,
-			spotRemote = 5,
-			spotEnemy = 10,
-			spotEnemyFar = 8,
-			spotEnemyClose = 8};				
-		else
+		else --arab2
+			self.Identity = "InsArabMale2";
 			skin = 0
 			self.baseHeadFrame = headFrames * math.random(0, 5);
 			if self.Head then
 				self.Head.Frame = self.baseHeadFrame;
 			end
-			
-			self.voiceSounds = {Death = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/Death",
-			seriousDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/SeriousDeath",
-			flameDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/FlameDeath",
-			Incapacitated =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Death/Incapacitated",
-			Suppressed =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Suppression/SuppressedByGunfire",
-			SuppressedByExplosion =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Suppression/SuppressedByExplosion",
-			Suppressing =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Suppressing/Suppressing",
-			witnessDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/DeathReactions/FriendlyDown",
-			witnessGruesomeDeath = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/DeathReactions/FriendlyGibbed",
-			inhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleLight",
-			inhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleMedium",
-			inhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/InhaleHeavy",
-			exhaleLight =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleLight",
-			exhaleMedium =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleMedium",
-			exhaleHeavy =
-			self.RTE.."/Actors/Shared/Sounds/VO/Shared/Exertion/ExhaleHeavy",
-			Exertion = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Exertion/Exertion",
-			Pain =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Pain/Pain",
-			burnPain =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Pain/BurnPain",
-			Flashed =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Flashed/Flashed",
-			Reload =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Reload/Reload",
-			suppressedReload =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Reload/SuppressedReload",
-			flashOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/FlashOut",		
-			suppressedFlashOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedFlashOut",	
-			fragOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/FragOut",		
-			suppressedFragOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedFragOut",	
-			incendiaryOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/IncendiaryOut",		
-			suppressedIncendiaryOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedIncendiaryOut",	
-			mineOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/MineOut",		
-			suppressedMineOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedMineOut",	
-			molotovOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/MolotovOut",		
-			suppressedMolotovOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedMolotovOut",	
-			remoteOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/RemoteOut",		
-			suppressedRemoteOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedRemoteOut",	
-			smokeOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SmokeOut",		
-			suppressedSmokeOut =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Throw/SuppressedSmokeOut",
-			Tossback = 
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Tossback/Tossback",
-			spotGrenade =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Spot/SpotFrag",
-			spotRemote =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Spot/SpotRemote",
-			spotEnemy =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Spot/SpotEnemy",
-			spotEnemyFar =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Spot/SpotEnemyFar",
-			spotEnemyClose =
-			self.RTE.."/Actors/Shared/Sounds/VO/InsArabMale2/Spot/SpotEnemyClose"};
-			
-			self.voiceSoundVariations = {Death = 30,
-			seriousDeath = 14,
-			flameDeath = 6,
-			Incapacitated = 16,
-			Suppressed = 47,
-			SuppressedByExplosion = 6,
-			Suppressing = 5,
-			witnessDeath = 8,
-			witnessGruesomeDeath = 5,
-			inhaleLight = 10,
-			inhaleMedium = 10,
-			inhaleHeavy = 8,
-			exhaleLight = 10,
-			exhaleMedium = 10,
-			exhaleHeavy = 8,
-			Exertion = 30,
-			Pain = 17,
-			burnPain = 4,
-			Flashed = 5,
-			Reload = 39,
-			suppressedReload = 37,
-			flashOut = 8,
-			suppressedFlashOut = 7,
-			fragOut = 8,		
-			suppressedFragOut = 8,	
-			incendiaryOut = 5,		
-			suppressedIncendiaryOut = 5,	
-			mineOut = 5,		
-			suppressedMineOut = 5,	
-			molotovOut = 5,		
-			suppressedMolotovOut = 5,	
-			remoteOut = 5,		
-			suppressedRemoteOut = 5,	
-			smokeOut = 8,		
-			suppressedSmokeOut = 8,
-			Tossback = 5,
-			spotGrenade = 10,
-			spotRemote = 5,
-			spotEnemy = 12,
-			spotEnemyFar = 8,
-			spotEnemyClose = 8};	
 		end
 	else	-- Russian
 	
 		-- blyat
+		self.Identity = "InsRussianMale1";
 		self.baseHeadFrame = headFrames * math.random(7, 9);
 		if self.Head then
 			self.Head.Frame = self.baseHeadFrame;
 		end
 		skin = 1
-	
-		self.voiceSounds = {Death = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/Death",
-		seriousDeath = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/SeriousDeath",
-		flameDeath = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/FlameDeath",
-		Incapacitated =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Death/Incapacitated",
-		Suppressed =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Suppression/SuppressedByGunfire",
-		SuppressedByExplosion =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Suppression/SuppressedByExplosion",
-		Suppressing =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Suppressing/Suppressing",
-		witnessDeath = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/DeathReactions/FriendlyDown",
-		witnessGruesomeDeath = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/DeathReactions/FriendlyGibbed",
-		inhaleLight =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleLight",
-		inhaleMedium =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleMedium",
-		inhaleHeavy =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/InhaleHeavy",
-		exhaleLight =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleLight",
-		exhaleMedium =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleMedium",
-		exhaleHeavy =
-		"SandstormSecurity.rte/Actors/Shared/Sounds/VO/SecArabMale/Exertion/ExhaleHeavy",
-		Exertion =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Exertion/Exertion",
-		Pain =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Pain/Pain",
-		burnPain =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Pain/BurnPain",
-		Flashed =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Flashed/Flashed",
-		Reload =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Reload/Reload",
-		suppressedReload =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Reload/SuppressedReload",		
-		flashOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/FlashOut",		
-		suppressedFlashOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedFlashOut",	
-		fragOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/FragOut",		
-		suppressedFragOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedFragOut",	
-		incendiaryOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/IncendiaryOut",		
-		suppressedIncendiaryOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedIncendiaryOut",	
-		mineOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/MineOut",		
-		suppressedMineOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedMineOut",	
-		molotovOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/MolotovOut",		
-		suppressedMolotovOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedMolotovOut",	
-		remoteOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/RemoteOut",		
-		suppressedRemoteOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedRemoteOut",	
-		smokeOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SmokeOut",		
-		suppressedSmokeOut =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Throw/SuppressedSmokeOut",
-		Tossback = 
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Tossback/Tossback",
-		spotGrenade =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Spot/SpotFrag",
-		spotRemote =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Spot/SpotRemote",
-		spotEnemy =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Spot/SpotEnemy",
-		spotEnemyFar =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Spot/SpotEnemyFar",
-		spotEnemyClose =
-		self.RTE.."/Actors/Shared/Sounds/VO/InsRussianMale1/Spot/SpotEnemyClose"};
-		
-		self.voiceSoundVariations = {Death = 32,
-		seriousDeath = 19,
-		flameDeath = 5,
-		Incapacitated = 10,
-		Suppressed = 42,
-		SuppressedByExplosion = 4,
-		Suppressing = 5,
-		witnessDeath = 9,
-		witnessGruesomeDeath = 5,
-		inhaleLight = 10,
-		inhaleMedium = 10,
-		inhaleHeavy = 8,
-		exhaleLight = 10,
-		exhaleMedium = 10,
-		exhaleHeavy = 8,
-		Exertion = 28,
-		Pain = 25,
-		burnPain = 5,
-		Flashed = 11,
-		Reload = 30,
-		suppressedReload = 29,
-		flashOut = 10,
-		suppressedFlashOut = 8,
-		fragOut = 8,		
-		suppressedFragOut = 9,	
-		incendiaryOut = 5,		
-		suppressedIncendiaryOut = 5,	
-		mineOut = 5,		
-		suppressedMineOut = 5,	
-		molotovOut = 6,		
-		suppressedMolotovOut = 6,	
-		remoteOut = 5,		
-		suppressedRemoteOut = 5,	
-		smokeOut = 9,		
-		suppressedSmokeOut = 10,
-		Tossback = 6,
-		spotGrenade = 5,
-		spotRemote = 5,
-		spotEnemy = 10,
-		spotEnemyFar = 8,
-		spotEnemyClose = 13};	
 		
 	end
 	self:SetNumberValue("SkinTone", skin)
+	
+	self.voiceSounds = {Death = 
+	CreateSoundContainer("Death " .. self.Identity, "SandstormInsurgency.rte"),
+	seriousDeath = 
+	CreateSoundContainer("SeriousDeath " .. self.Identity, "SandstormInsurgency.rte"),
+	flameDeath = 
+	CreateSoundContainer("FlameDeath " .. self.Identity, "SandstormInsurgency.rte"),
+	Incapacitated =
+	CreateSoundContainer("Incapacitated " .. self.Identity, "SandstormInsurgency.rte"),
+	Suppressed =
+	CreateSoundContainer("SuppressedByGunfire " .. self.Identity, "SandstormInsurgency.rte"),
+	SuppressedByExplosion =
+	CreateSoundContainer("SuppressedByExplosion " .. self.Identity, "SandstormInsurgency.rte"),
+	Suppressing =
+	CreateSoundContainer("Suppressing " .. self.Identity, "SandstormInsurgency.rte"),
+	witnessDeath = 
+	CreateSoundContainer("FriendlyDown " .. self.Identity, "SandstormInsurgency.rte"),
+	witnessGruesomeDeath = 
+	CreateSoundContainer("FriendlyGibbed " .. self.Identity, "SandstormInsurgency.rte"),
+	inhaleLight =
+	CreateSoundContainer("InhaleLight Shared", "SandstormInsurgency.rte"),
+	inhaleMedium =
+	CreateSoundContainer("InhaleMedium Shared", "SandstormInsurgency.rte"),
+	inhaleHeavy =
+	CreateSoundContainer("InhaleHeavy Shared", "SandstormInsurgency.rte"),
+	exhaleLight =
+	CreateSoundContainer("ExhaleLight Shared", "SandstormInsurgency.rte"),
+	exhaleMedium =
+	CreateSoundContainer("ExhaleMedium Shared", "SandstormInsurgency.rte"),
+	exhaleHeavy =
+	CreateSoundContainer("ExhaleHeavy Shared", "SandstormInsurgency.rte"),
+	Exertion = 
+	CreateSoundContainer("Exertion " .. self.Identity, "SandstormInsurgency.rte"),
+	Pain =
+	CreateSoundContainer("Pain " .. self.Identity, "SandstormInsurgency.rte"),
+	burnPain =
+	CreateSoundContainer("BurnPain " .. self.Identity, "SandstormInsurgency.rte"),
+	Flashed =
+	CreateSoundContainer("Flashed " .. self.Identity, "SandstormInsurgency.rte"),
+	Reload =
+	CreateSoundContainer("Reload " .. self.Identity, "SandstormInsurgency.rte"),
+	suppressedReload =
+	CreateSoundContainer("SuppressedReload " .. self.Identity, "SandstormInsurgency.rte"),
+	flashOut =
+	CreateSoundContainer("FlashOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedFlashOut =
+	CreateSoundContainer("SuppressedFlashOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	fragOut =
+	CreateSoundContainer("FragOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedFragOut =
+	CreateSoundContainer("SuppressedFragOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	incendiaryOut =
+	CreateSoundContainer("IncendiaryOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedIncendiaryOut =
+	CreateSoundContainer("SuppressedIncendiaryOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	mineOut =
+	CreateSoundContainer("MineOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedMineOut =
+	CreateSoundContainer("SuppressedMineOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	molotovOut =
+	CreateSoundContainer("MolotovOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedMolotovOut =
+	CreateSoundContainer("SuppressedMolotovOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	remoteOut =
+	CreateSoundContainer("RemoteOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedRemoteOut =
+	CreateSoundContainer("SuppressedRemoteOut " .. self.Identity, "SandstormInsurgency.rte"),	
+	smokeOut =
+	CreateSoundContainer("SmokeOut " .. self.Identity, "SandstormInsurgency.rte"),		
+	suppressedSmokeOut =
+	CreateSoundContainer("SuppressedSmokeOut " .. self.Identity, "SandstormInsurgency.rte"),
+	Tossback = 
+	CreateSoundContainer("Tossback " .. self.Identity, "SandstormInsurgency.rte"),
+	spotGrenade =
+	CreateSoundContainer("SpotFrag " .. self.Identity, "SandstormInsurgency.rte"),
+	spotRemote =
+	CreateSoundContainer("SpotRemote " .. self.Identity, "SandstormInsurgency.rte"),
+	spotEnemy =
+	CreateSoundContainer("SpotEnemy " .. self.Identity, "SandstormInsurgency.rte"),
+	spotEnemyFar =
+	CreateSoundContainer("SpotEnemyFar " .. self.Identity, "SandstormInsurgency.rte"),
+	spotEnemyClose =
+	CreateSoundContainer("SpotEnemyClose " .. self.Identity, "SandstormInsurgency.rte")};
+	
+	-- MEANINGLESS! purely here so we don't need a check later and can just set its pos all the time
+	self.voiceSound = CreateSoundContainer("Crawl Concrete", "Sandstorm.rte");
 	
 	self.altitude = 0;
 	self.wasInAir = false;
@@ -684,7 +222,7 @@ function Create(self)
 	self.burstFireDelayTimer = Timer()
 	self.burstFireDelayMin = 150
 	self.burstFireDelayMax = 300
-	self.burstFireDelay = math.random(self.burstFireDelayMin,self.burstFireDelayMax)	
+	self.burstFireDelay = math.random(self.burstFireDelayMin,self.burstFireDelayMax)
 	
 	-- experimental method for enhanced dying - don't let the actor actually die until we want him to.
 	-- reason for this is because when the actor IsDead he will really want to settle and there's not much we can do about it.
@@ -718,67 +256,240 @@ function Create(self)
 	self.limbPathDefaultSpeed2 = self:GetLimbPathSpeed(2) * 0.8
 	self.limbPathDefaultPushForce = self.LimbPathPushForce * 0.8
 	
-	-- footstep sounds
+	-- terrain sounds
 	
-	self.terrainStepSounds = {
-	Walk = {
-	[9] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Dirt/WalkDirt",
-	[10] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Dirt/WalkDirt",
-	[11] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Dirt/WalkDirt",
-	[128] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Dirt/WalkDirt",
-	[6] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Sand/WalkSand",
-	[8] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Dirt/WalkDirt",
-	[12] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Concrete/WalkConcrete",
-	[177] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/Concrete/WalkConcrete",
-	[178] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/SolidMetal/WalkSolidMetal",
-	[182] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Walk/SolidMetal/WalkSolidMetal"},
-	Sprint = {
-	[9] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Dirt/SprintDirt",
-	[10] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Dirt/SprintDirt",
-	[11] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Dirt/SprintDirt",
-	[128] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Dirt/SprintDirt",
-	[6] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Sand/SprintSand",
-	[8] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Dirt/SprintDirt",
-	[12] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Concrete/SprintConcrete",
-	[177] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/Concrete/SprintConcrete",
-	[178] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/SolidMetal/SprintSolidMetal",
-	[182] = self.baseRTE.."/Actors/Shared/Sounds/ActorMovement/TerrainDependent/Footsteps/Sprint/SolidMetal/SprintSolidMetal"}	
+	self.terrainSounds = {
+	Crawl = {[12] = CreateSoundContainer("Crawl Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Crawl Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Crawl Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Crawl Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Crawl Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Crawl Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Crawl Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Crawl Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Crawl Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Crawl SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Crawl SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Crawl SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Crawl SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Crawl SolidMetal", "Sandstorm.rte")},
+	Prone = {[12] = CreateSoundContainer("Prone Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Prone Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Prone Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Prone Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Prone Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Prone Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Prone Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Prone Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Prone Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Prone SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Prone SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Prone SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Prone SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Prone SolidMetal", "Sandstorm.rte")},
+	TerrainImpactLight = {[12] = CreateSoundContainer("TerrainImpact Light Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("TerrainImpact Light Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("TerrainImpact Light Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("TerrainImpact Light Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("TerrainImpact Light Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("TerrainImpact Light Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("TerrainImpact Light Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("TerrainImpact Light Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("TerrainImpact Light Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("TerrainImpact Light SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("TerrainImpact Light SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("TerrainImpact Light SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("TerrainImpact Light SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("TerrainImpact Light SolidMetal", "Sandstorm.rte")},
+	TerrainImpactHeavy = {[12] = CreateSoundContainer("TerrainImpact Heavy Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("TerrainImpact Heavy Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("TerrainImpact Heavy Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("TerrainImpact Heavy Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("TerrainImpact Heavy Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("TerrainImpact Heavy Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("TerrainImpact Heavy Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("TerrainImpact Heavy Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("TerrainImpact Heavy Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("TerrainImpact Heavy SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("TerrainImpact Heavy SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("TerrainImpact Heavy SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("TerrainImpact Heavy SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("TerrainImpact Heavy SolidMetal", "Sandstorm.rte")},
+	FootstepJump = {[12] = CreateSoundContainer("Footstep Jump Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Footstep Jump Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Footstep Jump Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Footstep Jump Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Footstep Jump Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Footstep Jump Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Footstep Jump Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Footstep Jump Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Footstep Jump Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Footstep Jump SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Footstep Jump SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Footstep Jump SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Footstep Jump SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Footstep Jump SolidMetal", "Sandstorm.rte")},
+	FootstepLand = {[12] = CreateSoundContainer("Footstep Land Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Footstep Land Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Footstep Land Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Footstep Land Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Footstep Land Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Footstep Land Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Footstep Land Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Footstep Land Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Footstep Land Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Footstep Land SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Footstep Land SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Footstep Land SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Footstep Land SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Footstep Land SolidMetal", "Sandstorm.rte")},
+	FootstepWalk = {[12] = CreateSoundContainer("Footstep Walk Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Footstep Walk Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Footstep Walk Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Footstep Walk Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Footstep Walk Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Footstep Walk Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Footstep Walk Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Footstep Walk Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Footstep Walk Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Footstep Walk SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Footstep Walk SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Footstep Walk SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Footstep Walk SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Footstep Walk SolidMetal", "Sandstorm.rte")},
+	FootstepSprint = {[12] = CreateSoundContainer("Footstep Sprint Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("Footstep Sprint Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("Footstep Sprint Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("Footstep Sprint Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("Footstep Sprint Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("Footstep Sprint Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("Footstep Sprint Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("Footstep Sprint Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("Footstep Sprint Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("Footstep Sprint SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("Footstep Sprint SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("Footstep Sprint SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("Footstep Sprint SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("Footstep Sprint SolidMetal", "Sandstorm.rte")}
 	};
-	
-	self.terrainStepSoundVariations = {
-	Walk = {
-	[9] = 5,
-	[10] = 5,
-	[11] = 5,
-	[128] = 5,
-	[6] = 5,
-	[8] = 5,
-	[12] = 5,
-	[177] = 5,
-	[178] = 5,
-	[182] = 5},
-	Sprint = {
-	[9] = 5,
-	[10] = 5,
-	[11] = 5,
-	[128] = 5,
-	[6] = 5,
-	[8] = 5,
-	[12] = 5,
-	[177] = 5,
-	[178] = 5,
-	[182] = 5}	
-	};
-	
-	--
-	
 	
 	-- End modded code
+	
 end
 
 -- Start modded code --
 
--- End modded code --
+function OnStride(self)
+
+	if self.BGFoot and self.FGFoot then
+	
+		-- if math.random(0, 100) < 30 then
+			-- if self.EquippedItem and IsHDFirearm(self.EquippedItem) then
+				-- local gun = ToHDFirearm(self.EquippedItem)
+				-- if gun:NumberValueExists("Gun Rattle Type") then
+					-- if self.gunRattles[gun:GetNumberValue("Gun Rattle Type")] then
+						-- self.gunRattles[gun:GetNumberValue("Gun Rattle Type")]:Play(gun.Pos);
+					-- end
+				-- end
+			-- end	
+		-- end
+
+		local startPos = self.foot == 0 and self.BGFoot.Pos or self.FGFoot.Pos
+		self.foot = (self.foot + 1) % 2
+		
+		local pos = Vector(0, 0);
+		SceneMan:CastObstacleRay(startPos, Vector(0, 9), pos, Vector(0, 0), self.ID, self.Team, 0, 3);				
+		local terrPixel = SceneMan:GetTerrMatter(pos.X, pos.Y)
+		
+		if terrPixel ~= 0 then -- 0 = air
+			if self.isSprinting == true then
+				if self.terrainSounds.FootstepSprint[terrPixel] ~= nil then
+					self.terrainSounds.FootstepSprint[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepSprint[177]:Play(self.Pos);
+				end
+			else
+				if self.terrainSounds.FootstepWalk[terrPixel] ~= nil then
+					self.terrainSounds.FootstepWalk[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepWalk[177]:Play(self.Pos);
+				end			
+			end
+		end
+		
+	elseif self.BGFoot then
+	
+		-- if math.random(0, 100) < 30 then
+			-- if self.EquippedItem and IsHDFirearm(self.EquippedItem) then
+				-- local gun = ToHDFirearm(self.EquippedItem)
+				-- if gun:NumberValueExists("Gun Rattle Type") then
+					-- if self.gunRattles[gun:GetNumberValue("Gun Rattle Type")] then
+						-- self.gunRattles[gun:GetNumberValue("Gun Rattle Type")]:Play(gun.Pos);
+					-- end
+				-- end
+			-- end	
+		-- end
+	
+		local startPos = self.BGFoot.Pos
+		
+		local pos = Vector(0, 0);
+		SceneMan:CastObstacleRay(startPos, Vector(0, 9), pos, Vector(0, 0), self.ID, self.Team, 0, 3);				
+		local terrPixel = SceneMan:GetTerrMatter(pos.X, pos.Y)
+		
+		if terrPixel ~= 0 then -- 0 = air
+			if self.isSprinting == true then
+				if self.terrainSounds.FootstepSprint[terrPixel] ~= nil then
+					self.terrainSounds.FootstepSprint[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepSprint[177]:Play(self.Pos);
+				end
+			else
+				if self.terrainSounds.FootstepWalk[terrPixel] ~= nil then
+					self.terrainSounds.FootstepWalk[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepWalk[177]:Play(self.Pos);
+				end			
+			end
+		end
+		
+	elseif self.FGFoot then
+	
+		-- if math.random(0, 100) < 30 then
+			-- if self.EquippedItem and IsHDFirearm(self.EquippedItem) then
+				-- local gun = ToHDFirearm(self.EquippedItem)
+				-- if gun:NumberValueExists("Gun Rattle Type") then
+					-- if self.gunRattles[gun:GetNumberValue("Gun Rattle Type")] then
+						-- self.gunRattles[gun:GetNumberValue("Gun Rattle Type")]:Play(gun.Pos);
+					-- end
+				-- end
+			-- end	
+		-- end
+	
+		local startPos = self.FGFoot.Pos
+		
+		local pos = Vector(0, 0);
+		SceneMan:CastObstacleRay(startPos, Vector(0, 9), pos, Vector(0, 0), self.ID, self.Team, 0, 3);				
+		local terrPixel = SceneMan:GetTerrMatter(pos.X, pos.Y)
+		
+		if terrPixel ~= 0 then -- 0 = air
+			if self.isSprinting == true then
+				if self.terrainSounds.FootstepSprint[terrPixel] ~= nil then
+					self.terrainSounds.FootstepSprint[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepSprint[177]:Play(self.Pos);
+				end
+			else
+				if self.terrainSounds.FootstepWalk[terrPixel] ~= nil then
+					self.terrainSounds.FootstepWalk[terrPixel]:Play(self.Pos);
+				else -- default to concrete
+					self.terrainSounds.FootstepWalk[177]:Play(self.Pos);
+				end			
+			end
+		end
+		
+	end
+	
+end
 
 function OnCollideWithTerrain(self, terrainID)
 	-- let Fall sounds know to play this
@@ -788,6 +499,8 @@ function OnCollideWithTerrain(self, terrainID)
 	--	InsurgencyAIBehaviours.handleRagdoll(self)
 	--end
 end
+
+-- End modded code --
 
 function Update(self)
 
@@ -846,16 +559,7 @@ function Update(self)
 		end
 	end
 	
-	if self.voiceSound then
-		if self.voiceSound:IsBeingPlayed() then
-			self.voiceSound:SetPosition(self.Pos);
-		end
-	end
-	if self.burnLoop then
-		if self.burnLoop:IsBeingPlayed() then
-			self.burnLoop:SetPosition(self.Pos);
-		end
-	end
+	self.voiceSound.Pos = self.Pos;
 	
 	if (self.Dying ~= true) then
 		
@@ -864,8 +568,6 @@ function Update(self)
 		InsurgencyAIBehaviours.handleMovement(self);
 		
 		InsurgencyAIBehaviours.handleHealth(self);
-		
-		InsurgencyAIBehaviours.handleBurning(self);
 		
 		InsurgencyAIBehaviours.handleStaminaAndSuppression(self);
 		
@@ -880,8 +582,6 @@ function Update(self)
 		InsurgencyAIBehaviours.handleMovement(self);
 	
 		InsurgencyAIBehaviours.handleHeadLoss(self);
-		
-		InsurgencyAIBehaviours.handleBurning(self);
 		
 		--InsurgencyAIBehaviours.handleDeadAirAndFalling(self);
 		
@@ -917,12 +617,10 @@ function Destroy(self)
 	
 		if not self.ToSettle then -- we have been gibbed
 			
-			if (self.voiceSound) then
-				if (self.voiceSound:IsBeingPlayed()) then
-					self.voiceSound:Stop(-1);
-					self.voiceSound = nil;
-				end
-			end
+
+			self.voiceSound:Stop(-1);
+
+
 			--[[
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
@@ -946,15 +644,7 @@ function Destroy(self)
 			end]]
 		end
 		if self.headGibSound then
-			if self.headGibSound:IsBeingPlayed() then
-				self.headGibSound:Stop(-1)
-			end
-		end
-		if self.burnLoop then
-			if self.burnLoop:IsBeingPlayed() then
-				self.burnLoop:Stop(-1)
-				self.soundEffect = AudioMan:PlaySound("Sandstorm.rte/Actors/Shared/Sounds/ActorDamage/Burn/End1.ogg", self.Pos, -1, 0, 130, 1, 400, false);
-			end
+			self.headGibSound:Stop(-1)
 		end
 		
 	end

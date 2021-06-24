@@ -1,4 +1,7 @@
 function Create(self)
+
+	self.detonateSound = CreateSoundContainer("M112 Detonate", "SandstormSecurity.rte");
+
 	self.parentSet = false;
 	self.lastAge = self.Age + 0
 	
@@ -25,27 +28,21 @@ function Create(self)
 	-- for planting sounds
 	-- impact sounds when thrown are done on M112Set.lua
 
-	self.concreteHit = {["IDs"] = {[12] = "Exists", [177] = "Exists"},
-	["Hit"] = nil};
-	self.concreteHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactConcrete", "Sandstorm.rte");
-	
-	--
-	
-	self.dirtHit = {["IDs"] = {[9] = "Exists", [10] = "Exists", [11] = "Exists", [128] = "Exists"},
-	["Hit"] = nil};
-	self.dirtHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactDirt", "Sandstorm.rte");
-	
-	--
-	
-	self.sandHit = {["IDs"] = {[8] = "Exists"},
-	["Hit"] = nil};
-	self.sandHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactSand", "Sandstorm.rte");
-	
-	--
-	
-	self.solidMetalHit = {["IDs"] = {[178] = "Exists", [182] = "Exists"},
-	["Hit"] = nil};
-	self.solidMetalHit.Hit = CreateSoundContainer("DevicesWeaponsSharedSoundsBombM112ImpactSolidMetal", "Sandstorm.rte");
+	self.terrainSounds = {
+	Impact = {[12] = CreateSoundContainer("M112 Impact Concrete", "Sandstorm.rte"),
+			[164] = CreateSoundContainer("M112 Impact Concrete", "Sandstorm.rte"),
+			[177] = CreateSoundContainer("M112 Impact Concrete", "Sandstorm.rte"),
+			[9] = CreateSoundContainer("M112 Impact Dirt", "Sandstorm.rte"),
+			[10] = CreateSoundContainer("M112 Impact Dirt", "Sandstorm.rte"),
+			[11] = CreateSoundContainer("M112 Impact Dirt", "Sandstorm.rte"),
+			[128] = CreateSoundContainer("M112 Impact Dirt", "Sandstorm.rte"),
+			[6] = CreateSoundContainer("M112 Impact Sand", "Sandstorm.rte"),
+			[8] = CreateSoundContainer("M112 Impact Sand", "Sandstorm.rte"),
+			[178] = CreateSoundContainer("M112 Impact SolidMetal", "Sandstorm.rte"),
+			[179] = CreateSoundContainer("M112 Impact SolidMetal", "Sandstorm.rte"),
+			[180] = CreateSoundContainer("M112 Impact SolidMetal", "Sandstorm.rte"),
+			[181] = CreateSoundContainer("M112 Impact SolidMetal", "Sandstorm.rte"),
+			[182] = CreateSoundContainer("M112 Impact SolidMetal", "Sandstorm.rte")}}
 	
 end
 
@@ -165,16 +162,10 @@ function Update(self)
 
 						local terrainID = SceneMan:GetTerrMatter(hitLocation.X, hitLocation.Y);
 						--AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Attach.ogg", self.Pos, -1, 0, 130, 1, 170, false)
-						if self.dirtHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.dirtHit.Hit.Path .. math.random(1, self.dirtHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
-						elseif self.sandHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.sandHit.Hit.Path .. math.random(1, self.sandHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
-						elseif self.concreteHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
-						elseif self.solidMetalHit.IDs[terrainID] ~= nil then
-							self.hitSound = AudioMan:PlaySound(self.solidMetalHit.Hit.Path .. math.random(1, self.solidMetalHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+						if self.terrainSounds.Impact[terrainID] ~= nil then
+							self.terrainSounds.Impact[terrainID]:Play(self.Pos);
 						else -- default to concrete
-							self.hitSound = AudioMan:PlaySound(self.concreteHit.Hit.Path .. math.random(1, self.concreteHit.Hit.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 170, false);
+							self.terrainSounds.Impact[177]:Play(self.Pos);
 						end
 						
 						local set = CreateMOSRotating(self.PresetName.." Active");
@@ -265,7 +256,7 @@ function Update(self)
 			if charge then
 				ToMOSRotating(charge):SetNumberValue("Fuse", 1)
 			end
-			AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M112/Sounds/Detonate.ogg", self.Pos, -1, 0, 130, 1, 170, false);
+			self.detonateSound:Play(self.Pos);
 			self.destroy = true
 			self.destroyTimer:Reset()
 			

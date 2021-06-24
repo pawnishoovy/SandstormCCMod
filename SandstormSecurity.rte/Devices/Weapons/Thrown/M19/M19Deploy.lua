@@ -1,4 +1,8 @@
 function Create(self)
+
+	self.twistSound = CreateSoundContainer("M19 Twist", "SandstormSecurity.rte");
+	self.pullSound = CreateSoundContainer("M19 Pull", "SandstormSecurity.rte");
+
 	self.parentSet = false;
 	self.lastAge = self.Age + 0
 	
@@ -74,14 +78,14 @@ function Update(self)
 			if self.deploymentStartTimer:IsPastSimMS(self.deploymentPinPullDelay) then
 				self.deploymentPinPullDelay = 200;
 				if self.pinPulled == false then
-					AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M19/Sounds/Pull.ogg", self.Pos, -1, 0, 130, 1, 170, false);
+					self.pullSound:Play(self.Pos);
 					self.pinPulled = true;
 				end
 				if self.deploymentStartTimer:IsPastSimMS(self.deploymentDialTwistDelay) then
 					self.deploymentStartDelay = 100;
 					self.deploymentDialTwistDelay = 1000;
 					if self.dialTwisted == false then
-						AudioMan:PlaySound("SandstormSecurity.rte/Devices/Weapons/Thrown/M19/Sounds/Twist.ogg", self.Pos, -1, 0, 130, 1, 170, false);
+						self.twistSound:Play(self.Pos);
 						self.dialTwisted = true;
 					end
 					

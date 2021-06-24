@@ -1,36 +1,26 @@
 
 function Create(self)
-	local dir = "Sandstorm.rte/Devices/Weapons/Shared/Sounds/Explosion"
-	
+
 	self.addSounds = {["Outdoors"] = nil,
 	["Indoors"] = nil,
 	["bigIndoors"] = nil};		
-	self.addSounds.Outdoors = {["Variations"] = 6,
-	["Path"] = dir.."/Add/Outdoors/AddLarge"};
-	self.addSounds.Indoors = {["Variations"] = 6,
-	["Path"] = dir.."/Add/Indoors/AddIndoorsLarge"};
-	self.addSounds.bigIndoors = {["Variations"] = 6,
-	["Path"] = dir.."/Add/Indoors/AddIndoorsLarge"};
+	self.addSounds.Outdoors = CreateSoundContainer("Explosion Add Outdoors Large", "Sandstorm.rte");
+	self.addSounds.Indoors = CreateSoundContainer("Explosion Add Indoors Large", "Sandstorm.rte");
+	self.addSounds.bigIndoors = CreateSoundContainer("Explosion Add Indoors Large", "Sandstorm.rte");
 	
-	self.ambienceSounds = {["Variations"] = 7,
-	["Path"] = dir.."/Ambience/AmbienceLarge"};
+	self.ambienceSounds = CreateSoundContainer("Explosion Ambience Large", "Sandstorm.rte");
 	
 	self.reflectionSounds = {["Outdoors"] = nil,
 	["Indoors"] = nil,
 	["bigIndoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 9,
-	["Path"] = dir.."/Reflection/Outdoors/ReflectionOutdoorsLarge"};
-	self.reflectionSounds.Indoors = {["Variations"] = 5,
-	["Path"] = dir.."/Reflection/Indoors/ReflectionIndoorsLarge"};
-	self.reflectionSounds.bigIndoors = {["Variations"] = 5,
-	["Path"] = dir.."/Reflection/BigIndoors/ReflectionBigIndoorsLarge"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("Explosion Reflection Outdoors Large", "Sandstorm.rte");
+	self.reflectionSounds.Indoors = CreateSoundContainer("Explosion Reflection Indoors Large", "Sandstorm.rte");
+	self.reflectionSounds.bigIndoors = CreateSoundContainer("Explosion Reflection Big Indoors Large", "Sandstorm.rte");
 	
 	self.debrisSounds = {["Indoors"] = nil,
 	["bigIndoors"] = nil};
-	self.debrisSounds.Indoors = {["Variations"] = 5,
-	["Path"] = dir.."/Debris/Indoors/DebrisIndoorsMedium"};
-	self.debrisSounds.bigIndoors = {["Variations"] = 5,
-	["Path"] = dir.."/Debris/BigIndoors/DebrisBigIndoorsLarge"};
+	self.debrisSounds.Indoors = CreateSoundContainer("Explosion Debris Indoors Medium", "Sandstorm.rte");
+	self.debrisSounds.bigIndoors = CreateSoundContainer("Explosion Debris Big Indoors Large", "Sandstorm.rte");
 	
 	local outdoorRays = 0;
 	
@@ -67,21 +57,21 @@ function Create(self)
 	-- DEBRIS
 
 	if outdoorRays == 0 and indoorRays >= 3 then
-		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.Indoors.Path .. math.random(1, self.debrisSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.debrisSounds.Indoors:Play(self.Pos);
 	elseif outdoorRays == 0 and bigIndoorRays >= 3 then
-		self.debrisSound = AudioMan:PlaySound(self.debrisSounds.bigIndoors.Path .. math.random(1, self.debrisSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.debrisSounds.bigIndoors:Play(self.Pos);
 	end
 	
 	if outdoorRays >= 2 then
-		self.addSound = AudioMan:PlaySound(self.addSounds.Outdoors.Path .. math.random(1, self.addSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		self.ambienceSound = AudioMan:PlaySound(self.ambienceSounds.Path .. math.random(1, self.ambienceSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.Outdoors:Play(self.Pos);
+		self.ambienceSounds:Play(self.Pos);
+		self.reflectionSounds.Outdoors:Play(self.Pos);
 	elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-		self.addSound = AudioMan:PlaySound(self.addSounds.Indoors.Path .. math.random(1, self.addSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Indoors.Path .. math.random(1, self.reflectionSounds.Indoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.Indoors:Play(self.Pos);
+		self.reflectionSounds.Indoors:Play(self.Pos);
 	else -- bigIndoor
-		self.addSound = AudioMan:PlaySound(self.addSounds.bigIndoors.Path .. math.random(1, self.addSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.bigIndoors.Path .. math.random(1, self.reflectionSounds.bigIndoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.bigIndoors:Play(self.Pos);
+		self.reflectionSounds.bigIndoors:Play(self.Pos);
 	end
 	
 	self:GibThis();
