@@ -11,12 +11,12 @@ function Create(self)
 		-- we have custom sounds for this gun (awesome), dont use defaults
 	elseif self:IsInGroup("Weapons - Primary") then
 		self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
-		self.sharpAimSounds.In = CreateSoundContainer("DevicesWeaponsSharedSoundsSharpAimSharpAimIn", "Sandstorm.rte");
-		self.sharpAimSounds.Out = CreateSoundContainer("DevicesWeaponsSharedSoundsSharpAimSharpAimOut", "Sandstorm.rte");
+		self.sharpAimSounds.In = CreateSoundContainer("Sandstorm Default SharpAimIn", "Sandstorm.rte");
+		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimInOut", "Sandstorm.rte");
 	elseif self:IsInGroup("Weapons - Secondary") then
 		self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
-		self.sharpAimSounds.In = CreateSoundContainer("DevicesWeaponsSharedSoundsSharpAimSharpAimPistolIn", "Sandstorm.rte");
-		self.sharpAimSounds.Out = CreateSoundContainer("DevicesWeaponsSharedSoundsSharpAimSharpAimPistolOut", "Sandstorm.rte");
+		self.sharpAimSounds.In = CreateSoundContainer("Sandstorm Default SharpAimInPistolIn", "Sandstorm.rte");
+		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimInPistolOut", "Sandstorm.rte");
 	end
 	
 	self.sharpAiming = false;

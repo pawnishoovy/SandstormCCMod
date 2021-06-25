@@ -744,9 +744,35 @@ function SecurityAIBehaviours.handleAITargetLogic(self)
 		local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
 		local distance = posDifference.Magnitude
 		
+		
+		local isPointBlank = distance < self.spotDistanceClose/2
 		local isClose = distance < self.spotDistanceClose
 		local isMid = distance < self.spotDistanceMid 
 		local isFar = distance > self.spotDistanceMid 
+		
+		if ToActor(self.AI.Target).Health > 0 then
+			self.enemyDownEligible = true;
+		elseif self.enemyDownEligible == true and not self.AI.Target:NumberValueExists("Sandstorm Enemy Down") then
+			self.enemyDownEligible = false;
+			if math.random(0, 100) < 60 then -- do nothing some of the time, let someone else maybe call it
+				self.AI.Target:SetNumberValue("Sandstorm Enemy Down", 1);
+				if math.random(0, 100) < 60 then -- mark the target as called but do not call it another some of the time
+					if self.Suppressed then
+						if isPointBlank then
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.enemyDownCloseSuppressed, 3, 3, false);
+						else
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.enemyDownSuppressed, 3, 3, false);
+						end
+					else
+						if isPointBlank then
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.enemyDownClose, 3, 3, false);
+						else
+							SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.enemyDown, 3, 3, false);
+						end
+					end
+				end
+			end
+		end
 		
 		--[[
 		local maxi = math.floor(distance / 10)
@@ -820,6 +846,7 @@ function SecurityAIBehaviours.handleAITargetLogic(self)
 		end
 		if self.LastTargetID ~= -1 then
 			self.LastTargetID = -1
+			self.enemyDownEligible = false;
 			-- Target lost
 			--print("TARGET LOST!")
 		end
@@ -1024,8 +1051,18 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	if self:NumberValueExists("Spotted Remote") then
 		self:RemoveNumberValue("Spotted Remote");
 		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotRemote, 4, 4, false);
-		if self.Suppression < 20 then
+		if self.Suppression < 30 then
 			self.Suppression = self.Suppression + 25;
+		end
+	end
+	
+	-- SPOT ROCKET REACTION
+		
+	if self:NumberValueExists("Spotted Rocket") then
+		self:RemoveNumberValue("Spotted Rocket");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.spotRocket, 4, 4, false);
+		if self.Suppression < 40 then
+			self.Suppression = self.Suppression + 35;
 		end
 	end
 	

@@ -67,6 +67,8 @@ function Create(self)
 	self.smokeDelayTimer = Timer();
 	self.canSmoke = false
 	
+	self.searchRange = 650 + FrameMan.PlayerScreenWidth * 0.3;
+	
 	self.reloadTimer = Timer();
 	
 	self.roundLocked = true;
@@ -323,6 +325,22 @@ function Update(self)
 	end
 	
 	if self.FiredFrame then	
+
+		local searchPos = self.Pos + Vector(self.searchRange * 0.75 * self.FlipFactor, 0):RadRotate(self.RotAngle);
+		local targets = {};
+		local targetMax = math.random(1, 2);
+		for actor in MovableMan.Actors do
+			if #targets < targetMax and actor.Team ~= self.Team then
+
+				if (SceneMan:ShortestDistance(searchPos, actor.Pos, SceneMan.SceneWrapsX).Magnitude - actor.Radius) < self.searchRange
+				and SceneMan:CastObstacleRay(self.MuzzlePos, SceneMan:ShortestDistance(self.MuzzlePos, actor.Pos, SceneMan.SceneWrapsX), Vector(), Vector(), actor.ID, actor.Team, rte.airID, 10) < 0 then
+				
+					table.insert(targets, actor);
+					actor:SetNumberValue("Spotted Rocket", 1);
+				end
+			end
+		end
+	
 		self.canSmoke = true
 		self.smokeTimer:Reset()
 		

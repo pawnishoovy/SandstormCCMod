@@ -144,6 +144,16 @@ function Create(self)
 	CreateSoundContainer("SpotFrag " .. self.Identity, "SandstormInsurgency.rte"),
 	spotRemote =
 	CreateSoundContainer("SpotRemote " .. self.Identity, "SandstormInsurgency.rte"),
+	spotRocket =
+	CreateSoundContainer("SpotRocket " .. self.Identity, "SandstormInsurgency.rte"),
+	enemyDown =
+	CreateSoundContainer("EnemyDown " .. self.Identity, "SandstormInsurgency.rte"),
+	enemyDownClose =
+	CreateSoundContainer("EnemyDownClose " .. self.Identity, "SandstormInsurgency.rte"),
+	enemyDownSuppressed =
+	CreateSoundContainer("EnemyDownSuppressed " .. self.Identity, "SandstormInsurgency.rte"),
+	enemyDownCloseSuppressed =
+	CreateSoundContainer("EnemyDownCloseSuppressed " .. self.Identity, "SandstormInsurgency.rte"),
 	spotEnemy =
 	CreateSoundContainer("SpotEnemy " .. self.Identity, "SandstormInsurgency.rte"),
 	spotEnemyFar =
@@ -236,6 +246,7 @@ function Create(self)
 	self.footstepTime = 100 -- 2 Timers to avoid noise
 	self.sprintFootstepTime = 75
 	self.walkFootstepTime = 100
+	self.foot = 0;
 	
 	-- Custom Jumping
 	self.isJumping = false

@@ -1,5 +1,14 @@
 
 function Create(self)
+
+	self.ricochetSound = CreateSoundContainer("Sandstorm Ricochet", "Sandstorm.rte");
+	
+	self.subsonicFlyBy = CreateSoundContainer("Sandstorm FlyBy Subsonic", "Sandstorm.rte");
+	self.supersonicFlyBy = CreateSoundContainer("Sandstorm FlyBy Supersonic", "Sandstorm.rte");
+	self.supersonicFlyByAlt = CreateSoundContainer("Sandstorm FlyBy Supersonic Alt", "Sandstorm.rte");
+	self.supersonicIndoorsFlyBy = CreateSoundContainer("Sandstorm FlyBy Supersonic Indoors", "Sandstorm.rte");
+	self.supersonicIndoorsAltFlyBy = CreateSoundContainer("Sandstorm FlyBy Supersonic Indoors Alt", "Sandstorm.rte");
+	
 	for i = 1, math.random(1,3) do
 		local poof = CreateMOSParticle(math.random(1,2) < 2 and "Tiny Smoke Ball 1" or "Small Smoke Ball 1");
 		poof.Pos = self.Pos
@@ -94,11 +103,7 @@ function Update(self)
 				if distA < distAMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
 					self.flyby = false
 					
-					if math.random(1,3) < 2 then
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicWhizz"..math.random(1,10)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
-					else
-						AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonic"..math.random(1,10)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distAMin, true);
-					end
+					self.supersonicIndoorsFlyBy:Play(controlledActor.Pos);
 					
 					if ToActor(controlledActor).Team ~= self.Team then
 						ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
@@ -110,11 +115,7 @@ function Update(self)
 					if distB < distBMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
 						self.flyby = false
 						
-						if math.random(1,3) < 2 then
-							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAltWhizz"..math.random(1,12)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
-						else
-							AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Flyby/IndoorSupersonicAlt"..math.random(1,12)..".ogg", controlledActor.Pos, -1, 0, 90, 1, distBMin, true);
-						end
+						self.supersonicIndoorsAltFlyBy:Play(controlledActor.Pos);
 						
 						if ToActor(controlledActor).Team ~= self.Team then
 							ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
@@ -169,7 +170,7 @@ function Update(self)
 					local woundName = MO:GetEntryWoundPresetName()
 					local woundNameExit = MO:GetExitWoundPresetName()
 					hitMO = true
-					local woundOffset = (SceneMan:ShortestDistance(MO.Pos, checkOrigin + Vector(self.Vel.X, self.Vel.Y):SetMagnitude(1), SceneMan.SceneWrapsX)):RadRotate(MO.RotAngle * -1.0)
+					self.woundOffset = (SceneMan:ShortestDistance(MO.Pos, checkOrigin + Vector(self.Vel.X, self.Vel.Y):SetMagnitude(1), SceneMan.SceneWrapsX)):RadRotate(MO.RotAngle * -1.0)
 					
 					
 					-- epic pawnis armorpen
@@ -211,7 +212,7 @@ function Update(self)
 							maxi = self.modifiedWounds;
 						end
 						if math.random(1,4) <= maxi then
-							MO:AddWound(CreateAEmitter("Sandstorm Blood Taint"), woundOffset, true)
+							MO:AddWound(CreateAEmitter("Sandstorm Blood Taint"), self.woundOffset, true)
 						end
 					elseif string.find(MO.Material.PresetName,"Metal") or (woundName and string.find(woundName,"Dent")) or (woundNameExit and string.find(woundNameExit,"Dent")) then
 						hitGFXType = 5
@@ -283,7 +284,7 @@ function Update(self)
 						else
 							canDamage = true
 							if diff.Magnitude < 1.7 and ((self.smoke and math.random(1,4) <= 2) or self.alwaysTracer) then
-								AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Bullet/Ricochet/Ricochet"..math.random(1,10)..".ogg", self.Pos);
+								self.ricochetSound:Play(self.Pos);
 							end
 						end
 					else
@@ -304,9 +305,13 @@ function Update(self)
 					maxi = self.modifiedWounds;
 				end
 				if self.bluntDamage then
+					local woundName = self.MOHit:GetEntryWoundPresetName()
+					local woundNameExit = self.MOHit:GetExitWoundPresetName()
+					self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
 					if self.modifiedDamage > 0 then
 						local actor = ToActor(self.MOHit:GetRootParent());
-						--actor.Health = actor.Health - self.modifiedDamage;
+						actor.Health = actor.Health - self.modifiedDamage;
+						actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
 					end
 				else
 					for i = 1, maxi do
@@ -316,27 +321,31 @@ function Update(self)
 						pixel.Mass = self.Mass
 						pixel.Pos = self.Pos - Vector(self.Vel.X,self.Vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
 						pixel.Team = self.Team
-						pixel.IgnoresTeamHits = true;
+						--pixel.IgnoresTeamHits = true;
 						MovableMan:AddParticle(pixel);
 						
 						-- we assume in the following code that the wound's burstdamage is 5.
 						if self.useArmorSystem then
+							local woundName = self.MOHit:GetEntryWoundPresetName()
+							local woundNameExit = self.MOHit:GetExitWoundPresetName()
+							self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
 							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
-							pixel:SetWhichMOToNotHit(self.MOHit, -1)
-							print(self.MOHit.PresetName)
+							pixel:SetWhichMOToNotHit(ToAttachable(self.MOHit), -1)
+							-- print(self.MOHit.PresetName)
+							
 						else
 							pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
 						end
 					end
 				end
-				--[[
-				if self.MOHit then
-					print("hitmo: " .. tostring(self.MOHit))
-				end
-				print("armorsystem: " .. tostring(self.useArmorSystem))
-				print("blunt: " .. tostring(self.bluntDamage))
-				print("modified damage: " .. tostring(self.modifiedDamage))
-				print("modified wounds: " .. tostring(self.modifiedWounds))]]
+				
+				-- if self.MOHit then
+					-- print("hitmo: " .. tostring(self.MOHit))
+				-- end
+				-- print("armorsystem: " .. tostring(self.useArmorSystem))
+				-- print("blunt: " .. tostring(self.bluntDamage))
+				-- print("modified damage: " .. tostring(self.modifiedDamage))
+				-- print("modified wounds: " .. tostring(self.modifiedWounds))
 				
 				local effect = CreateMOSRotating(hitGFXType == 0 and "Real Bullet Hit Effect Default" or hitGFX[hitGFXType]);
 				if effect then
