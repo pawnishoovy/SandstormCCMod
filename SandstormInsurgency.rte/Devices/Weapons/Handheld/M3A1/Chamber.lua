@@ -151,14 +151,6 @@ function Update(self)
 		end
 	end
 	
-	if (not self.backFrame) and (not self.delayedFiring) and (not self.firingAnim) and (not self:IsReloading()) then
-		if self.boltFire == true then
-			self.firingAnim = true;
-		else
-			self.Frame = 5;
-		end
-	end
-	
     -- Smoothing
     local min_value = -math.pi;
     local max_value = math.pi;

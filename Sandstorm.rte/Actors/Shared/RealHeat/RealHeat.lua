@@ -72,6 +72,7 @@ function Update(self)
 				self.loopSound:Play(self.Pos);
 				self.HeatBurning = true
 			elseif self.HeatDamageAccumulated > self.HeatDamageAccumulatedMax then
+				self.parent:SetNumberValue("Burn Pain", self.Heat)
 				self.parent.Health = self.parent.Health - (self.HeatDamageAccumulated / self.HeatDamageAccumulatedMax) * self.HeatDamage
 				self.singeSound:Play(self.Pos);
 				self.HeatDamageAccumulated = 0

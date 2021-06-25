@@ -5,48 +5,62 @@ function Create(self)
 	self.Frame = 2;
 
 	-- Sounds --
-	self.preSounds = {["Variations"] = 1,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/Pre"};	
+	
+	self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
+	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn UZI", "SandstormInsurgency.rte");
+	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut UZI", "SandstormInsurgency.rte");	
+	
+	self.preSound = CreateSoundContainer("Pre UZI", "SandstormInsurgency.rte");
+	self.boltDropSound = CreateSoundContainer("BoltDrop UZI", "SandstormInsurgency.rte");
 	
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.addSounds.Start = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/AddStart"};
-	self.addSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/Add"};
+	self.addSounds.Start = CreateSoundContainer("AddStart UZI", "SandstormInsurgency.rte");
+	self.addSounds.Loop = CreateSoundContainer("Add UZI", "SandstormInsurgency.rte");
 	
 	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.bassSounds.Start = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/BassStart"};
-	self.bassSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/Bass"};
+	self.bassSounds.Start = CreateSoundContainer("BassStart UZI", "SandstormInsurgency.rte");
+	self.bassSounds.Loop = CreateSoundContainer("Bass UZI", "SandstormInsurgency.rte");
 	
 	self.mechSounds = {["Start"] = nil, ["Loop"] = nil, ["End"] = nil};
-	self.mechSounds.Start = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/MechStart"};
-	self.mechSounds.Loop = {["Variations"] = 15,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/Mech"};
-	self.mechSounds.End = {["Variations"] = 1,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/MechEnd"};
+	self.mechSounds.Start = CreateSoundContainer("MechStart UZI", "SandstormInsurgency.rte");
+	self.mechSounds.Loop = CreateSoundContainer("Mech UZI", "SandstormInsurgency.rte");
+	self.mechSounds.End = CreateSoundContainer("MechEnd UZI", "SandstormInsurgency.rte");
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.Loop = {["Variations"] = 13,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseOutdoors"};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseIndoors"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.Loop = {["Variations"] = 5,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseBigIndoors"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/NoiseBigIndoorsEnd"};
+	self.noiseSounds.Outdoors.Loop = CreateSoundContainer("Noise Outdoors", "Sandstorm.rte");
+	self.noiseSounds.Outdoors.Loop.Pitch = 1.2;
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("Noise OutdoorsEnd", "Sandstorm.rte");
+	self.noiseSounds.Outdoors.End.Pitch = 1.2;
+	self.noiseSounds.Indoors.Loop = CreateSoundContainer("Noise Indoors", "Sandstorm.rte");
+	self.noiseSounds.Indoors.Loop.Pitch = 1.2;
+	self.noiseSounds.Indoors.End = CreateSoundContainer("Noise IndoorsEnd", "Sandstorm.rte");
+	self.noiseSounds.Indoors.End.Pitch = 1.2;
+	self.noiseSounds.bigIndoors.Loop = CreateSoundContainer("Noise BigIndoors", "Sandstorm.rte");
+	self.noiseSounds.bigIndoors.Loop.Pitch = 1.2;
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("Noise BigIndoorsEnd", "Sandstorm.rte");
+	self.noiseSounds.bigIndoors.End.Pitch = 1.2;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/CompliSoundV2/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("Noise ReflectionOutdoors", "Sandstorm.rte");
+	self.reflectionSounds.Outdoors.Pitch = 1.2
+	
+	self.reloadPrepareSounds = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltBack"] = nil, ["BoltForward"] = nil}
+	self.reloadPrepareSounds.MagOut = CreateSoundContainer("MagOutPrepare UZI", "SandstormInsurgency.rte");
+	self.reloadPrepareSounds.MagIn = CreateSoundContainer("MagInPrepare UZI", "SandstormInsurgency.rte");
+	self.reloadPrepareSounds.BoltBack = CreateSoundContainer("BoltBackPrepare UZI", "SandstormInsurgency.rte");
+	
+	self.reloadPrepareLengths = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltBack"] = nil, ["BoltForward"] = nil}
+	self.reloadPrepareLengths.MagOut = 500;
+	self.reloadPrepareLengths.MagIn = 100;
+	self.reloadPrepareLengths.BoltBack = 120;
+	
+	self.reloadAfterSounds = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltBack"] = nil, ["BoltForward"] = nil}
+	self.reloadAfterSounds.MagOut = CreateSoundContainer("MagOut UZI", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.MagIn = CreateSoundContainer("MagIn UZI", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.BoltBack = CreateSoundContainer("BoltBack UZI", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.BoltForward = CreateSoundContainer("BoltForward UZI", "SandstormInsurgency.rte");
 
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(self.SharpStanceOffset.X, self.SharpStanceOffset.Y)
@@ -64,6 +78,22 @@ function Create(self)
 	self.smokeTimer = Timer();
 	self.smokeDelayTimer = Timer();
 	self.canSmoke = false
+	
+	self.fireTime = 1 / (self.RateOfFire / 60) * 1000
+	
+	self.ROFNum = self.fireTime * 0.65
+	self.ROFNum2 = self.fireTime * 0.10
+	self.boltDelay = 20
+	
+	self.boltDelayNum = self.boltDelay
+	
+	self.delayedFiring = false
+	self.delayedFireTimer = Timer()
+	self.delayedFireDelay = self.boltDelay
+	self.triggerPulled = false
+	
+	self.boltAnimTimer = Timer()
+	self.miscTimer = Timer() -- i know, not descriptive :(
 	
 	self.reloadTimer = Timer();
 	
@@ -130,14 +160,6 @@ function Update(self)
 		end
 	end
 	
-	if (not self.backFrame) and (not self.delayedFiring) and (not self.firingAnim) and (not self:IsReloading()) then
-		if self.boltFire == true then
-			self.firingAnim = true;
-		else
-			self.Frame = 2;
-		end
-	end
-	
     -- Smoothing
     local min_value = -math.pi;
     local max_value = math.pi;
@@ -169,21 +191,25 @@ function Update(self)
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle),  13);
 	--PrimitiveMan:DrawLinePrimitive(self.Pos, self.Pos + Vector(15 * self.FlipFactor,0):RadRotate(self.RotAngle + (self.angVel * 0.05)),  5);
 	
+	if (not self.backFrame) and (not self.delayedFiring) and (not self.firingAnim) and (not self:IsReloading()) then
+		if self.boltFire == true then
+			self.firingAnim = true
+		else
+			self.Frame = 2
+		end
+	end
+	
 	if self:IsReloading() then
 	
 		if self.boltFire then
 			self.boltFire = false;
-			if self.mechEndSound then
-				if self.mechEndSound:IsBeingPlayed() then
-					self.mechEndSound:Stop(-1)
-				end
+			if self.boltDropSound then
+				self.boltDropSound:Play(self.Pos);
 			end
-			self.toMechEnd = false;
-			self.mechEndSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/BoltDrop.ogg", self.Pos, -1, 0, 130, 1, 350, false);
 			self.chamberOnReload = true;
 		end
 		
-		if (not self.chamberOnReload) and (not self.firstShot) and (not self.boltFire) and self:IsActivated() and self.smokeTimer:IsPastSimMS(66) then
+		if (not self.chamberOnReload) and (not self.boltFirstShot) and (not self.boltFire) and activated and self.miscTimer:IsPastSimMS(self.ROFNum) then
 			self.firingAnim = true;
 			self.boltAnimTimer:Reset();
 			self.boltFire = true;
@@ -191,50 +217,47 @@ function Update(self)
 		
 		if self.chamberOnReload and (not self.firingAnim) then
 			self.Frame = 0;
-		else
-			self.Frame = 2;
 		end
 		
 		if self.parent then
 			self.parent:GetController():SetState(Controller.AIM_SHARP,false);
-		end
-		
-		if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
-			local color = (self.reloadPhase == 0 and 105 or 120)
-			local offset = Vector(0, 36)
-			local position = self.parent.AboveHUDPos + offset
-			
-			local mini = 0
-			local maxi = 4
-			
-			local lastVecA = Vector(0, 0)
-			local lastVecB = Vector(0, 0)
-			
-			local bend = math.rad(9)
-			local step = 2.5
-			local width = 2
-			
-			position = position + Vector(0, step * maxi * -0.5)
-			for i = mini, maxi do
+			if not self:NumberValueExists("MagRemoved") and self.parent:IsPlayerControlled() then
+				local color = (self.reloadPhase == 0 and 105 or 120)
+				local offset = Vector(0, 36)
+				local position = self.parent.AboveHUDPos + offset
 				
-				local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
-				local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+				local mini = 0
+				local maxi = 4
 				
-				-- Jitter fix
-				vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
-				vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
-				position = Vector(math.floor(position.X), math.floor(position.Y))
+				local lastVecA = Vector(0, 0)
+				local lastVecB = Vector(0, 0)
 				
-				if i ~= mini then
-					PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
-					PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
+				local bend = math.rad(9)
+				local step = 2.5
+				local width = 2
+				
+				position = position + Vector(0, step * maxi * -0.5)
+				for i = mini, maxi do
+					
+					local vecA = Vector(width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+					local vecB = Vector(-width, 0):RadRotate(bend * i) + Vector(0, step * i):RadRotate(bend * i)
+					
+					-- Jitter fix
+					vecA = Vector(math.floor(vecA.X), math.floor(vecA.Y))
+					vecB = Vector(math.floor(vecB.X), math.floor(vecB.Y))
+					position = Vector(math.floor(position.X), math.floor(position.Y))
+					
+					if i ~= mini then
+						PrimitiveMan:DrawLinePrimitive(position + vecA, position + lastVecA, color);
+						PrimitiveMan:DrawLinePrimitive(position + vecB, position + lastVecB, color);
+					end
+					if i == mini or i == maxi then
+						PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
+					end
+					
+					lastVecA = Vector(vecA.X, vecA.Y)
+					lastVecB = Vector(vecB.X, vecB.Y)
 				end
-				if i == mini or i == maxi then
-					PrimitiveMan:DrawLinePrimitive(position + vecA, position + vecB, color);
-				end
-				
-				lastVecA = Vector(vecA.X, vecA.Y)
-				lastVecB = Vector(vecB.X, vecB.Y)
 			end
 		end
 	
@@ -242,20 +265,19 @@ function Update(self)
 			self.reloadDelay = self.magOutPrepareDelay;
 			self.afterDelay = self.magOutAfterDelay;
 			
-			self.prepareSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/MagOutPrepare";
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/MagOut";
+			self.prepareSound = self.reloadPrepareSounds.MagOut;
+			self.prepareSoundLength = self.reloadPrepareLengths.MagOut;
+			self.afterSound = self.reloadAfterSounds.MagOut;
 			
 			self.rotationTarget = -5 * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.magInPrepareDelay;
 			self.afterDelay = self.magInAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/MagInPrepare";
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/MagIn";
+
+			self.prepareSound = self.reloadPrepareSounds.MagIn;
+			self.prepareSoundLength = self.reloadPrepareLengths.MagIn;
+			self.afterSound = self.reloadAfterSounds.MagIn;
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
@@ -263,10 +285,10 @@ function Update(self)
 			self.Frame = 0;
 			self.reloadDelay = self.boltBackPrepareDelay;
 			self.afterDelay = self.boltBackAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/BoltGrab";
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/BoltBack";
+
+			self.prepareSound = self.reloadPrepareSounds.BoltBack;
+			self.prepareSoundLength = self.reloadPrepareLengths.BoltBack;
+			self.afterSound = self.reloadAfterSounds.BoltBack;
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 			
@@ -274,20 +296,25 @@ function Update(self)
 			self.Frame = 4;
 			self.reloadDelay = self.boltForwardPrepareDelay;
 			self.afterDelay = self.boltForwardAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/UZI/Sounds/BoltForward";
+
+			self.prepareSound = nil;
+			self.prepareSoundLength = 0;
+			self.afterSound = self.reloadAfterSounds.BoltForward;
 			
 			self.rotationTarget = 15-- * self.reloadTimer.ElapsedSimTimeMS / (self.reloadDelay + self.afterDelay)
 
 		end
 		
-		if self.prepareSoundPlayed ~= true then
+		if self.prepareSoundPlayed ~= true
+		and self.reloadTimer:IsPastSimMS(self.reloadDelay - self.prepareSoundLength) then
 			self.prepareSoundPlayed = true;
-			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+			if self.prepareSound then
+				self.prepareSound:Play(self.Pos);
 			end
 		end
+		
+		if self.prepareSound then self.prepareSound.Pos = self.Pos; end
+		self.afterSound.Pos = self.Pos;
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 		
@@ -327,16 +354,13 @@ function Update(self)
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
 					fake.HFlipped = self.HFlipped;
+					fake:SetStringValue("MagazineType", "Small Metal");
 					MovableMan:AddParticle(fake);
 					
 					self.verticalAnim = self.verticalAnim + 1
 				elseif self.reloadPhase == 1 then
 					if self.chamberOnReload then
 						self.phaseOnStop = 2;
-					else
-						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
-						self.reloadPhase = 0;
-						self.phaseOnStop = nil;
 					end
 					self:RemoveNumberValue("MagRemoved");
 					
@@ -348,8 +372,8 @@ function Update(self)
 				end
 			
 				self.afterSoundPlayed = true;
-				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+				if self.afterSound then
+					self.afterSound:Play(self.Pos);
 				end
 			end
 			if self.reloadTimer:IsPastSimMS(self.reloadDelay + self.afterDelay) then
@@ -368,6 +392,11 @@ function Update(self)
 			end
 		end
 	else
+		if self.chamberOnReload then
+			self.Frame = 0;
+		elseif (not self.backFrame) and (not self.firingAnim) then
+			self.Frame = 2;
+		end	
 		self.rotationTarget = 0
 		self.reloadTimer:Reset();
 		self.prepareSoundPlayed = false;
@@ -380,26 +409,29 @@ function Update(self)
 	end
 	
 	if self:DoneReloading() == true then
-		self.chamberOnReload = false;
+		self.chamberOnReload = false
+		self:Deactivate(); -- fix a few weirdnesses
 	end
 	
-	-- delayed fire
+	local activated = self:IsActivated();
+	
 	if self.delayedFiring == true then
 		if self.delayedFireTimer:IsPastSimMS(self.delayedFireDelay) then   
-			self:Activate();    
-			self.delayedFiring = false;
+			self:Activate()
+			self.delayedFiring = false
 		else            
-			self:Deactivate(); 
+			self:Deactivate()
 		end
-	elseif self.Magazine and self.Magazine.RoundCount > 0 and self:IsActivated() and (not self:IsReloading()) and self.firstShot == true then      
+	elseif self.Magazine and self.Magazine.RoundCount > 0 and activated and (not self:IsReloading()) and self.boltFirstShot == true then      
 		if self.triggerPulled == false then        
-			self:Deactivate();          
-			self.delayedFiring = true;        
-			self.triggerPulled = true;      
-			self.delayedFireTimer:Reset();    
-			self.firingAnim = true;
-			self.boltAnimTimer:Reset();
-			self.preSound = AudioMan:PlaySound(self.preSounds.Path .. math.random(1, self.preSounds.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self:Deactivate()     
+			self.delayedFiring = true       
+			self.triggerPulled = true   
+			self.delayedFireTimer:Reset()  
+			self.firingAnim = true
+			self.boltDelayNum = self.delayedFireDelay--self.boltDelay / self.boltSpeedShotFirst
+			self.boltAnimTimer:Reset()
+			self.preSound:Play(self.Pos)
 		end
 	else    
 		self.triggerPulled = false;
@@ -407,11 +439,20 @@ function Update(self)
 	
 	if self.backFrame == true then
 		self.firingAnim = false;
-		if self.boltAnimTimer:IsPastSimMS((100/20)*4) then
-			self.Frame = 2;
-			self.backFrame = false;
-		elseif self.boltAnimTimer:IsPastSimMS((100/20)*2) then
-			self.Frame = 1;
+		local minTime = 0
+		local maxTime = self.ROFNum2 * 5
+		
+		local factor = math.pow(math.min(math.max(self.boltAnimTimer.ElapsedSimTimeMS - minTime, 0) / maxTime, 1), 1)
+
+		self.Frame = 0 + math.floor((factor) * 6 + 0.5)
+		
+		if self.Frame >= 2 then
+			self.backFrame = false
+			if activated then
+				self.firingAnim = true
+				self.boltFire = true
+			end
+			self.boltAnimTimer:Reset()
 		end
 	end
 	
@@ -447,31 +488,15 @@ function Update(self)
 			end
 		end
 		
-		self.boltFire = false;
+		self.boltDelayNum = self.fireTime * 0.6--self.boltDelay / self.boltSpeedShot
+	
 		self.Frame = 0;
+		
+		self.boltFire = false;
+		self.miscTimer:Reset();
 		self.boltAnimTimer:Reset();
 		
-		if self.mechEndSound then
-			if self.mechEndSound:IsBeingPlayed() then
-				self.mechEndSound:Stop(-1)
-			end
-		end
-		
 		self.backFrame = true;
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
-		
-		self.toMechEnd = true;
 		
 		--local Effect = CreateMOSParticle("Tiny Smoke Ball 1", "Base.rte")
 		--Effect.Pos = self.MuzzlePos;
@@ -521,56 +546,71 @@ function Update(self)
 			end
 		end
 		
-		--self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-		
 		if outdoorRays >= self.rayThreshold then
-			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.Loop.Path .. math.random(1, self.noiseSounds.Outdoors.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Outdoors.Loop:Play(self.Pos);
+			self.noiseSounds.Outdoors.End:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.Indoors.Loop.Path .. math.random(1, self.noiseSounds.Indoors.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Indoors.Loop:Play(self.Pos);
+			self.noiseSounds.Indoors.End:Play(self.Pos);
 		else -- bigIndoor
-			self.noiseSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.Loop.Path .. math.random(1, self.noiseSounds.bigIndoors.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.bigIndoors.Loop:Play(self.Pos);
+			self.noiseSounds.bigIndoors.End:Play(self.Pos);
 		end
+
 		
 		if self.firstShot == true then
 			self.firstShot = false;
 			
-			self.bassSound = AudioMan:PlaySound(self.bassSounds.Start.Path .. math.random(1, self.bassSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.mechSound = AudioMan:PlaySound(self.mechSounds.Start.Path .. math.random(1, self.mechSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.addSound = AudioMan:PlaySound(self.addSounds.Start.Path .. math.random(1, self.addSounds.Start.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.mechSounds.Start:Play(self.Pos);
+			self.addSounds.Start:Play(self.Pos);
+			self.bassSounds.Start:Play(self.Pos);
 		else
-			self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.mechSound = AudioMan:PlaySound(self.mechSounds.Loop.Path .. math.random(1, self.mechSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.mechSounds.Loop:Play(self.Pos);
+			self.addSounds.Loop:Play(self.Pos);
+			self.bassSounds.Loop:Play(self.Pos);
 		end
 
 	end
 	
 	if self.toMechEnd == true and (not self:IsActivated()) then
 		self.toMechEnd = false;
-		self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.mechSounds.End:Play(self.Pos);
 	end
 
-	if not self:IsActivated() and self.smokeTimer:IsPastSimMS(100) then -- reused timer
-		self.firstShot = true;
+	if not activated and self.miscTimer:IsPastSimMS(100) then
+		self.boltFirstShot = true;
 		if self.toMechEnd == true then
 			self.toMechEnd = false;
-			self.mechEndSound = AudioMan:PlaySound(self.mechSounds.End.Path .. math.random(1, self.mechSounds.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.mechSounds.End:Play(self.Pos);
 		end
-	elseif (not self.chamberOnReload) and (not self.firstShot) and (not self.boltFire) and self:IsActivated() and self.smokeTimer:IsPastSimMS(66) then
+	elseif (not self.chamberOnReload) and (not self.boltFirstShot) and (not self.boltFire) and activated and self.miscTimer:IsPastSimMS(self.ROFNum) then
 		self.boltFire = true;
 		self.firingAnim = true;
 		self.boltAnimTimer:Reset();
+	else
+		self.boltFirstShot = false;
 	end
 	
 	if self.firingAnim == true and (not self.backFrame) then
-		if self.boltAnimTimer:IsPastSimMS((100/7)*1) then
-			self.Frame = 1;
-			self.firingAnim = false;
+		local minTime = 0
+		local maxTime = self.boltDelayNum
+		
+		local factor = math.pow(math.min(math.max(self.boltAnimTimer.ElapsedSimTimeMS - minTime, 15) / maxTime, 1), 1)
+		
+		--PrimitiveMan:DrawLinePrimitive(parent.Pos + Vector(0, -25), parent.Pos + Vector(0, -25) + Vector(0, -25):RadRotate(math.pi * (factor - 0.5)), 122);
+		
+		--self.FrameLocal = self.FrameRange - math.floor((factor) * self.FrameRange + 0.5)
+		self.Frame = 1 + math.floor((1 - factor) * 6 + 0.5)
+		--self.FrameLocal = math.floor((1 - factor) * (self.FrameRange) + 0.5)
+		
+		if self.Frame == 1 then
+			self.firingAnim = false
+			self.boltAnimTimer:Reset()
 		end
+	end
+	
+	if not self.backFrame and not self.firingAnim then
+		self.boltAnimTimer:Reset()
 	end
 	
 	-- Animation

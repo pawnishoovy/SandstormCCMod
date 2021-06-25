@@ -1,47 +1,78 @@
 function Create(self)
 	
-	self.preDelay = 50
-	self.preFireTimer = Timer()
-	self.preFire = false
-	self.preFireFired = false
-	self.preFireActive = false
+	self.parentSet = false;
+	
+	self.delayedFire = false
+	self.delayedFireTimer = Timer();
+	self.delayedFireTimeMS = 50
+	self.delayedFireEnabled = true
+	
+	self.lastAge = self.Age + 0
+	
+	self.fireDelayTimer = Timer()
 	
 	if self:NumberValueExists("DelayedFireTimeMS") then
-		self.preDelay = self:GetNumberValue("DelayedFireTimeMS")
+		self.delayedFireTimeMS = self:GetNumberValue("DelayedFireTimeMS")
 		self:RemoveNumberValue("DelayedFireTimeMS")
 	end
 	
+	self.activated = false
+	
+	local ms = 1 / (self.RateOfFire / 60) * 1000
+	ms = ms + self.delayedFireTimeMS
 end
 function Update(self)
 	
-	if (self.Magazine and self.Magazine.RoundCount > 0 and not self:IsReloading()) then
-		local active = self:IsActivated() and not self.Chamber and not self.Deploy
-		--if (active or self.preFire) and (self.fireTimer:IsPastSimMS(60000/self.RateOfFire) or self.preFireTimer:IsPastSimMS(self.preDelay)) then
-		if active or self.preFire then
-			if not self.preFireActive then
-				self.preSound:Play(self.Pos)
-				self.preFire = true
-				self.preFireActive = true
-			end
-			
-			if self.preFireTimer:IsPastSimMS(self.preDelay) then
-				if self.FiredFrame then
-					self.preFireFired = false
-					self.preFire = false
-				elseif not self.preFireFired then
-					self:Activate()
+	-- Check if switched weapons/hide in the inventory, etc.
+	if self.Age > (self.lastAge + TimerMan.DeltaTimeSecs * 2000) then
+		if self.delayedFire then
+			self.delayedFire = false
+		end
+		self.fireDelayTimer:Reset()
+	end
+	self.lastAge = self.Age + 0
+	
+	if self:DoneReloading() or self:IsReloading() then
+		self.fireDelayTimer:Reset()
+	end
+	
+	local fire = self:IsActivated()
+
+	if self.parent and self.delayedFirstShot == true then
+		self:Deactivate()
+		
+		--if self.parent:GetController():IsState(Controller.WEAPON_FIRE) and not self:IsReloading() then
+		if fire and not self:IsReloading() then
+			if not self.Magazine or self.Magazine.RoundCount < 1 then
+				--self:Reload()
+				self:Activate()
+			elseif not self.activated and not self.delayedFire and (self.Chamber == nil or self.Chamber == false) and self.fireDelayTimer:IsPastSimMS(1 / (self.RateOfFire / 60) * 1000) then
+				self.activated = true
+				
+				if self.preSound then
+					self.preSound:Play(self.Pos);
 				end
 				
-			else
-				self:Deactivate()
+				self.fireDelayTimer:Reset()
+				
+				self.delayedFire = true
+				self.delayedFireTimer:Reset()
 			end
 		else
-			self.preFireActive = active
-			self.preFireTimer:Reset()
+			if self.activated then
+				self.activated = false
+			end
 		end
-	else
-		self.preFireFired = false
-		self.preFire = false
+	elseif fire == false then
+		self.delayedFirstShot = true;
+	end
+	
+	if self.delayedFire and self.delayedFireTimer:IsPastSimMS(self.delayedFireTimeMS) then
+		self:Activate()
+		self.delayedFire = false
+		if self.FullAuto == true then
+			self.delayedFirstShot = false;
+		end
 	end
 	
 end

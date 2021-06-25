@@ -1,17 +1,17 @@
 function Create(self)
+	
+	self.idleBurnSound = CreateSoundContainer("Sandstorm Cocktail Molotov IdleBurn", "SandstormInsurgency.rte");
+	
 	self.Scale = 0;
 end
 function Update(self)
 	local parent = self:GetParent();
+	self.idleBurnSound.Pos = self.Pos;
 	if parent then
 		if self.lit then
 			if not self.burnLoop then
-				self.burnLoop = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CocktailMolotov/Sounds/IdleBurn.ogg", self.Pos, -1, -1, 130, 1, 400, false);
-			end
-			if self.burnLoop then
-				if self.burnLoop:IsBeingPlayed() then
-					self.burnLoop:SetPosition(self.Pos);
-				end
+				self.burnLoop = true;
+				self.idleBurnSound:Play(self.Pos);
 			end
 			self.Scale = 1;
 			if math.random() < 0.3 then
@@ -32,7 +32,5 @@ function Update(self)
 	end
 end
 function Destroy(self)
-	if self.burnLoop and self.burnLoop:IsBeingPlayed() then
-		self.burnLoop:Stop(-1);
-	end
+	self.idleBurnSound:Stop(-1);
 end

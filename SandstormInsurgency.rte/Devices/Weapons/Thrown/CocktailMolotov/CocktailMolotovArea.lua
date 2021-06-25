@@ -1,7 +1,11 @@
 function Create(self)
+
+	self.burnLoopSound = CreateSoundContainer("Explosion Specialty Molotov Loop", "Sandstorm.rte");
+	self.burnEndSound = CreateSoundContainer("Explosion Specialty Molotov End", "Sandstorm.rte");
+	self.playBurnEnd = true;
 	
-	self.startSound = AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Explosion/Specialty/Molotov/Start1.ogg", self.Pos, -1, 0, 130, 1, 450, false);
-	
+	self.burnLoopSound:Play(self.Pos);
+
 	self.burnTime = self.Lifetime - 1000
 	
 	self.GFXDelayMin = 100
@@ -42,20 +46,18 @@ function Create(self)
 	self.loopTimer = Timer()
 end
 function Update(self)
+
+	self.burnLoopSound.Pos = self.Pos;
 	
 	--PrimitiveMan:DrawCirclePrimitive(self.Pos, self.fuelRange, 5)
 	
 	if self.Age > self.burnTime then
 		self.ToDelete = true
-	elseif self.Age > (self.burnTime - 3000) then
-		if (not self.loopSound or not self.loopSound:IsBeingPlayed() or self.loopTimer:IsPastSimMS(2480)) and not self.endSound then
-			self.endSound = AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Explosion/Specialty/Molotov/End1.ogg", self.Pos, -1, 0, 130, 1, 450, false)
-		end
-	else
-		if not self.loopSound or not self.loopSound:IsBeingPlayed() or self.loopTimer:IsPastSimMS(2480) then
-		--if self.loopTimer:IsPastSimMS(2500) then
-			self.loopSound = AudioMan:PlaySound("Sandstorm.rte/Devices/Weapons/Shared/Sounds/Explosion/Specialty/Molotov/Loop"..math.random(1,6)..".ogg", self.Pos, -1, 0, 130, 1, 450, false)
-			self.loopTimer:Reset()
+	elseif self.Age > (self.burnTime - 2000) then
+		if self.playBurnEnd == true then
+			self.playBurnEnd = false;
+			self.burnLoopSound:FadeOut(500);
+			self.burnEndSound:Play(self.Pos);
 		end
 	end
 	

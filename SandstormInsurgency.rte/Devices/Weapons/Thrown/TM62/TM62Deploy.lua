@@ -1,4 +1,8 @@
 function Create(self)
+
+	self.pullSound = CreateSoundContainer("TM62 Pull", "SandstormInsurgency.rte");
+	self.pullHarderSound = CreateSoundContainer("TM62 PullHarder", "SandstormInsurgency.rte");
+
 	self.parentSet = false;
 	self.lastAge = self.Age + 0
 	
@@ -74,14 +78,14 @@ function Update(self)
 			if self.deploymentStartTimer:IsPastSimMS(self.deploymentPinPullDelay) then
 				self.deploymentPinPullDelay = 200;
 				if self.pinPulled == false then
-					AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/TM62/Sounds/Pull.ogg", self.Pos, -1, 0, 130, 1, 170, false);
+					self.pullSound:Play(self.Pos);
 					self.pinPulled = true;
 				end
 				if self.deploymentStartTimer:IsPastSimMS(self.deploymentPullHarderDelay) then
 					self.deploymentStartDelay = 100;
 					self.deploymentPullHarderDelay = 1000;
 					if self.PullHardered == false then
-						AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/TM62/Sounds/PullHarder.ogg", self.Pos, -1, 0, 130, 1, 170, false);
+						self.pullHarderSound:Play(self.Pos);
 						self.PullHardered = true;
 					end
 					

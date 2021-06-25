@@ -301,6 +301,7 @@ function Update(self)
 					fake.RotAngle = self.RotAngle;
 					fake.AngularVel = self.AngularVel + (-1*self.FlipFactor);
 					fake.HFlipped = self.HFlipped;
+					fake:SetStringValue("MagazineType", "Rifle Metal");
 					MovableMan:AddParticle(fake);
 					
 					self.verticalAnim = self.verticalAnim + 1

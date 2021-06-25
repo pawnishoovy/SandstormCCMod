@@ -1,18 +1,24 @@
 
 function Create(self)
+
+	self.lighterOpenSound = CreateSoundContainer("Sandstorm Cocktail Molotov LighterOpen", "SandstormInsurgency.rte");
+	self.throwSound = CreateSoundContainer("Sandstorm Cocktail Molotov Throw", "SandstormInsurgency.rte");
+
+	self.explodeSound = CreateSoundContainer("Explosion Specialty Molotov Start", "Sandstorm.rte");
+
 	self.origMass = self.Mass;
 	self.lastVel = 0;
 	
 	self.Frame = math.random(0, self.FrameCount - 1);
 end
 function OnAttach(self)
-	self.lighterSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CocktailMolotov/Sounds/LighterOpen.ogg", self.Pos, -1, 0, 130, 1, 450, false);
+	self.lighterOpenSound:Play(self.Pos);
 end
 function Update(self)
 	if not self:IsAttached() and self.Live then
 		if not self.Thrown then
 			self.Thrown = true;
-			self.throwSound = AudioMan:PlaySound("SandstormInsurgency.rte/Devices/Weapons/Thrown/CocktailMolotov/Sounds/Throw.ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.throwSound:Play(self.Pos);
 		end
 		self.Mass = self.origMass + math.sqrt(self.lastVel);
 	else
@@ -31,6 +37,7 @@ end
 function Destroy(self)
 	-- Explode into flames only if lit
 	if self.explosion then
+		self.explodeSound:Play(self.Pos);
 		self.explosion.Pos = Vector(self.Pos.X, self.Pos.Y);
 		self.explosion.Vel = Vector(self.Vel.X, self.Vel.Y);
 		MovableMan:AddParticle(self.explosion);

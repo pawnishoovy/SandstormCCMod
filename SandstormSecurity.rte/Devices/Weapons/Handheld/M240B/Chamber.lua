@@ -26,20 +26,21 @@ function Create(self)
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
 	self.noiseSounds.Outdoors.Loop = CreateSoundContainer("Noise Outdoors", "Sandstorm.rte");
-	self.noiseSounds.Outdoors.Loop.Pitch = 1.0;
+	self.noiseSounds.Outdoors.Loop.Pitch = 0.96;
 	self.noiseSounds.Outdoors.End = CreateSoundContainer("Noise OutdoorsEnd", "Sandstorm.rte");
-	self.noiseSounds.Outdoors.End.Pitch = 1.0;
+	self.noiseSounds.Outdoors.End.Pitch = 0.96;
 	self.noiseSounds.Indoors.Loop = CreateSoundContainer("Noise Indoors", "Sandstorm.rte");
-	self.noiseSounds.Indoors.Loop.Pitch = 1.0;
+	self.noiseSounds.Indoors.Loop.Pitch = 0.96;
 	self.noiseSounds.Indoors.End = CreateSoundContainer("Noise IndoorsEnd", "Sandstorm.rte");
-	self.noiseSounds.Indoors.End.Pitch = 1.0;
+	self.noiseSounds.Indoors.End.Pitch = 0.96;
 	self.noiseSounds.bigIndoors.Loop = CreateSoundContainer("Noise BigIndoors", "Sandstorm.rte");
-	self.noiseSounds.bigIndoors.Loop.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.Loop.Pitch = 0.96;
 	self.noiseSounds.bigIndoors.End = CreateSoundContainer("Noise BigIndoorsEnd", "Sandstorm.rte");
-	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.End.Pitch = 0.96;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
 	self.reflectionSounds.Outdoors = CreateSoundContainer("Noise ReflectionOutdoors", "Sandstorm.rte");
+	self.reflectionSounds.Outdoors.Pitch = 0.96;
 	
 	self.reloadPrepareSounds = {} -- all this weird nil stuff isn't really needed, is it? im converting alphabetically and only here do i figure it out...
 	self.reloadPrepareSounds.BoltBack = CreateSoundContainer("BoltBackPrepare M240B", "SandstormSecurity.rte");

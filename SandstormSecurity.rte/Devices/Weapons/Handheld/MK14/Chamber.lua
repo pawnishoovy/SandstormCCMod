@@ -291,10 +291,6 @@ function Update(self)
 				elseif self.reloadPhase == 1 then
 					if self.chamberOnReload then
 						self.phaseOnStop = 2;
-					else
-						self.ReloadTime = 0; -- done! no after delay if non-chambering reload.
-						self.reloadPhase = 0;
-						self.phaseOnStop = nil;
 					end
 					self:RemoveNumberValue("MagRemoved");
 					
@@ -323,6 +319,7 @@ function Update(self)
 				elseif self.reloadPhase == 1 or self.reloadPhase == 3 then
 					self.ReloadTime = 0;
 					self.reloadPhase = 0;
+					self.phaseOnStop = nil;
 				else
 					self.reloadPhase = self.reloadPhase + 1;
 				end
@@ -452,6 +449,7 @@ function Update(self)
 
 		self.mechSounds.Loop:Play(self.Pos);
 		self.addSounds.Loop:Play(self.Pos);
+		
 	end
 	
 	-- Animation

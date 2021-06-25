@@ -3,33 +3,52 @@ function Create(self)
 	self.parentSet = false;
 
 	-- Sounds --
-	self.preSounds = {["Variations"] = 1,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Pre"};		
+	
+	self.preSound = CreateSoundContainer("Pre RPG", "SandstormInsurgency.rte");
+	
+	self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
+	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn RPG", "SandstormInsurgency.rte");
+	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut RPG", "SandstormInsurgency.rte");
 	
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.addSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Add"};
+	self.addSounds.Loop = CreateSoundContainer("Add RPG", "SandstormInsurgency.rte");
 	
-	self.bassSounds = {["Loop"] = nil};
-	self.bassSounds.Loop = {["Variations"] = 1,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/Bass"};
+	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
+	self.bassSounds.Loop = CreateSoundContainer("Bass RPG", "SandstormInsurgency.rte");
 	
-	self.noiseSounds = {["Outdoors"] = {["End"] = nil},
-	["Indoors"] = {["End"] = nil},
-	["bigIndoors"] = {["End"] = nil}};
-	self.noiseSounds.Outdoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseOutdoorsEnd"};
-	self.noiseSounds.Indoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseIndoorsEnd"};
-	self.noiseSounds.bigIndoors.End = {["Variations"] = 4,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/NoiseBigIndoorsEnd"};
+	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
+	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
+	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd RPG", "SandstormInsurgency.rte");
+	self.noiseSounds.Outdoors.End.Pitch = 1.0;
+	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd RPG", "SandstormInsurgency.rte");
+	self.noiseSounds.Indoors.End.Pitch = 1.0;
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd RPG", "SandstormInsurgency.rte");
+	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
 	
 	self.reflectionSounds = {["Outdoors"] = nil};
-	self.reflectionSounds.Outdoors = {["Variations"] = 3,
-	["Path"] = "SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/CompliSoundV2/ReflectionOutdoors"};
+	self.reflectionSounds.Outdoors = CreateSoundContainer("Noise ReflectionOutdoors", "Sandstorm.rte");
+	self.reflectionSounds.Outdoors.Pitch = 0.6;
+	self.reflectionSounds.Outdoors.Volume = 1.1;
+	
+	self.reloadPrepareSounds = {}
+	self.reloadPrepareSounds.Raise = CreateSoundContainer("RaisePrepare RPG", "SandstormInsurgency.rte");
+	self.reloadPrepareSounds.Shoulder = CreateSoundContainer("ShoulderPrepare RPG", "SandstormInsurgency.rte");
+	
+	self.reloadPrepareLengths = {}
+	self.reloadPrepareLengths.Raise = 750;
+	self.reloadPrepareLengths.Shoulder = 900;
+	
+	self.reloadAfterSounds = {}
+	self.reloadAfterSounds.Raise = CreateSoundContainer("Raise RPG", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.InsertRound = CreateSoundContainer("InsertRound RPG", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.LockRound = CreateSoundContainer("LockRound RPG", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.CockLever = CreateSoundContainer("CockLever RPG", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.Shoulder = CreateSoundContainer("Shoulder RPG", "SandstormInsurgency.rte");
+	
+	self:SetNumberValue("DelayedFireTimeMS", 35);
 	
 	self.FireTimer = Timer();
-	self:SetNumberValue("DelayedFireTimeMS", 35);
 	
 	self.originalStanceOffset = Vector(math.abs(self.StanceOffset.X), self.StanceOffset.Y)
 	self.originalSharpStanceOffset = Vector(math.abs(self.SharpStanceOffset.X), self.SharpStanceOffset.Y)
@@ -61,7 +80,7 @@ function Create(self)
 	self.lockRoundAfterDelay = 730;
 	self.cockLeverPrepareDelay = 1000;
 	self.cockLeverAfterDelay = 700;
-	self.shoulderPrepareDelay = 760;
+	self.shoulderPrepareDelay = 900;
 	self.shoulderAfterDelay = 400;
 	
 	-- phases:
@@ -150,55 +169,62 @@ function Update(self)
 		if self.reloadPhase == 0 then
 			self.reloadDelay = self.raisePrepareDelay;
 			self.afterDelay = self.raiseAfterDelay;			
-			self.prepareSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/RaisePrepare1";
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/Raise1";
+
+			self.prepareSound = self.reloadPrepareSounds.Raise;
+			self.prepareSoundLength = self.reloadPrepareLengths.Raise;
+			self.afterSound = self.reloadAfterSounds.Raise;
 			
 		elseif self.reloadPhase == 1 then
 			self.reloadDelay = self.insertRoundPrepareDelay;
 			self.afterDelay = self.insertRoundAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/InsertRound1";
+
+			self.prepareSound = nil
+			self.prepareSoundLength = 0
+			self.afterSound = self.reloadAfterSounds.InsertRound;
 			
 			self.rotationTarget = 45;
 			
 		elseif self.reloadPhase == 2 then
 			self.reloadDelay = self.lockRoundPrepareDelay;
 			self.afterDelay = self.lockRoundAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/LockRound1";
+
+			self.prepareSound = nil
+			self.prepareSoundLength = 0
+			self.afterSound = self.reloadAfterSounds.LockRound;
 			
 			self.rotationTarget = 45;
 			
 		elseif self.reloadPhase == 3 then
 			self.reloadDelay = self.cockLeverPrepareDelay;
 			self.afterDelay = self.cockLeverAfterDelay;
-			self.prepareSoundPath = nil;
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/CockLever1";
+
+			self.prepareSound = nil
+			self.prepareSoundLength = 0
+			self.afterSound = self.reloadAfterSounds.CockLever;
 			
 			self.rotationTarget = 25;
 			
 		elseif self.reloadPhase == 4 then
 			self.reloadDelay = self.shoulderPrepareDelay;
 			self.afterDelay = self.shoulderAfterDelay;
-			self.prepareSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/ShoulderPrepare1";
-			self.afterSoundPath = 
-			"SandstormInsurgency.rte/Devices/Weapons/Handheld/RPG/Sounds/Shoulder1";
+
+			self.prepareSound = self.reloadPrepareSounds.Shoulder;
+			self.prepareSoundLength = self.reloadPrepareLengths.Shoulder;
+			self.afterSound = self.reloadAfterSounds.Shoulder;
 
 			self.rotationTarget = 25;
 		end
 		
-		if self.prepareSoundPlayed ~= true then
+		if self.prepareSoundPlayed ~= true
+		and self.reloadTimer:IsPastSimMS(self.reloadDelay - self.prepareSoundLength) then
 			self.prepareSoundPlayed = true;
-			if self.prepareSoundPath then
-				self.prepareSound = AudioMan:PlaySound(self.prepareSoundPath .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+			if self.prepareSound then
+				self.prepareSound:Play(self.Pos);
 			end
 		end
+		
+		if self.prepareSound then self.prepareSound.Pos = self.Pos; end
+		self.afterSound.Pos = self.Pos;
 	
 		if self.reloadTimer:IsPastSimMS(self.reloadDelay) then
 			
@@ -254,8 +280,8 @@ function Update(self)
 			if self.afterSoundPlayed ~= true then
 			
 				self.afterSoundPlayed = true;
-				if self.afterSoundPath then
-					self.afterSound = AudioMan:PlaySound(self.afterSoundPath .. ".ogg", self.Pos, -1, 0, 130, 1, 250, false);
+				if self.afterSound then
+					self.afterSound:Play(self.Pos);
 				end
 			end
 			
@@ -306,25 +332,6 @@ function Update(self)
 		self.Frame = 3;
 		self.roundLocked = false;
 		self.leverCocked = false;
-		
-		if self.Magazine then
-			if self.Magazine.RoundCount > 0 then			
-			else
-				self.chamberOnReload = true;
-			end
-		end
-		
-		if self.noiseEndSound then
-			if self.noiseEndSound:IsBeingPlayed() then
-				self.noiseEndSound:Stop(-1)
-			end
-		end
-		
-		if self.reflectionSound then
-			if self.reflectionSound:IsBeingPlayed() then
-				self.reflectionSound:Stop(-1)
-			end
-		end
 		
 		-- Back Blast
 		local effectNames = {"Small Smoke Ball 1", "Tiny Smoke Ball 1", "Blast Ball Small 1", "Tracer Smoke Ball 1"}
@@ -393,18 +400,18 @@ function Update(self)
 			end
 		end
 		
-		self.bassSound = AudioMan:PlaySound(self.bassSounds.Loop.Path .. math.random(1, self.bassSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.bassSounds.Loop:Play(self.Pos);
 		
 		if outdoorRays >= self.rayThreshold then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Outdoors.End.Path .. math.random(1, self.noiseSounds.Outdoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
-			self.reflectionSound = AudioMan:PlaySound(self.reflectionSounds.Outdoors.Path .. math.random(1, self.reflectionSounds.Outdoors.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Outdoors.End:Play(self.Pos);
+			self.reflectionSounds.Outdoors:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.Indoors.End.Path .. math.random(1, self.noiseSounds.Indoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.Indoors.End:Play(self.Pos);
 		else -- bigIndoor
-			self.noiseEndSound = AudioMan:PlaySound(self.noiseSounds.bigIndoors.End.Path .. math.random(1, self.noiseSounds.bigIndoors.End.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+			self.noiseSounds.bigIndoors.End:Play(self.Pos);
 		end
 		
-		self.addSound = AudioMan:PlaySound(self.addSounds.Loop.Path .. math.random(1, self.addSounds.Loop.Variations) .. ".ogg", self.Pos, -1, 0, 130, 1, 450, false);
+		self.addSounds.Loop:Play(self.Pos);
 
 	end
 	
