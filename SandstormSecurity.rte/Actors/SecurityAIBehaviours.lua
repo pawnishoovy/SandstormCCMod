@@ -884,7 +884,7 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	
 	if (self:IsPlayerControlled() and UInputMan:KeyPressed(22)) or self.AIRandomIntimidate then
 		self.AIRandomIntimidate = false;
-		if self.intimidateCooldownTimer:IsPastSimMS(self.intimidateCooldown) then
+		if self.intimidateCooldownTimer:IsPastSimMS(self.intimidateCooldown) and not self.voiceSound:IsBeingPlayed() then
 			if (self.Suppressed) then
 				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.intimidateSuppressed, 3, 3, true);
 			else

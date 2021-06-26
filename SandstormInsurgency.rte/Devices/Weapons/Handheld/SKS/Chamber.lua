@@ -441,10 +441,8 @@ function Update(self)
 			self.reflectionSounds.Outdoors:Play(self.Pos);
 		elseif math.max(outdoorRays, bigIndoorRays, indoorRays) == indoorRays then
 			self.noiseSounds.Indoors.End:Play(self.Pos);
-			self.bassSounds.Indoors:Play(self.Pos);
 		else -- bigIndoor
 			self.noiseSounds.bigIndoors.End:Play(self.Pos);
-			self.bassSounds.Indoors:Play(self.Pos);
 		end
 
 		self.mechSounds.Loop:Play(self.Pos);

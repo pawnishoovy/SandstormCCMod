@@ -30,6 +30,7 @@ function Create(self)
 	self.RHA = self:GetNumberValue("RHA");
 	self.MPA = self:GetNumberValue("MPA");
 	self.desiredDamage = self:GetNumberValue("Damage");
+	self.desiredWounds = self:GetNumberValue("Wounds");
 	
 	self.Vel = Vector(self.Vel.X, self.Vel.Y) * RangeRand(0.9,1.1)
 	self.canTravel = true
@@ -88,45 +89,45 @@ function Update(self)
 		travel = SceneMan:ShortestDistance(self.Pos,endPos,SceneMan.SceneWrapsX)
 		
 		-- Flyby sound (epic haxx)
-		if self.flyby and self.flybyTimer:IsPastSimMS(80) and self.Vel.Magnitude > 40 then
-			--local cameraPos = Vector(SceneMan:GetScrollTarget(0).X, SceneMan:GetScrollTarget(0).Y)
+		-- if self.flyby and self.flybyTimer:IsPastSimMS(80) and self.Vel.Magnitude > 40 then
+			-- --local cameraPos = Vector(SceneMan:GetScrollTarget(0).X, SceneMan:GetScrollTarget(0).Y)
 			
-			local controlledActor = ActivityMan:GetActivity():GetControlledActor(0);
+			-- local controlledActor = ActivityMan:GetActivity():GetControlledActor(0);
 			
-			if controlledActor then
+			-- if controlledActor then
 	
 			
-				local distA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
-				local vectorA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX)
-				local distAMin = math.random(50,100)		
+				-- local distA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
+				-- local vectorA = SceneMan:ShortestDistance(self.Pos,controlledActor.Pos,SceneMan.SceneWrapsX)
+				-- local distAMin = math.random(50,100)		
 				
-				if distA < distAMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
-					self.flyby = false
+				-- if distA < distAMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
+					-- self.flyby = false
 					
-					self.supersonicIndoorsFlyBy:Play(controlledActor.Pos);
+					-- self.supersonicIndoorsFlyBy:Play(controlledActor.Pos);
 					
-					if ToActor(controlledActor).Team ~= self.Team then
-						ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
-					end
-				else
-					local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
-					local distB = SceneMan:ShortestDistance(self.Pos + offset,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
-					local distBMin = math.random(30,50)
-					if distB < distBMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
-						self.flyby = false
+					-- if ToActor(controlledActor).Team ~= self.Team then
+						-- ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+					-- end
+				-- else
+					-- local offset = Vector(travelVel.X, travelVel.Y) * RangeRand(0.2,1.0)
+					-- local distB = SceneMan:ShortestDistance(self.Pos + offset,controlledActor.Pos,SceneMan.SceneWrapsX).Magnitude
+					-- local distBMin = math.random(30,50)
+					-- if distB < distBMin and SceneMan:CastObstacleRay(self.Pos, vectorA, Vector(0, 0), Vector(0, 0), controlledActor.ID, -1, 128, 8) < 0 then
+						-- self.flyby = false
 						
-						self.supersonicIndoorsAltFlyBy:Play(controlledActor.Pos);
+						-- self.supersonicIndoorsAltFlyBy:Play(controlledActor.Pos);
 						
-						if ToActor(controlledActor).Team ~= self.Team then
-							ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
-						end
-					end
-				end
-			end
+						-- if ToActor(controlledActor).Team ~= self.Team then
+							-- ToActor(controlledActor):SetNumberValue("Sandstorm Bullet Suppressed", 1);
+						-- end
+					-- end
+				-- end
+			-- end
 			
-			--local s = self.UniqueID % 7 + 1
-			--PrimitiveMan:DrawCirclePrimitive(cameraPos, s, 5)
-		end
+			-- --local s = self.UniqueID % 7 + 1
+			-- --PrimitiveMan:DrawCirclePrimitive(cameraPos, s, 5)
+		-- end
 		
 		-- Tracer Trail
 		
@@ -176,12 +177,6 @@ function Update(self)
 					-- epic pawnis armorpen
 					if MO:NumberValueExists("ArmorRHA") then -- if we have hit an MO that has this value, it has our armor system
 						self.useArmorSystem = true; -- tell the code to spawn proper damage pixel
-						local desiredWounds
-						if self:NumberValueExists("Wounds") then
-							desiredWounds = self:GetNumberValue("Wounds");
-						else
-							desiredWounds = 1;
-						end
 						local MORHA = MO:GetNumberValue("ArmorRHA");
 						local MOMPA = MO:GetNumberValue("ArmorMPA");
 						
@@ -189,7 +184,7 @@ function Update(self)
 						
 						local modifiedRHA = self.RHA - MORHA;
 						self.modifiedDamage = self.desiredDamage * (modifiedRHA / self.RHA)
-						self.modifiedWounds = math.floor((desiredWounds * (modifiedRHA / self.RHA)) + 0.5) -- ghetto round
+						self.modifiedWounds = math.floor((self.desiredWounds * (modifiedRHA / self.RHA)) + 0.5) -- ghetto round
 						if self.modifiedWounds < 1 then
 							self.modifiedWounds = 1;
 						end
@@ -198,6 +193,9 @@ function Update(self)
 							self.bluntDamage = true; -- tell code later not to spawn any pixel
 							local modifiedMPA = self.MPA - MOMPA;
 							self.modifiedDamage = self.desiredDamage * (modifiedMPA / self.MPA)
+							if self.modifiedDamage < 1 then
+								self.modifiedDamage = 1;
+							end
 						end
 					end
 						
@@ -308,11 +306,11 @@ function Update(self)
 					local woundName = self.MOHit:GetEntryWoundPresetName()
 					local woundNameExit = self.MOHit:GetExitWoundPresetName()
 					self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
+					local actor = ToActor(self.MOHit:GetRootParent());
 					if self.modifiedDamage > 0 then
-						local actor = ToActor(self.MOHit:GetRootParent());
 						actor.Health = actor.Health - self.modifiedDamage;
-						actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
 					end
+					actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
 				else
 					for i = 1, maxi do
 						local pixel = CreateMOPixel("Real Bullet Damage");
