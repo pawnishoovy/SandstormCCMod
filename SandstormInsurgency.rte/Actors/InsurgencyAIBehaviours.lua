@@ -739,20 +739,29 @@ function InsurgencyAIBehaviours.handleAITargetLogic(self)
 	
 	if (not self:IsPlayerControlled()) and self.AI.Target and IsAHuman(self.AI.Target) then
 	
+		self.inCombat = true;
+		self:SetNumberValue("InCombat", 1)
+		self.combatExitTimer:Reset();
+	
 		self.spotVoiceLineTimer:Reset();
+		self.AIPostCombatIntimidationTimer:Reset();
+		self.AIPostCombatIntimidationDelay = math.random(1500, 9000);
 		
 		local posDifference = SceneMan:ShortestDistance(self.Pos,self.AI.Target.Pos,SceneMan.SceneWrapsX)
 		local distance = posDifference.Magnitude
+		
 		
 		local isPointBlank = distance < self.spotDistanceClose/2
 		local isClose = distance < self.spotDistanceClose
 		local isMid = distance < self.spotDistanceMid 
 		local isFar = distance > self.spotDistanceMid 
 		
-		if ToActor(self.AI.Target).Health > 0 then
+		if ToActor(self.AI.Target).Status < 3 then
 			self.enemyDownEligible = true;
+			self.combatEndedEnemyDown = false;
 		elseif self.enemyDownEligible == true and not self.AI.Target:NumberValueExists("Sandstorm Enemy Down") then
 			self.enemyDownEligible = false;
+			self.combatEndedEnemyDown = true;
 			if math.random(0, 100) < 60 then -- do nothing some of the time, let someone else maybe call it
 				self.AI.Target:SetNumberValue("Sandstorm Enemy Down", 1);
 				if math.random(0, 100) < 60 then -- mark the target as called but do not call it another some of the time
@@ -843,6 +852,22 @@ function InsurgencyAIBehaviours.handleAITargetLogic(self)
 		if self.spotVoiceLineTimer:IsPastSimMS(self.spotVoiceLineDelay) then
 			self.spotAllowed = true;
 		end
+		if self.combatExitTimer:IsPastSimMS(self.combatExitDelay) and self.inCombat == true then
+			self.inCombat = false;
+			self:RemoveNumberValue("InCombat")
+		elseif self.inCombat == true then
+			if self.combatEndedEnemyDown == false and self.AIPostCombatIntimidationTimer:IsPastSimMS(self.AIPostCombatIntimidationDelay) then
+				self.inCombat = false;
+				self:RemoveNumberValue("InCombat")
+				if math.random(0, 100) < 30 then
+					self.AIRandomIntimidate = true;
+				end
+			elseif self.combatEndedEnemyDown == true then
+				--placeholder
+			end
+		end		
+		
+		
 		if self.LastTargetID ~= -1 then
 			self.LastTargetID = -1
 			self.enemyDownEligible = false;
@@ -855,6 +880,61 @@ end
 function InsurgencyAIBehaviours.handleVoicelines(self)
 
 	-- this is the bigun
+	
+	-- INTIMIDATION
+	
+	if (self:IsPlayerControlled() and UInputMan:KeyPressed(22)) or self.AIRandomIntimidate then
+		self.AIRandomIntimidate = false;
+		if self.intimidateCooldownTimer:IsPastSimMS(self.intimidateCooldown) then
+			if (self.Suppressed) then
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.intimidateSuppressed, 3, 3, true);
+			else
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Intimidate, 3, 3, true);
+			end
+			
+			local targets = {};
+			
+			for actor in MovableMan.Actors do
+				if actor.Team ~= self.Team then
+
+					if SceneMan:ShortestDistance(self.Pos, actor.Pos, SceneMan.SceneWrapsX).Magnitude < 400
+					and SceneMan:CastStrengthSumRay(self.Pos, actor.Pos, 3, 0) < 2000 then -- some wallpen is good
+
+						table.insert(targets, actor);
+						
+					end
+				end
+			end
+			
+			if targets[1] then -- check if we got anything at all
+				local key = math.random(1, #targets);
+				targets[key]:SetNumberValue("Sandstorm Intimidated", 1);
+			end
+			
+			self.intimidateCooldownTimer:Reset();
+		end
+	end
+	
+	if self:NumberValueExists("Sandstorm Intimidated") then
+		self:RemoveNumberValue("Sandstorm Intimidated");
+		self.Intimidated = true;
+		self.intimidateResponseTimer:Reset();
+		self.intimidateResponseDelay = math.random(1000, 2500);
+	end
+	
+	if self.Intimidated == true then
+		SecurityAIBehaviours.createEmotion(self, 2, 1, 700);
+		if self.intimidateResponseTimer:IsPastSimMS(self.intimidateResponseDelay) then
+			if (self.Suppressed) then
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.intimidateResponseSuppressed, 3, 3);
+			else
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.intimidateResponse, 3, 3);
+			end
+			self.Intimidated = false;
+			self.intimidateCooldownTimer:Reset();
+			self.intimidateResponseTimer:Reset();
+		end
+	end
 	
 	-- DEVICE RELATED VOICELINES
 	

@@ -106,6 +106,14 @@ function Create(self)
 	CreateSoundContainer("BurnPain " .. self.Identity, "SandstormInsurgency.rte"),
 	Flashed =
 	CreateSoundContainer("Flashed " .. self.Identity, "SandstormInsurgency.rte"),
+	Intimidate =
+	CreateSoundContainer("Intimidate " .. self.Identity, "SandstormInsurgency.rte"),
+	intimidateSuppressed =
+	CreateSoundContainer("IntimidateSuppressed " .. self.Identity, "SandstormInsurgency.rte"),
+	intimidateResponse =
+	CreateSoundContainer("IntimidateResponse " .. self.Identity, "SandstormInsurgency.rte"),
+	intimidateResponseSuppressed =
+	CreateSoundContainer("IntimidateResponseSuppressed " .. self.Identity, "SandstormInsurgency.rte"),
 	Reload =
 	CreateSoundContainer("Reload " .. self.Identity, "SandstormInsurgency.rte"),
 	suppressedReload =
@@ -214,6 +222,21 @@ function Create(self)
 	
 	self.spotVoiceLineTimer = Timer();
 	self.spotVoiceLineDelay = 15000;
+	
+	 -- intimidation
+	self.intimidateCooldown = 5000;
+	self.intimidateCooldownTimer = Timer();
+	
+	self.intimidateResponseTimer = Timer();
+	self.intimidateResponseDelay = math.random(2000, 4000);
+	
+	self.AIPostCombatIntimidationTimer = Timer();
+	self.AIPostCombatIntimidationDelay = math.random(1500, 9000);
+	
+	-- extremely epic, 2000-tier combat/idle mode system
+	self.inCombat = false;
+	self.combatExitTimer = Timer();
+	self.combatExitDelay = 10000;
 	
 	 -- in pixels
 	self.spotDistanceClose = 175;

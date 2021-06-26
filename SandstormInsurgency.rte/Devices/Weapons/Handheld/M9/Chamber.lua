@@ -5,40 +5,40 @@ function Create(self)
 	-- Sounds --
 	
 	self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
-	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn M9", "SandstormSecurity.rte");
-	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut M9", "SandstormSecurity.rte");
+	self.sharpAimSounds.In = CreateSoundContainer("SharpAimIn M9", "SandstormInsurgency.rte");
+	self.sharpAimSounds.Out = CreateSoundContainer("SharpAimOut M9", "SandstormInsurgency.rte");
 	
 	self.bassSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.bassSounds.Loop = CreateSoundContainer("Bass M9", "SandstormSecurity.rte");
+	self.bassSounds.Loop = CreateSoundContainer("Bass M9", "SandstormInsurgency.rte");
 	
 	self.addSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.addSounds.Loop = CreateSoundContainer("Add M9", "SandstormSecurity.rte");
+	self.addSounds.Loop = CreateSoundContainer("Add M9", "SandstormInsurgency.rte");
 	
 	self.mechSounds = {["Start"] = nil, ["Loop"] = nil};
-	self.mechSounds.Loop = CreateSoundContainer("Mech M9", "SandstormSecurity.rte");
+	self.mechSounds.Loop = CreateSoundContainer("Mech M9", "SandstormInsurgency.rte");
 	
 	self.noiseSounds = {["Outdoors"] = {["Loop"] = nil, ["End"] = nil},
 	["Indoors"] = {["Loop"] = nil, ["End"] = nil},
 	["bigIndoors"] = {["Loop"] = nil, ["End"] = nil}};
-	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd M9", "SandstormSecurity.rte");
+	self.noiseSounds.Outdoors.End = CreateSoundContainer("NoiseOutdoorsEnd M9", "SandstormInsurgency.rte");
 	self.noiseSounds.Outdoors.End.Pitch = 1.0;
-	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd M9", "SandstormSecurity.rte");
+	self.noiseSounds.Indoors.End = CreateSoundContainer("NoiseIndoorsEnd M9", "SandstormInsurgency.rte");
 	self.noiseSounds.Indoors.End.Pitch = 1.0;
-	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd M9", "SandstormSecurity.rte");
+	self.noiseSounds.bigIndoors.End = CreateSoundContainer("NoiseBigIndoorsEnd M9", "SandstormInsurgency.rte");
 	self.noiseSounds.bigIndoors.End.Pitch = 1.0;
 	
 	self.reloadPrepareSounds = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltForward"] = nil}
-	self.reloadPrepareSounds.MagOut = CreateSoundContainer("MagOutPrepare M9", "SandstormSecurity.rte");
-	self.reloadPrepareSounds.MagIn = CreateSoundContainer("MagInPrepare M9", "SandstormSecurity.rte");
+	self.reloadPrepareSounds.MagOut = CreateSoundContainer("MagOutPrepare M9", "SandstormInsurgency.rte");
+	self.reloadPrepareSounds.MagIn = CreateSoundContainer("MagInPrepare M9", "SandstormInsurgency.rte");
 	
 	self.reloadPrepareLengths = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltForward"] = nil}
 	self.reloadPrepareLengths.MagOut = 400;
 	self.reloadPrepareLengths.MagIn = 490;
 	
 	self.reloadAfterSounds = {["MagOut"] = nil, ["MagIn"] = nil, ["BoltForward"] = nil}
-	self.reloadAfterSounds.MagOut = CreateSoundContainer("MagOut M9", "SandstormSecurity.rte");
-	self.reloadAfterSounds.MagIn = CreateSoundContainer("MagIn M9", "SandstormSecurity.rte");
-	self.reloadAfterSounds.BoltForward = CreateSoundContainer("BoltForward M9", "SandstormSecurity.rte");
+	self.reloadAfterSounds.MagOut = CreateSoundContainer("MagOut M9", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.MagIn = CreateSoundContainer("MagIn M9", "SandstormInsurgency.rte");
+	self.reloadAfterSounds.BoltForward = CreateSoundContainer("BoltForward M9", "SandstormInsurgency.rte");
 	
 	self.FireTimer = Timer();
 	

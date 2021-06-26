@@ -12,11 +12,11 @@ function Create(self)
 	elseif self:IsInGroup("Weapons - Primary") then
 		self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
 		self.sharpAimSounds.In = CreateSoundContainer("Sandstorm Default SharpAimIn", "Sandstorm.rte");
-		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimInOut", "Sandstorm.rte");
+		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimOut", "Sandstorm.rte");
 	elseif self:IsInGroup("Weapons - Secondary") then
 		self.sharpAimSounds = {["In"] = nil, ["Out"] = nil};
-		self.sharpAimSounds.In = CreateSoundContainer("Sandstorm Default SharpAimInPistolIn", "Sandstorm.rte");
-		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimInPistolOut", "Sandstorm.rte");
+		self.sharpAimSounds.In = CreateSoundContainer("Sandstorm Default SharpAimPistolIn", "Sandstorm.rte");
+		self.sharpAimSounds.Out = CreateSoundContainer("Sandstorm Default SharpAimPistolOut", "Sandstorm.rte");
 	end
 	
 	self.sharpAiming = false;
