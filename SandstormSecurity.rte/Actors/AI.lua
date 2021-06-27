@@ -95,6 +95,8 @@ function Create(self)
 	CreateSoundContainer("FriendlyDown " .. self.Identity, "SandstormSecurity.rte"),
 	witnessGruesomeDeath = 
 	CreateSoundContainer("FriendlyGibbed " .. self.Identity, "SandstormSecurity.rte"),
+	lastOneStanding = 
+	CreateSoundContainer("LastOneStanding " .. self.Identity, "SandstormSecurity.rte"),
 	inhaleLight =
 	CreateSoundContainer("InhaleLight " .. self.Identity, "SandstormSecurity.rte"),
 	inhaleMedium =
@@ -198,6 +200,9 @@ function Create(self)
 	
 	self.healthUpdateTimer = Timer();
 	self.oldHealth = self.Health;
+	
+	
+	self.headWounds = 0;
 	
 	-- chance upon any non-headshot death to be incapacitated for a while before really dying
 	self.incapacitationChance = 10;

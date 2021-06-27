@@ -533,6 +533,7 @@ function SecurityAIBehaviours.handleHealth(self)
 				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.seriousDeath, 10, 4)
 				self.seriousDeath = true;
 				self.deathSoundPlayed = true;
+				self.Status = 3;
 				for actor in MovableMan.Actors do
 					if actor.Team == self.Team then
 						local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -1098,9 +1099,29 @@ function SecurityAIBehaviours.handleVoicelines(self)
 	if self:NumberValueExists("Sandstorm Friendly Down") then
 		self.Suppression = self.Suppression + 25;
 		if self.friendlyDownTimer:IsPastSimMS(self.friendlyDownDelay) then
-			local Sounds = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSounds.witnessDeath or self.voiceSounds.witnessGruesomeDeath
+			-- if we find anybody closeby, call the casualty
+			-- if we don't... panic
+			local actors = {};
+			for actor in MovableMan.Actors  do
+				if actor.Team == self.Team and actor.UniqueID ~= self.UniqueID then
+					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
+					if d < 1000 and actor.Status < 3 and actor.Health > 0 then
+						table.insert(actors, actor)
+
+					end
+				end
+			end
 			
-			SecurityAIBehaviours.createVoiceSoundEffect(self, Sounds, 4, 4, true);		
+			if not actors[1] then
+				SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.lastOneStanding, 5, 3, true);
+				self.Suppression = self.Suppression + 60;
+			else
+				local Sounds = self:GetNumberValue("Sandstorm Friendly Down") == 0 and self.voiceSounds.witnessDeath or self.voiceSounds.witnessGruesomeDeath
+		
+				SecurityAIBehaviours.createVoiceSoundEffect(self, Sounds, 4, 4, true);
+
+			end
+			
 			self.friendlyDownTimer:Reset();
 		end
 		self:RemoveNumberValue("Sandstorm Friendly Down")
@@ -1188,6 +1209,7 @@ function SecurityAIBehaviours.handleDying(self)
 			
 			self.deathSoundPlayed = true;
 			SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Death, 15, 3)
+			self.Status = 3;
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
@@ -1354,6 +1376,7 @@ function SecurityAIBehaviours.handleHeadLoss(self)
 			self.headGibSoundPlaying = true;
 			self.voiceSound:Stop(-1);
 			
+			self.Status = 3;
 			for actor in MovableMan.Actors do
 				if actor.Team == self.Team then
 					local d = SceneMan:ShortestDistance(actor.Pos, self.Pos, true).Magnitude;
