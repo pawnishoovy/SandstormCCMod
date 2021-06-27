@@ -1135,6 +1135,13 @@ function SecurityAIBehaviours.handleVoicelines(self)
 		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.Flashed, 5, 4, true);
 	end
 		
+	-- FRIENDLY FIRED REACTION
+	
+	if self:NumberValueExists("Sandstorm Friendly Fire") then
+		self:RemoveNumberValue("Sandstorm Friendly Fire");
+		SecurityAIBehaviours.createVoiceSoundEffect(self, self.voiceSounds.friendlyFire, 5, 3, false);
+	end
+		
 	-- SPOT FRAG GRENADE REACTION
 		
 	if self:NumberValueExists("Spotted Grenade") then

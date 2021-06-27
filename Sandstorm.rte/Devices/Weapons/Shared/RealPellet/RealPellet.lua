@@ -8,6 +8,8 @@ function Create(self)
 	self.pelletImpactHardSound = CreateSoundContainer("Sandstorm Pellet Impact Hard" ,"Sandstorm.rte");
 	self.pelletImpactMetalSound = CreateSoundContainer("Sandstorm Pellet Impact Metal" ,"Sandstorm.rte");
 	self.pelletImpactSoftSound = CreateSoundContainer("Sandstorm Pellet Impact Soft" ,"Sandstorm.rte");
+	
+	self.origTeam = self.Team;
 
 	for i = 1, math.random(2,6) do
 		local poof = CreateMOSParticle(math.random(1,2) < 2 and "Tiny Smoke Ball 1" or "Small Smoke Ball 1");
@@ -159,6 +161,7 @@ function Update(self)
 					
 					impactCount = impactCount + 1
 				else
+					self.MOHit = nil;
 					local terrCheck = SceneMan:CastStrengthRay(pos, travelVec, 30, Vector(), 5, 0, SceneMan.SceneWrapsX)--SceneMan:CastStrengthSumRay(travelStart, travelPos, 2, 0); -- Raycast
 					if terrCheck then
 						local rayHitPos = SceneMan:GetLastRayHitPos()
@@ -201,17 +204,29 @@ function Update(self)
 					end
 				end
 				
-				if hit then
-					
-					if self.bluntDamage then
+				if hit then			
+					if self.bluntDamage and self.MOHit then
 						local woundName = self.MOHit:GetEntryWoundPresetName()
 						self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
-						local actor = ToActor(self.MOHit:GetRootParent());
-						if self.modifiedDamage > 0 then
-							actor.Health = actor.Health - self.modifiedDamage;
+						local actor = IsActor(self.MOHit:GetRootParent()) and ToActor(self.MOHit:GetRootParent()) or nil;
+						local friendlyFireModifier = actor.Team == self.origTeam and 0.3 or 1;
+						if actor and self.modifiedDamage > 0 then
+							actor.Health = actor.Health - (self.modifiedDamage * friendlyFireModifier);
+							actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
+							if friendlyFireModifier ~= 1 then
+								actor:SetNumberValue("Sandstorm Friendly Fire", 1);
+							end
 						end
-						actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
+						print("aye");
 					else
+						local friendlyFireModifier = 1;
+						if self.MOHit then
+							local actor = IsActor(self.MOHit:GetRootParent()) and ToActor(self.MOHit:GetRootParent()) or nil;
+							friendlyFireModifier = actor.Team == self.origTeam and 0.3 or 1;
+							if friendlyFireModifier ~= 1 then
+								actor:SetNumberValue("Sandstorm Friendly Fire", 1);
+							end
+						end
 						local pixel = CreateMOPixel("Real Pellet Damage");
 						pixel.Vel = Vector(vel.X, vel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
 						pixel.Sharpness = self.Sharpness
@@ -225,12 +240,12 @@ function Update(self)
 							local woundName = self.MOHit:GetEntryWoundPresetName()
 							local woundNameExit = self.MOHit:GetExitWoundPresetName()
 							self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
-							pixel.WoundDamageMultiplier = (self.modifiedDamage/5);
+							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) * friendlyFireModifier;
 							pixel:SetWhichMOToNotHit(self.MOHit, -1)
 							-- print(self.MOHit.PresetName)
 							
 						else
-							pixel.WoundDamageMultiplier = (self.desiredDamage/5);
+							pixel.WoundDamageMultiplier = (self.desiredDamage/5)  * friendlyFireModifier;
 						end
 						MovableMan:AddParticle(pixel);
 					end

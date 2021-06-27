@@ -9,6 +9,8 @@ function Create(self)
 	self.supersonicIndoorsFlyBy = CreateSoundContainer("Sandstorm FlyBy Supersonic Indoors", "Sandstorm.rte");
 	self.supersonicIndoorsAltFlyBy = CreateSoundContainer("Sandstorm FlyBy Supersonic Indoors Alt", "Sandstorm.rte");
 	
+	self.origTeam = self.Team;
+	
 	for i = 1, math.random(1,3) do
 		local poof = CreateMOSParticle(math.random(1,2) < 2 and "Tiny Smoke Ball 1" or "Small Smoke Ball 1");
 		poof.Pos = self.Pos
@@ -304,14 +306,25 @@ function Update(self)
 				end
 				if self.bluntDamage then
 					local woundName = self.MOHit:GetEntryWoundPresetName()
-					local woundNameExit = self.MOHit:GetExitWoundPresetName()
 					self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
-					local actor = ToActor(self.MOHit:GetRootParent());
-					if self.modifiedDamage > 0 then
-						actor.Health = actor.Health - self.modifiedDamage;
+					local actor = IsActor(self.MOHit:GetRootParent()) and ToActor(self.MOHit:GetRootParent()) or nil;
+					local friendlyFireModifier = actor.Team == self.origTeam and 0.3 or 1;
+					if actor and self.modifiedDamage > 0 then
+						actor.Health = actor.Health - (self.modifiedDamage * friendlyFireModifier);
+						actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
+						if friendlyFireModifier ~= 1 then
+							actor:SetNumberValue("Sandstorm Friendly Fire", 1);
+						end
 					end
-					actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
 				else
+					local friendlyFireModifier = 1;
+					if self.MOHit then
+						local actor = IsActor(self.MOHit:GetRootParent()) and ToActor(self.MOHit:GetRootParent()) or nil;
+						friendlyFireModifier = actor.Team == self.origTeam and 0.3 or 1;
+						if friendlyFireModifier ~= 1 then
+							actor:SetNumberValue("Sandstorm Friendly Fire", 1);
+						end
+					end
 					for i = 1, maxi do
 						local pixel = CreateMOPixel("Real Bullet Damage");
 						pixel.Vel = Vector(hitVel.X, hitVel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
@@ -326,12 +339,12 @@ function Update(self)
 							local woundName = self.MOHit:GetEntryWoundPresetName()
 							local woundNameExit = self.MOHit:GetExitWoundPresetName()
 							self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
-							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
+							pixel.WoundDamageMultiplier = ((self.modifiedDamage/5) / maxi) * friendlyFireModifier;
 							pixel:SetWhichMOToNotHit(self.MOHit, -1)
 							-- print(self.MOHit.PresetName)
 							
 						else
-							pixel.WoundDamageMultiplier = (self.desiredDamage/5) / maxi;
+							pixel.WoundDamageMultiplier = ((self.desiredDamage/5) / maxi) * friendlyFireModifier;
 						end
 						MovableMan:AddParticle(pixel);
 					end

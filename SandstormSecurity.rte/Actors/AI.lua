@@ -119,6 +119,10 @@ function Create(self)
 	CreateSoundContainer("BurnPain " .. self.Identity, "SandstormSecurity.rte"),
 	Flashed =
 	CreateSoundContainer("Flashed " .. self.Identity, "SandstormSecurity.rte"),
+	friendlyFire =
+	CreateSoundContainer("FriendlyFire " .. self.Identity, "SandstormSecurity.rte"),
+	Sorry =
+	CreateSoundContainer("Sorry " .. self.Identity, "SandstormSecurity.rte"),
 	Intimidate =
 	CreateSoundContainer("Intimidate " .. self.Identity, "SandstormSecurity.rte"),
 	intimidateSuppressed =
