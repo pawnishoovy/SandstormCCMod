@@ -1,5 +1,14 @@
 
 function Create(self)
+
+	self.buckshotImpactHardSound = CreateSoundContainer("Sandstorm Buckshot Impact Hard" ,"Sandstorm.rte");
+	self.buckshotImpactMetalSound = CreateSoundContainer("Sandstorm Buckshot Impact Metal" ,"Sandstorm.rte");
+	self.buckshotImpactSoftSound = CreateSoundContainer("Sandstorm Buckshot Impact Soft" ,"Sandstorm.rte");
+	
+	self.pelletImpactHardSound = CreateSoundContainer("Sandstorm Pellet Impact Hard" ,"Sandstorm.rte");
+	self.pelletImpactMetalSound = CreateSoundContainer("Sandstorm Pellet Impact Metal" ,"Sandstorm.rte");
+	self.pelletImpactSoftSound = CreateSoundContainer("Sandstorm Pellet Impact Soft" ,"Sandstorm.rte");
+
 	for i = 1, math.random(2,6) do
 		local poof = CreateMOSParticle(math.random(1,2) < 2 and "Tiny Smoke Ball 1" or "Small Smoke Ball 1");
 		poof.Pos = self.Pos
@@ -22,6 +31,13 @@ function Create(self)
 	
 	self.lastImpactCount = 0
 	self.mainImpact = false
+	
+	-- epic pawnis armor pen
+	self.useArmorSystem = false;
+	self.bluntDamage = false;
+	self.RHA = self:GetNumberValue("RHA");
+	self.MPA = self:GetNumberValue("MPA");
+	self.desiredDamage = self:GetNumberValue("Damage");
 	
 	self.debugColors = {5, 13, 223, 147, 122, 86, 194, 47, 38, 135, 99}
 	
@@ -99,6 +115,7 @@ function Update(self)
 					
 					local MO = ToMOSRotating(MovableMan:GetMOFromID(moCheck))
 					if MO then
+						self.MOHit = MO;
 						local woundName = MO:GetEntryWoundPresetName()
 						local woundNameExit = MO:GetExitWoundPresetName()
 						if string.find(MO.Material.PresetName,"Flesh") or (woundName and string.find(woundName,"Flesh")) or (woundNameExit and string.find(woundNameExit,"Flesh")) then
@@ -108,6 +125,29 @@ function Update(self)
 						end
 					end
 					hit = true
+					
+					self.woundOffset = (SceneMan:ShortestDistance(MO.Pos, rayHitPos, SceneMan.SceneWrapsX)):RadRotate(MO.RotAngle * -1.0)
+					
+					-- epic pawnis armorpen
+					if MO:NumberValueExists("ArmorRHA") then -- if we have hit an MO that has this value, it has our armor system
+						self.useArmorSystem = true; -- tell the code to spawn proper damage pixel
+						local MORHA = MO:GetNumberValue("ArmorRHA");
+						local MOMPA = MO:GetNumberValue("ArmorMPA");
+						
+						-- ROUND ONE: RHA VS RHA
+						
+						local modifiedRHA = self.RHA - MORHA;
+						self.modifiedDamage = self.desiredDamage * (modifiedRHA / self.RHA)-- ghetto round
+						if self.modifiedDamage < 1 then -- bad armor pen, we're going blunt
+							-- ROUND TWO: MPA VS MPA
+							self.bluntDamage = true; -- tell code later not to spawn any pixel
+							local modifiedMPA = self.MPA - MOMPA;
+							self.modifiedDamage = (self.desiredDamage * 0.7) * (modifiedMPA / self.MPA)
+							if self.modifiedDamage < 1 then
+								self.modifiedDamage = 0.3; -- morale damage
+							end
+						end
+					end
 					
 					if impactPos.IsZero then
 						impactPos = pos
@@ -162,15 +202,39 @@ function Update(self)
 				end
 				
 				if hit then
-					local pixel = CreateMOPixel("Real Pellet Damage");
-					pixel.Vel = Vector(vel.X, vel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
-					pixel.Sharpness = self.Sharpness
-					pixel.Mass = self.Mass
-					pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
-					pixel.Pos = pos - Vector(vel.X,vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
-					pixel.Team = self.Team
-					pixel.IgnoresTeamHits = true;
-					MovableMan:AddParticle(pixel);
+					
+					if self.bluntDamage then
+						local woundName = self.MOHit:GetEntryWoundPresetName()
+						self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
+						local actor = ToActor(self.MOHit:GetRootParent());
+						if self.modifiedDamage > 0 then
+							actor.Health = actor.Health - self.modifiedDamage;
+						end
+						actor:SetNumberValue("Sandstorm Bullet Suppressed", 1);
+					else
+						local pixel = CreateMOPixel("Real Pellet Damage");
+						pixel.Vel = Vector(vel.X, vel.Y) * 0.6;--Vector(self.Vel.X, self.Vel.Y) * 0.6;
+						pixel.Sharpness = self.Sharpness
+						pixel.Mass = self.Mass
+						pixel.Pos = pos - Vector(vel.X,vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
+						pixel.Team = self.Team
+						pixel.IgnoresTeamHits = true;
+						
+						-- we assume in the following code that the wound's burstdamage is 5.
+						if self.useArmorSystem then
+							local woundName = self.MOHit:GetEntryWoundPresetName()
+							local woundNameExit = self.MOHit:GetExitWoundPresetName()
+							self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
+							pixel.WoundDamageMultiplier = (self.modifiedDamage/5);
+							pixel:SetWhichMOToNotHit(self.MOHit, -1)
+							-- print(self.MOHit.PresetName)
+							
+						else
+							pixel.WoundDamageMultiplier = (self.desiredDamage/5);
+						end
+						MovableMan:AddParticle(pixel);
+					end
+
 				end
 				-- Save new/processed data
 				pellet.PosX = pos.X
@@ -202,19 +266,19 @@ function Update(self)
 	if not self.mainImpact and (impactCount + self.lastImpactCount) >= (self.pelletCount * 0.4) then
 		self.mainImpact = true
 		if hitGFXType <= 2 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Soft/ImpactSoft"..math.random(1,14)..".ogg", impactPos);
+			self.buckshotImpactSoftSound:Play(impactPos);
 		elseif hitGFXType == 3 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Hard/ImpactHard"..math.random(1,14)..".ogg", impactPos);
+			self.buckshotImpactHardSound:Play(impactPos);
 		elseif hitGFXType == 4 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Buckshot/Impact/Metal/ImpactMetal"..math.random(1,12)..".ogg", impactPos);
+			self.buckshotImpactMetalSound:Play(impactPos);
 		end
 	elseif impactCount > 0 and self.lastImpactCount < 1 then
 		if hitGFXType <= 2 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Soft/ImpactSoft"..math.random(1,5)..".ogg", impactPos);
+			self.pelletImpactSoftSound:Play(impactPos);
 		elseif hitGFXType == 3 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Hard/ImpactHard"..math.random(1,5)..".ogg", impactPos);
+			self.pelletImpactHardSound:Play(impactPos);
 		elseif hitGFXType == 4 then
-			AudioMan:PlaySound("Sandstorm.rte/Effects/Sounds/Ammunition/Pellet/Impact/Metal/ImpactMetal"..math.random(1,5)..".ogg", impactPos);
+			self.pelletImpactMetalSound:Play(impactPos);
 		end
 	end
 	

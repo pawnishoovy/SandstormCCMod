@@ -194,7 +194,7 @@ function Update(self)
 							local modifiedMPA = self.MPA - MOMPA;
 							self.modifiedDamage = (self.desiredDamage * 0.7) * (modifiedMPA / self.MPA)
 							if self.modifiedDamage < 1 then
-								self.modifiedDamage = 1; -- morale damage
+								self.modifiedDamage = 0.3; -- morale damage
 							end
 						end
 					end
