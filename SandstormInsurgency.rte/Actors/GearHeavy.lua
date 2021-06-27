@@ -4,7 +4,7 @@ function Create(self)
 	-- Gear Heavy Armor
 	-- less gibs, more damage, more realistic deaths
 	local woundLimitMultiplier = 1.5
-	local woundDamageMultiplier = 1.25
+	local woundDamageMultiplier = 1
 	self.DamageMultiplier = self.DamageMultiplier * woundDamageMultiplier
 	self.GibWoundLimit = self.GibWoundLimit * woundLimitMultiplier
     for limb in self.Attachables do

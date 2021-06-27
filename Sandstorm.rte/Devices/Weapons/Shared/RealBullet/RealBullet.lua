@@ -192,9 +192,9 @@ function Update(self)
 							-- ROUND TWO: MPA VS MPA
 							self.bluntDamage = true; -- tell code later not to spawn any pixel
 							local modifiedMPA = self.MPA - MOMPA;
-							self.modifiedDamage = self.desiredDamage * (modifiedMPA / self.MPA)
+							self.modifiedDamage = (self.desiredDamage * 0.7) * (modifiedMPA / self.MPA)
 							if self.modifiedDamage < 1 then
-								self.modifiedDamage = 1;
+								self.modifiedDamage = 1; -- morale damage
 							end
 						end
 					end
@@ -320,7 +320,6 @@ function Update(self)
 						pixel.Pos = self.Pos - Vector(self.Vel.X,self.Vel.Y):SetMagnitude(2)--self.Pos - Vector(2, 0):RadRotate(self.RotAngle);
 						pixel.Team = self.Team
 						--pixel.IgnoresTeamHits = true;
-						MovableMan:AddParticle(pixel);
 						
 						-- we assume in the following code that the wound's burstdamage is 5.
 						if self.useArmorSystem then
@@ -328,12 +327,13 @@ function Update(self)
 							local woundNameExit = self.MOHit:GetExitWoundPresetName()
 							self.MOHit:AddWound(CreateAEmitter(woundName), self.woundOffset, false);
 							pixel.WoundDamageMultiplier = (self.modifiedDamage/5) / maxi;
-							pixel:SetWhichMOToNotHit(ToAttachable(self.MOHit), -1)
+							pixel:SetWhichMOToNotHit(self.MOHit, -1)
 							-- print(self.MOHit.PresetName)
 							
 						else
-							pixel.WoundDamageMultiplier = pixel.WoundDamageMultiplier * (self:NumberValueExists("WoundDamageMultiplier") and self:GetNumberValue("WoundDamageMultiplier") or 1.0)
+							pixel.WoundDamageMultiplier = (self.desiredDamage/5) / maxi;
 						end
+						MovableMan:AddParticle(pixel);
 					end
 				end
 				
